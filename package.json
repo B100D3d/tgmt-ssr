@@ -9,10 +9,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "sass": "sass --watch src/sass src/css"
+    "build": "react-scripts build"
   },
   "eslintConfig": {
     "extends": "react-app"
