@@ -12,66 +12,68 @@
         padding: 20px 0 0 0
         z-index: 1
 
-        .week
-            color: #AAAAAA
-            text-align: center
-            width: 160px
-            line-height: 25px
-
-        .menu
+        .container
             display: flex
-            list-style: none
+            align-items: center
             justify-content: space-between
-            width: 60vw
+            width: 85%
             height: 100%
-            padding: 0
-            margin: 0 2% 0 60px
+            margin: 0 auto
 
-            > li
-                position: relative
-                display: flex
-                justify-content: center
-                align-items: center
+            .week
+                color: #AAAAAA
                 text-align: center
-                flex-basis: 20%
-                color: white
-                font-size: 18px
+                line-height: 25px
 
-                &:hover
-                    background: rgba(255, 255, 255, 0.1)
-                    border-radius: 5px
-
-                    .sub-menu
-                        display: block
-           
-
-            .sub-menu
-                display: none
-                position: absolute
-                top: 100%
-                left: 0
+            .menu
+                display: flex
                 list-style: none
+                justify-content: space-between
+                width: 60vw
+                height: 100%
                 padding: 0
-                background: #201E1E
-                box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
-                border-radius: 5px
+                margin: 0
 
-                &.right
-                    right: 0
-                    left: auto
-
-                li
-                    white-space: nowrap
-                    text-align: left
-                    padding: 15px 20px
+                > li
+                    position: relative
+                    display: flex
+                    justify-content: center
+                    align-items: center
+                    text-align: center
+                    flex-basis: 20%
+                    color: white
+                    font-size: 18px
+                    
 
                     &:hover
                         background: rgba(255, 255, 255, 0.1)
                         border-radius: 5px
 
-.container
-    display: flex
-    align-items: center
-    width: 85%
-    height: 100%
-    margin: 0 auto
+                        .sub-menu
+                            display: block
+            
+
+                .sub-menu
+                    display: none
+                    position: absolute
+                    top: 100%
+                    left: 0
+                    list-style: none
+                    padding: 0
+                    background: #201E1E
+                    box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
+                    border-radius: 5px
+
+                    &.right
+                        right: 0
+                        left: auto
+
+                    li
+                        white-space: nowrap
+                        text-align: left
+                        padding: 15px 20px
+                        cursor: pointer
+
+                        &:hover
+                            background: rgba(255, 255, 255, 0.1)
+                            border-radius: 5px

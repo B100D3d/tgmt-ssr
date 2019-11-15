@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.sass';
+import bg from './img/1.jpg';
 
 import Header from './components/header/header';
 import About from './components/about/about';
@@ -16,7 +17,9 @@ const App = () => {
         <div>
             <Header />
             <MobileHeader />
-            <div className="news" />
+            <div className="news">
+                <img src={bg} />
+            </div>
             <About />
             <OpenButton />
         </div>
