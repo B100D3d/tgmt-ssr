@@ -1,0 +1,56 @@
+.about
+    position: relative
+    width: 95vw
+    max-height: 800px
+    background: #2C2A2A
+    box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
+    border-radius: 30px
+    margin: -40px auto 0 auto
+    padding: 4% 2% 5% 5%
+    box-sizing: border-box
+    z-index: 1
+    overflow: hidden
+    transition: max-height 1s ease-in-out
+
+    h2
+        font-weight: bold
+        color: #19CCF3
+        font-size: 32px
+        margin-bottom: 50px
+
+    p 
+        color: white
+        font-size: 18px
+        line-height: 30px
+        letter-spacing: 0.06em
+        margin: 9px
+
+        span
+            color: #19CCF3
+            font-size: 28px
+            font-weight: bold
+
+
+        img
+            width: 35%
+            height: 20%
+            float: right
+            box-shadow: 2px 8px 4px rgba(0, 0, 0, 0.75)
+            border-radius: 30px
+            margin-left: 1%
+
+
+
+
+@media (max-width: 860px)
+    .about p
+        font-size: 16px
+        letter-spacing: 0.01em
+
+        img
+            float: none
+            height: 20%
+            width: 90%
+
+        nth-of-type(1)
+            text-align: center
