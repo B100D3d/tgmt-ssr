@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 import './header-menu.sass';
 
@@ -12,7 +13,7 @@ const HeaderMenu = () => {
 
      useEffect(() => {
          const fetchData = async () => {
-            const query = await axios.post('http://localhost:3001/api/week', {
+            const query = await axios.post('http://localhost:3001/api/mainPage', {
                 query: `{
                     week {
                             date
@@ -27,7 +28,7 @@ const HeaderMenu = () => {
             setEven(data.even); 
          };
         fetchData();
-    },[date, weekNumber, even])
+    },[])
 
     return (
         <div className="header-menu">
@@ -42,7 +43,7 @@ const HeaderMenu = () => {
                         Техникум
                         <ul className="sub-menu">
                             <li>О техникуме</li>
-                            <li>Документы</li>
+                            <li><Link to='/documents'>Документы</Link></li>
                             <li>Образование</li>
                             <li>Руководство</li>
                             <li>Стипендии и иные виды материальной поддержки</li>

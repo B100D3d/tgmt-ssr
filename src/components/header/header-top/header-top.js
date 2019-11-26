@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import Search from '../search/search';
 import './header-top.sass';
@@ -14,10 +15,12 @@ const HeaderTop = () => {
                     Версия для слабовидящих
                 </button>
                 <Search />
-                <button className="login">
-                    <img src={student} alt="student" className="student" />
-                    Личный кабинет
-                </button>
+                <Link to='/user'>
+                    <button className="login">
+                        <img src={student} alt="student" className="student" />
+                        Личный кабинет
+                    </button>
+                </Link>
             </div>
         </div>
     );
