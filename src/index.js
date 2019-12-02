@@ -10,6 +10,7 @@ import About from './components/about/about';
 import MobileHeader from './components/mobile-header/mobile-header';
 import OpenButton from './components/open-button/open-button';
 import Auth from './components/auth/auth.js';
+import Snow from './components/Snowstorm/index.js';
 
 
 
@@ -51,6 +52,7 @@ const Test = () => (
 const App = () => (
         <>
             <Router>
+                <Snow />
                 <Route exact path='/' component={MainPage} />
                 <Route path='/user' component={AuthPage} />
                 <Route path='/documents' component={Test} />
