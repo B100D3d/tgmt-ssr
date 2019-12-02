@@ -13,7 +13,7 @@ const HeaderMenu = () => {
 
      useEffect(() => {
          const fetchData = async () => {
-            const query = await axios.post('http://localhost:3001/api/mainPage', {
+            const query = await axios.post('https://тгмт.рф/api/mainPage', {
                 query: `{
                     week {
                             date

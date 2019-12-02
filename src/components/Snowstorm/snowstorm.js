@@ -19,7 +19,7 @@ export default function snowStorm() {
       this.followMouse = true;
       this.snowColor = '#fff';
       this.snowCharacter = '&bull;';
-      this.snowStick = false;
+      this.snowStick = true;
       this.targetElement = null;
       this.useTwinkleEffect = false;
       this.usePositionFixed = false;
