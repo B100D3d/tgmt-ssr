@@ -1,42 +1,20 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import axios from 'axios';
 
 import './index.sass';
-import bg from './img/1.jpg';
 
 import Header from './components/header/header';
 import About from './components/about/about';
 import MobileHeader from './components/mobile-header/mobile-header';
 import OpenButton from './components/open-button/open-button';
-import Auth from './components/auth/auth.js';
-import Snow from './components/Snowstorm/index.js';
 
+import MainPage from './pages/MainPage.js';
+import AuthPage from './pages/AuthPage';
 
+import {WeekContext} from './context';
 
-
-const MainPage = () => {
-    return (
-        <>
-            <Header />
-            <MobileHeader />
-            <div className="news">
-                <img src={bg} />
-            </div>
-            <About />
-            <OpenButton />
-        </>
-    );
-}
-
-
-const AuthPage = () => {
-    return (
-        <>
-            <Auth />
-        </>
-    )
-}
 
 const Test = () => (
     <>
@@ -47,20 +25,45 @@ const Test = () => (
     </>
 )
 
+const getWeek = async () => {
+    const query = await axios.post('https://тгмт.рф/api/mainPage', {
+            query: `{
+                 week {
+                        date
+                        weekNum
+                        even
+                    }
+                }`
+            });
+    return query.data.data.week;
+}
 
+const App = () => {
+    const [date, setDate] = useState('');
+    const [weekNumber, setWeekNumber] = useState('');
+    const [even, setEven] = useState('');
 
-const App = () => (
+    useEffect(() => {
+        getWeek().then(week => {
+            setDate(week.date);
+            setWeekNumber(week.weekNum);
+            setEven(week.even);
+        })
+    },[])
+
+    return (
         <>
-            <Router>
-                <Snow />
-                <Route exact path='/' component={MainPage} />
-                <Route path='/user' component={AuthPage} />
-                <Route path='/documents' component={Test} />
-            </Router>
+            <WeekContext.Provider value={{date, weekNumber, even}}>
+                <Router>
+                    <Route exact path='/' component={MainPage} />
+                    <Route path='/user' component={AuthPage} />
+                    <Route path='/documents' component={Test} />
+                </Router>
+            </WeekContext.Provider>    
         </>
-)
-
-
+    )
+}
+        
 
 
 

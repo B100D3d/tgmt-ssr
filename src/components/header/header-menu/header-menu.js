@@ -1,34 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import React, {useContext} from 'react';
 import { Link } from 'react-router-dom';
 
 import './header-menu.sass';
+import {WeekContext} from '../../../context';
 
 
 const HeaderMenu = () => {
 
-    const [date, setDate] = useState('28 апреля 2007');
-    const [weekNumber, setWeekNumber] = useState(16);
-    const [even, setEven] = useState('четная');
-
-     useEffect(() => {
-         const fetchData = async () => {
-            const query = await axios.post('https://тгмт.рф/api/mainPage', {
-                query: `{
-                    week {
-                            date
-                            weekNum
-                            even
-                        }
-                    }`
-            });
-            const data = query.data.data.week;
-            setDate(data.date);
-            setWeekNumber(data.weekNum);
-            setEven(data.even); 
-         };
-        fetchData();
-    },[])
+    const {date, weekNumber, even} = useContext(WeekContext)
 
     return (
         <div className="header-menu">
