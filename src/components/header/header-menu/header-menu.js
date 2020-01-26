@@ -15,7 +15,7 @@ const HeaderMenu = () => {
                 <p className="week">
                     {date}
                     <br />
-                    {weekNumber} {even} неделя
+                    {weekNumber} {even} 
                 </p>
                 <ul className="menu">
                     <li>

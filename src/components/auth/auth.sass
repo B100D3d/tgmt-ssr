@@ -10,6 +10,7 @@
     .auth
         width: 60%
         height: 60%
+        padding: 1px
         display: flex
         flex-direction: column
         justify-content: space-around
@@ -21,32 +22,44 @@
         .title
             color: white
             font-size: 34px
+            margin: 0 
 
-        .input
-            display: flex
-            border: none
-            background: #2C2A2A
+        .input-container
             width: 100%
-            height: 34px
-            border-radius: 20px
-            box-sizing: border-box
-            padding: 3px 20px
-            color: white
-            font-size: 18px
-            line-height: 20px
-            outline: none
+            height: 150px
+            display: flex
+            flex-direction: column
+            justify-content: space-between
+            align-items: center
 
-            &::placeholder     
+
+            .input
+                display: flex
+                border: none
+                background: #2C2A2A
+                width: 100%
+                height: 34px
+                border-radius: 20px
+                box-sizing: border-box
+                padding: 3px 20px
                 color: white
+                font-size: 18px
+                line-height: 20px
+                outline: none
 
-        .input-border
-            background: linear-gradient(237.39deg, #5F26FF 5.27%, #B326FF 107.82%)
-            border-radius: 20px
-            height: 40px
-            width: 450px
-            box-sizing: border-box 
-            position: relative
-            padding: 3px
+                &::placeholder     
+                    color: white
+
+            .input-border
+                background: linear-gradient(237.39deg, #5F26FF 5.27%, #B326FF 107.82%)
+                border-radius: 20px
+                height: 40px
+                width: 60%
+                box-sizing: border-box 
+                position: relative
+                padding: 3px
+                // margin: 0 auto
+
 
 
         .button-auth
@@ -56,6 +69,7 @@
             border-radius: 20px
             background: linear-gradient(237.39deg, #5F26FF 5.27%, #B326FF 107.82%)
             color: white
+            font-weight: bold
             transition: box-shadow .3s ease 
             width: 150px
             height: 35px
@@ -68,6 +82,31 @@
             outline: none
 
             &:hover
-                 box-shadow: 2px 4px 2px rgba(0, 0, 0, 0.5)
+                 box-shadow: 2px 4px 5px rgba(0, 0, 0, 0.5)
+
+
+@media (max-width: 1024px)
+    .auth-back .auth
+        width: 95%
+
+@media (max-width: 700px)
+    .auth-back .auth
+        height: 90vh
+
+        .title
+            font-size: 44px
+            margin-top: 50px
+
+        .input-container .input-border
+            width: 90%
+            height: 50px
+
+            .input
+                height: 44px
+        
+        .button-auth
+            width: 250px
+            height: 50px
+            font-size: 24px
 
             

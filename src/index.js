@@ -47,7 +47,7 @@ const App = () => {
         getWeek().then(week => {
             setDate(week.date);
             setWeekNumber(week.weekNum);
-            setEven(week.even);
+            setEven(`${week.even} неделя`);
         })
     },[])
 
