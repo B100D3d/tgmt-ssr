@@ -1,31 +1,10 @@
 .mobile-header
     display: none
-
-
-    .bm-menu
-
-        .week
-            color: white
-            text-align: left
-            margin-bottom: 20px
-
-            &:focus
-                outline: none
-
-        .search-container
-            width: 90%
-            margin: 0 auto
-            
-
-            .search-border
-                margin: 0 auto
-                width: 200px
-
-                .search
-                    background-color: #2C2A2A
                
 
     .header-top
+        display: flex
+        align-items: center
         position: relative
         z-index: 3
         padding: 0 10px
@@ -36,35 +15,28 @@
         border-radius: 0 0 10px 10px
         box-shadow: 2px 8px 4px rgba(0, 0, 0, 0.5)
 
-        .container
-            position: relative
-            display: flex 
-            align-items: center
-            z-index: 3
-            justify-content: space-between
-            width: 90%
-            height: 100%
+
+        img
+            position: absolute
+            width: 50px
+            height: 90%
+
+        h2
+            color: white
+            font-size: 12px
+            text-align: center
             margin: 0 auto
+            width: 60%
 
-            img
-                width: 50px
-                height: 90%
-
-            h2
-                color: white
-                font-size: 12px
-                text-align: center
-                margin: 0 auto
-                width: 60%
-
-
+        
 
 @media ( max-width: 1064px)
     .mobile-header
         display: block
 
+
 @media ( max-width: 500px )
-    .mobile-header .header-top .container h2
-        font-size: 8px
-    
-    
+    .mobile-header .header-top h2
+        font-size: 10px
+        
+

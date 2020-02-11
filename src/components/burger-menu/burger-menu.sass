@@ -1,0 +1,100 @@
+.mobile-header .bm-menu
+        .title-container
+            width: 100%
+            display: flex
+            align-items: center
+            justify-content: center
+
+            .menu-logo
+                position: absolute
+                width: 60px
+                height: 40px
+                left: 15px
+                top: 15px
+
+
+            .menu-title
+                color: white
+                font-size: 24px
+                text-align: center
+                white-space: normal
+                font-weight: bold
+           
+        .week-and-login-container 
+            display: flex
+            justify-content: space-around
+            align-items: center
+            flex-wrap: wrap
+            padding: 0 10px
+
+            .week-date
+                color: #AAAAAA
+                text-align: left
+                margin: 0
+                margin-bottom: 5px
+
+                &:focus
+                    outline: none
+                    
+            .week-number
+                color: #AAAAAA
+                text-align: left
+                margin: 0
+
+                &:focus
+                    outline: none        
+
+            .login
+                display: flex
+                justify-content: space-between
+                border: none
+                border-radius: 20px
+                background: linear-gradient(237.39deg, #5F26FF 5.27%, #B326FF 107.82%)
+                color: white
+                width: 170px
+                height: 29px
+                padding: 3px 10px
+                box-sizing: border-box
+                cursor: pointer
+                font-size: 16px
+                line-height: 20px
+                text-align: right
+                outline: none
+                margin: 5px auto
+        
+        div
+            outline: none
+
+        
+
+
+        .search-container
+            width: 90%
+            margin: 0 auto
+            margin: 20px 20px 0
+            
+
+            .search-border
+                margin: 0 auto
+                width: 200px
+
+                .search
+                    background-color: #2C2A2A
+
+
+@media ( min-width: 650px )
+    .bm-menu .week-and-login-container
+        justify-content: space-between
+        padding: 0 25px
+
+        div
+            order: 1
+            width: 170px
+
+        .search-container 
+            width: 10%
+            order: 2
+            margin: 0 20px
+
+        a
+            order: 3    

@@ -9,7 +9,7 @@ import {t, text} from './text.js';
 
 const handleClick = el => {
     document.querySelector('.about')
-        .style.maxHeight = '5000px';
+    .style.maxHeight = '5000px';
 
     el.currentTarget.style.display = 'none';
 }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import axios from 'axios';
@@ -13,7 +13,7 @@ import OpenButton from './components/open-button/open-button';
 import MainPage from './pages/MainPage.js';
 import AuthPage from './pages/AuthPage';
 
-import {WeekContext} from './context';
+import { WeekContext } from './context';
 
 
 const Test = () => (

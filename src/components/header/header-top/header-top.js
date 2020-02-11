@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import Search from '../search/search';
+import Search from '../../search/search';
 import './header-top.sass';
 import eye from './eye.svg';
 import student from './student.svg';
+import RainbowButton from '../../rainbow-button/rainbow-button';
+
 
 const HeaderTop = () => {
     return (
@@ -16,10 +18,10 @@ const HeaderTop = () => {
                 </button>
                 <Search />
                 <Link to='/user'>
-                    <button className="login">
+                    <RainbowButton className="login" interval={2000}>
                         <img src={student} alt="student" className="student" />
                         Личный кабинет
-                    </button>
+                    </RainbowButton>
                 </Link>
             </div>
         </div>

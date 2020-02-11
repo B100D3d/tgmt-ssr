@@ -4,6 +4,7 @@ import axios from 'axios';
 import './resources.sass';
 import OpenButton from '../open-button/open-button';
 
+
 const getResources = async () => {
     const query = await axios.post('https://тгмт.рф/api/mainPage', {
         query: `{
@@ -41,10 +42,14 @@ const Resources = () => {
                     {res.map((data, key) => {
                         return (
                             <li key={key}>
-                                <a href={data.url} target="_blank">
-                                    <img src={`https://тгмт.рф/img/${data.img}`} />
+                                <a href={data.url} target="_blank" 
+                                                rel="noopener noreferrer">
+                                    <img src={`https://тгмт.рф/img/${data.img}`}
+                                        alt="Полезные ресурсы" />
                                 </a>
-                                <p>{data.text}</p> 
+                                <div className="text-container">
+                                    <p>{data.text}</p> 
+                                </div>
                             </li>
                         )
                     })}

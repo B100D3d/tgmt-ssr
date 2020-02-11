@@ -5,7 +5,6 @@ import logo from './logo.png';
 import './header-mid.sass';
 
 
-
 const HeaderMid = () => {
     return (
         <div className="header-mid">

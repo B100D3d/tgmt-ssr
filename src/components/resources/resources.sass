@@ -5,8 +5,8 @@
     background: #2C2A2A
     box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
     border-radius: 30px
-    margin: 0 auto 0 auto
-    padding: 0.5% 2% 5% 2%
+    margin: 0 auto
+    padding: 4%
     box-sizing: border-box
     z-index: 1
     overflow: hidden
@@ -17,11 +17,10 @@
         color: white
         border-bottom: 3px solid #19CCF3
         padding-bottom: 3px
-        margin-left: 3.5%
 
     ul
         display: flex
-        justify-content: center
+        justify-content: space-between
         flex-wrap: wrap
         align-content: center
         list-style: none
@@ -42,8 +41,20 @@
                 img
                     height: auto
                     width: 100%
+            
+            .text-container
+                min-width: 40%
 
-            p
-                margin: 0 auto
-                text-align: center
-                color: white
+                p
+                    margin: 0 auto
+                    text-align: center
+                    color: white
+
+
+@media (max-width: 840px) 
+    .resources ul li 
+        flex-basis: 45%
+
+@media (max-width: 400px)
+    .resources h1
+        font-size: 28px
