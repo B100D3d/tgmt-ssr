@@ -5,25 +5,12 @@ import axios from 'axios';
 
 import './index.sass';
 
-import Header from './components/header/header';
-import About from './components/about/about';
-import MobileHeader from './components/mobile-header/mobile-header';
-import OpenButton from './components/open-button/open-button';
-
 import MainPage from './pages/MainPage.js';
-import AuthPage from './pages/AuthPage';
 
 import { WeekContext } from './context';
+import useAuth from './hooks/useAuth.hook';
 
 
-const Test = () => (
-    <>
-        <Header />
-        <MobileHeader />
-        <About />
-        <OpenButton />
-    </>
-)
 
 const getWeek = async () => {
     const query = await axios.post('https://тгмт.рф/api/mainPage', {
@@ -56,7 +43,7 @@ const App = () => {
             <WeekContext.Provider value={{date, weekNumber, even}}>
                 <Router>
                     <Route exact path='/' component={MainPage} />
-                    <Route path='/user' component={AuthPage} />
+                    <Route path='/user' component={useAuth} />
                     <Route path='/documents' component={Test} />
                 </Router>
             </WeekContext.Provider>    
@@ -64,7 +51,11 @@ const App = () => {
     )
 }
         
-
+const Test = () => (
+    <>
+        
+    </>
+)
 
 
 ReactDOM.render(<App />, document.getElementById('root'));

@@ -2,10 +2,10 @@ import React from 'react'
 
 import Auth from '../components/auth/auth.js';
 
-const AuthPage = () => {
+const AuthPage = ({ setUser, setError }) => {
     return (
         <>
-            <Auth />
+            <Auth setUser={setUser} setError={setError} />
         </>
     )
 }

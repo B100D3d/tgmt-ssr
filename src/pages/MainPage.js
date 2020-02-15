@@ -6,6 +6,7 @@ import MobileHeader from '../components/mobile-header/mobile-header';
 import Resources from '../components/resources/resources';
 
 import bg from '../img/1.jpg';
+import Footer from '../components/footer/footer';
 
 
 const MainPage = () => {
@@ -19,6 +20,7 @@ const MainPage = () => {
                     </div>
                 <About />
                 <Resources />
+                <Footer />
             </main>
         </>
     );

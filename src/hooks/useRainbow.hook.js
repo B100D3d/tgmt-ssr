@@ -21,22 +21,19 @@ function useIncremetingNumber(interval) {
 }
 
 const rainbowColors = [
-    'hsl(17deg, 72.7%, 21.6%)', // правый цвет алисы
-    'hsl(8deg, 84.5%, 38%)', // левый цвет алисы
-    'hsl(40deg, 100%, 50%)', // yellow
-    'hsl(45deg, 100%, 50%)', // yellow
-    'hsl(66deg, 100%, 45%)', // lime
-    'hsl(130deg, 100%, 40%)', // green
-    'hsl(177deg, 100%, 35%)', // aqua
-    'hsl(230deg, 100%, 45%)', // blue
+    '#B326FF', // левый цвет алисы
+    '#5F26FF', // правый цвет алисы
     'hsl(240deg, 100%, 45%)', // indigo
     'hsl(260deg, 100%, 55%)', // violet
     'hsl(325deg, 100%, 48%)', // pink
+    'hsl(177deg, 100%, 35%)', // aqua
+    'hsl(230deg, 100%, 45%)', // blue
+    
 ];
 
 const paletteSize = rainbowColors.length;
 
-const range = [0, 1, 2, 3];
+const range = [0, 1, 2];
 
 const hasBrowserSupport =
   typeof window !== 'undefined'
