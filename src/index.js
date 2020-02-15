@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import axios from 'axios';
 
 import './index.sass';
 
 import MainPage from './pages/MainPage.js';
+import Page404 from './pages/Page404';
 
 import { WeekContext } from './context';
 import useAuth from './hooks/useAuth.hook';
@@ -42,9 +43,12 @@ const App = () => {
         <>
             <WeekContext.Provider value={{date, weekNumber, even}}>
                 <Router>
-                    <Route exact path='/' component={MainPage} />
-                    <Route path='/user' component={useAuth} />
-                    <Route path='/documents' component={Test} />
+                    <Switch>
+                        <Route exact path='/' component={MainPage} />
+                        <Route path='/user' component={useAuth} />
+                        <Route path='/documents' component={Test} />
+                        <Route component={Page404} status={404} />
+                    </Switch>
                 </Router>
             </WeekContext.Provider>    
         </>
@@ -53,7 +57,7 @@ const App = () => {
         
 const Test = () => (
     <>
-        
+        <div>Lorem</div>
     </>
 )
 

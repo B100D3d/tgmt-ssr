@@ -54,6 +54,12 @@ const Auth = ({ setUser, setError }) => {
             })
     }
 
+    const handleKeyPress = (event) => {
+        if(event.key === 'Enter'){
+            handleClick();
+        }
+    }
+
     return (
         <div className="auth-back" style={styles}>
             <div className="auth">
@@ -64,16 +70,15 @@ const Auth = ({ setUser, setError }) => {
                 <span className="login-error hidden">Неверный логин или пароль</span>
                 <div className="input-container">
                     <div className="input-border">
-                        <input type="text" ref={login} className="input" placeholder="Логин" border='2' />
+                        <input type="text" ref={login} className="input" placeholder="Логин" onKeyPress={handleKeyPress} />
                     </div>
                     <div className="input-border">
-                        <input type="password" ref={password} className="input" placeholder="Пароль" />
+                        <input type="password" ref={password} className="input" placeholder="Пароль" onKeyPress={handleKeyPress} />
                     </div>
                 </div>
-                <RainbowButton onClick={handleClick} className="button-auth" interval={2500}>
+                <RainbowButton onClick={handleClick} className="button-auth" interval={2000}>
                     Войти
                 </RainbowButton>
-                
             </div>
         </div>
     )
