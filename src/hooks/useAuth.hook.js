@@ -16,9 +16,11 @@ const auth = async () => {
     const query = await axios.post('https://тгмт.рф/api/auth', {
         query: `{
             auth {
-                name
-                role
-                email
+                ... on Admin {
+                    name
+                    role
+                    email
+                }
             }
         }`
     });
