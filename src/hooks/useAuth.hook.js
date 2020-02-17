@@ -13,6 +13,8 @@ const styles = {
 }
 
 const auth = async () => {
+    await new Promise(resolve => setTimeout(resolve, 500))
+    
     const query = await axios.post('https://тгмт.рф/api/auth', {
         query: `{
             auth {
@@ -23,7 +25,7 @@ const auth = async () => {
                 }
             }
         }`
-    });
+    }, {withCredentials: true});
     return query.data.data.auth;
 }
 

@@ -1,54 +1,47 @@
 .main-header .header-top
-        position: relative
-        z-index: 2
+    position: relative
+    z-index: 2
+    padding: 0
+    box-sizing: border-box
+    width: 100%
+    height: 40px
+    background: #29B6F6
+    border-radius: 0px 0px 15px 15px
+    box-shadow: 2px 8px 4px rgba(0, 0, 0, 0.5)
+
+
+    .contrast
+        display: flex
+        align-items: center
+        background-color: transparent
+        color: white
+        border: none
+        cursor: pointer
         padding: 0
+        font-size: 16px
+        line-height: 20px
+        text-align: center
+        outline: none
+
+        img
+            margin-right: 5px
+
+    .login
+        display: flex
+        justify-content: space-between
+        border: none
+        border-radius: 20px
+        background: linear-gradient(237.39deg, #5F26FF 5.27%, #B326FF 107.82%)
+        color: white
+        width: 180px
+        height: 29px
+        padding: 3px 10px
         box-sizing: border-box
-        width: 100%
-        height: 40px
-        background: #29B6F6
-        border-radius: 0px 0px 15px 15px
-        box-shadow: 2px 8px 4px rgba(0, 0, 0, 0.5)
+        cursor: pointer
+        font-size: 16px
+        line-height: 20px
+        text-align: right
+        outline: none
 
-        .container
-            display: flex
-            justify-content: space-between
-            align-items: center
-            width: 85%
-            height: 100%
-            margin: 0 auto
-
-            .contrast
-                display: flex
-                align-items: center
-                background-color: transparent
-                color: white
-                border: none
-                cursor: pointer
-                padding: 0
-                font-size: 16px
-                line-height: 20px
-                text-align: center
-                outline: none
-
-                img
-                    margin-right: 5px
-
-            .login
-                display: flex
-                justify-content: space-between
-                border: none
-                border-radius: 20px
-                background: linear-gradient(237.39deg, #5F26FF 5.27%, #B326FF 107.82%)
-                color: white
-                width: 180px
-                height: 29px
-                padding: 3px 10px
-                box-sizing: border-box
-                cursor: pointer
-                font-size: 16px
-                line-height: 20px
-                text-align: right
-                outline: none
-
-                &:hover
-                    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5)
+        &:hover
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5)

@@ -1,76 +1,76 @@
 .second-menu
+    position: relative
+    display: flex
+    flex-direction: row
+    justify-content: space-between
+    align-items: center
+    width: 85%
+    margin: 10px auto
+    padding: 0
+    list-style: none
+
+    > li 
         position: relative
-        display: flex
-        flex-direction: row
-        justify-content: space-between
-        align-items: center
-        width: 80vw
-        margin: 10px auto
-        padding: 0
-        list-style: none
 
-        > li 
-            position: relative
+        > a 
+            display: block
+            color: white
+            text-decoration: none
+            font-size: 18px
+            text-align: center
+            padding: 10px
+            border-bottom: 2px solid transparent
 
-            > a 
-                display: block
-                color: white
-                text-decoration: none
-                font-size: 18px
-                text-align: center
-                padding: 10px
-                border-bottom: 2px solid transparent
+    .sub-menu
+        position: absolute
+        box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
+        top: 48px
+        width: 0px
+        height: 0px
+        border-radius: 15px
+        background-color: #201E1E
+        transition: height 0.2s ease-in-out 0.1s, width 0.3s ease-in-out 0.1s
 
-        .sub-menu
-            position: absolute
-            box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
-            top: 48px
-            width: 0px
-            height: 0px
-            border-radius: 15px
-            background-color: #201E1E
-            transition: height 0.2s ease-in-out 0.1s, width 0.3s ease-in-out 0.1s
+    .sub-menu-1 
+        left: 10%
+    
 
-        .sub-menu-1 
-            left: 10%
+    .sub-menu-2 
+        left: -20vw
+        width: 60vw
         
 
-        .sub-menu-2 
-            left: -20vw
+    .sub-menu-3 
+        top: 0
+        position: relative
+
+    .sub-menu-container
+        position: absolute
+        display: flex
+        flex-direction: row-reverse
+        width: 60vw
+        height: 0px
+        top: 48px
+        right: 5%
+        transition: height 0.2s ease-in-out
+
+    > li:hover
+
+        > a 
+            cursor: pointer
+            color: #19CCF3
+            border-bottom: 2px solid #19CCF3
+
+        > .sub-menu-1
+            height: 70vh
             width: 60vw
-            
 
-        .sub-menu-3 
-            top: 0
-            position: relative
+        > .sub-menu-2
+            height: 70vh
 
-        .sub-menu-container
-            position: absolute
-            display: flex
-            flex-direction: row-reverse
-            width: 60vw
-            height: 0px
-            top: 48px
-            right: 5%
-            transition: height 0.2s ease-in-out
+        > .sub-menu-container
+            height: 70vh
 
-        > li:hover
-
-            > a 
-                cursor: pointer
-                color: #19CCF3
-                border-bottom: 2px solid #19CCF3
-
-            > .sub-menu-1
-                height: 70vh
+            .sub-menu-3
                 width: 60vw
-
-            > .sub-menu-2
                 height: 70vh
-
-            > .sub-menu-container
-                height: 70vh
-
-                .sub-menu-3
-                    width: 60vw
-                    height: 70vh

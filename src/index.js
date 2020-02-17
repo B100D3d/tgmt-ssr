@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import './index.sass';
 
+
 import MainPage from './pages/MainPage.js';
 import Page404 from './pages/Page404';
 

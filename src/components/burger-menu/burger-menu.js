@@ -28,6 +28,7 @@ const styles = {
         right: "-5px"
     },
     bmMenuWrap: {
+        transform: "translate3d(101%, 0px, 0px)",
         width: "100%"
     },
     bmBurgerButton: {
@@ -57,7 +58,8 @@ const handleClick = (state) => {
     if (state.isOpen) {
         document.body.setAttribute('style', 'overflow: hidden; position: fixed;')
     } else {
-        document.body.setAttribute('style', 'overflow: visible; position: static')
+        document.body.setAttribute('style', 'overflow: visible; position: static');
+        document.querySelector('.bm-menu-wrap').style.transform = 'translate3d(101%, 0px, 0px)'
     }
 }
 
