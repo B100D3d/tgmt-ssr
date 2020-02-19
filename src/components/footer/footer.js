@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 
 import './footer.sass';
-import rggmu from './rggmu.png';
-import logo from '../header/header-mid/logo.png';
+import rggmu from './rggmu.webp';
+import logo from './logo.webp';
 
 
 const Footer = () => {

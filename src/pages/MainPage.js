@@ -1,4 +1,5 @@
 import React from 'react';
+import MetaTag from 'react-meta-tags';
 
 import Header from '../components/header/header';
 import About from '../components/about/about';
@@ -12,15 +13,20 @@ import Footer from '../components/footer/footer';
 const MainPage = () => {
     return (
         <>
-                <Header />
-                <MobileHeader />
-                <main id="wrap">
-                    <div className="news">
-                        <img src={bg} alt="bg" />
-                    </div>
-                <About />
-                <Resources />
-                <Footer />
+            <MetaTag>
+                <meta name="description" content="Главная Туапсинского Гидрометеорологического Техникума" />
+                <meta name="keywords" content="ТГМТ, тгмт, туапсинский гидрометеорологический техникум, главная страница тгмт" />
+                <title>Главная</title>
+            </MetaTag>
+            <Header />
+            <MobileHeader />
+            <main id="wrap">
+                <div className="news">
+                    <img src={bg} alt="bg" />
+                </div>
+            <About />
+            <Resources />
+            <Footer />
             </main>
         </>
     );

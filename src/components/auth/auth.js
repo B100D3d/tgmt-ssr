@@ -1,10 +1,11 @@
-import React, {useRef} from 'react';
+import React, {useRef, useContext} from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 import './auth.sass';
 import back from './previous.svg';
 import RainbowButton from '../rainbow-button/rainbow-button';
+import { UserContext } from '../../context';
 
 import bublik from './bublik.webp';
 
@@ -35,7 +36,9 @@ const auth = async (login, password) => {
 
 
 
-const Auth = ({ setUser, setError }) => {
+const Auth = () => {
+
+    const {setUser, setError} = useContext(UserContext);
 
     const login = useRef()
     const password = useRef()

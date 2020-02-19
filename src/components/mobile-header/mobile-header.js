@@ -2,7 +2,7 @@ import React from 'react';
 
 
 import './mobile-header.sass';
-import logo from './logo.png';
+import logo from './logo.webp';
 import BurgerMenu from '../burger-menu/burger-menu';
 
 

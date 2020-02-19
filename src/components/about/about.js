@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './about.sass';
-import tgmt from './tgmt.png';
+import tgmt from './tgmt.webp';
 import OpenButton from '../open-button/open-button';
 
 import {t, text} from './text.js';

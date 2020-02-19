@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import Loading from '../components/loading/loading';
-import AuthPage from '../pages/AuthPage';
+import Auth from '../components/auth/auth';
+import { UserContext } from '../context/index';
+import User from '../components/user/user';
 
 const styles = {
     display: 'flex',
@@ -59,16 +61,18 @@ const useAuth = () => {
     if (error) {
         return (
             <>
-                <AuthPage setUser={setUser} setError={setError} />
+                <UserContext.Provider value={{setUser, setError}}>
+                    <Auth />
+                </UserContext.Provider>
             </>
         )
     }
     if (user) {
         return (
             <>
-                <h1>{user.name}</h1>
-                <h1>{user.role}</h1>
-                <h1>{user.email}</h1>
+                <UserContext.Provider value={{user, setUser, setError}}>
+                    <User / >
+                </UserContext.Provider>
             </>
         )
     }

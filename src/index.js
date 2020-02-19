@@ -5,12 +5,12 @@ import axios from 'axios';
 
 import './index.sass';
 
-
 import MainPage from './pages/MainPage.js';
 import Page404 from './pages/Page404';
+import AuthPage from './pages/AuthPage';
 
 import { WeekContext } from './context';
-import useAuth from './hooks/useAuth.hook';
+
 
 
 
@@ -46,7 +46,7 @@ const App = () => {
                 <Router>
                     <Switch>
                         <Route exact path='/' component={MainPage} />
-                        <Route path='/user' component={useAuth} />
+                        <Route path='/user' component={AuthPage} />
                         <Route path='/documents' component={Test} />
                         <Route component={Page404} status={404} />
                     </Switch>
