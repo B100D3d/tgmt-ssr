@@ -7,7 +7,7 @@ import {WeekContext} from '../../context';
 import Search from '../search/search';
 
 import './burger-menu.sass';
-import logo from './logo.png';
+import logo from './logo.webp';
 import burger from './burger.svg';
 import close from './cross.svg';
 import student from '../header/header-top/student.svg';
