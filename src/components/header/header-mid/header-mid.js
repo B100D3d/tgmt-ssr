@@ -10,7 +10,7 @@ const HeaderMid = () => {
         <div className="header-mid">
             <div className="container">
                 <Link to='/'>
-                    <img src={logo}
+                    <img src={ logo }
                     alt="logo" className="logo" />
                 </Link>
                 <p>

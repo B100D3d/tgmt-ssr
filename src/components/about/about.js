@@ -4,7 +4,7 @@ import './about.sass';
 import tgmt from './tgmt.webp';
 import OpenButton from '../open-button/open-button';
 
-import {t, text} from './text.js';
+import { t, text } from './text.js';
 
 
 const handleClick = el => {
@@ -22,18 +22,18 @@ const About = () => {
                     О техникуме
                 </h2>
                 <p>
-                    <img src={tgmt} alt="tgmt" />
+                    <img src={ tgmt } alt="tgmt" />
                 </p>
                 <p>
-                    <span>{t}</span>
-                    {text[0]}
+                    <span>{ t }</span>
+                    { text[0] }
                 </p>
-                {text.map((item, i) => {
+                { text.map((item, i) => {
                     if (i !== 0) 
-                        return <p key={i}>{item}</p>                        
+                        return <p key={ i }>{ item }</p>                        
                 })}
             </div>
-            <OpenButton onClick={handleClick} />
+            <OpenButton onClick={ handleClick } />
         </>
     );
 }; 

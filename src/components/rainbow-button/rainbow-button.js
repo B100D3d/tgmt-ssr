@@ -2,15 +2,15 @@ import React from 'react';
 
 import useRainbow from '../../hooks/useRainbow.hook';
 
-const RainbowButton = ({className, interval, children, onClick}) => {
+const RainbowButton = ({ className, interval, children, onClick }) => {
 
     const colors = useRainbow(interval);
     const colorKeys = Object.keys(colors);
         
     return (
         <button 
-            className={className}
-            onClick={onClick}
+            className={ className }
+            onClick={ onClick }
             style={{
                 ...colors,
                 background: `
@@ -29,7 +29,7 @@ const RainbowButton = ({className, interval, children, onClick}) => {
                 `
             }}
         >
-            {children}
+            { children }
         </button>
     )
     

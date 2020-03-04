@@ -4,4 +4,4 @@ const WeekContext = React.createContext();
 
 const UserContext = React.createContext();
 
-export {WeekContext, UserContext};
+export { WeekContext, UserContext };

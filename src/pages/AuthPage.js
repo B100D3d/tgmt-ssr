@@ -10,7 +10,7 @@ const AuthPage = () => (
             <meta name="keywords" content="ТГМТ, тгмт, туапсинский гидрометеорологический техникум, личный кабинет тгмт" />
             <title>Личный кабинет</title>
         </MetaTag>
-        {useAuth()}    
+        { useAuth() }    
     </>
 )
 

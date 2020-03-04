@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 
 import './user-header.sass';
 import { WeekContext } from '../../../context';
@@ -22,13 +22,13 @@ const UserHeader = () => {
     return (
         <header className="user-header">
             <div className="burger-con">
-                <img src={burger} alt="burger" />
-                <button className="burger-btn" onClick={handleClick} />
+                <img src={ burger } alt="burger" />
+                <button className="burger-btn" onClick={ handleClick } />
             </div>
             <p className="week">
-                {date}
+                { date }
                 <br />
-                {weekNumber} {even} 
+                { weekNumber } { even } 
             </p>
         </header>
     )

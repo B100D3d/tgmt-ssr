@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import './resources.sass';
@@ -41,21 +41,21 @@ const Resources = () => {
                 <ul>
                     {res.map((data, key) => {
                         return (
-                            <li key={key}>
-                                <a href={data.url} target="_blank" 
+                            <li key={ key }>
+                                <a href={ data.url } target="_blank" 
                                                 rel="noopener noreferrer">
                                     <img src={`https://тгмт.рф/img/${data.img}`}
                                         alt="Полезные ресурсы" />
                                 </a>
                                 <div className="text-container">
-                                    <p>{data.text}</p> 
+                                    <p>{ data.text }</p> 
                                 </div>
                             </li>
                         )
                     })}
                 </ul>
             </div>
-            <OpenButton onClick={handleClick} />
+            <OpenButton onClick={ handleClick } />
         </>
     )
 }

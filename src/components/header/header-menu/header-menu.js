@@ -1,21 +1,21 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import './header-menu.sass';
-import {WeekContext} from '../../../context';
+import { WeekContext } from '../../../context';
 
 
 const HeaderMenu = () => {
 
-    const {date, weekNumber, even} = useContext(WeekContext)
+    const { date, weekNumber, even } = useContext(WeekContext)
 
     return (
         <div className="header-menu">
             <div className="container">
                 <p className="week">
-                    {date}
+                    { date }
                     <br />
-                    {weekNumber} {even} 
+                    { weekNumber } { even } 
                 </p>
                 <ul className="menu">
                     <li>

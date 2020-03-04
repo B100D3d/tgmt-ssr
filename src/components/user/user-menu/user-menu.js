@@ -1,9 +1,9 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 
 import './user-menu.sass';
-import {UserContext} from '../../../context'
+import { UserContext } from '../../../context'
 import logout from './logout.svg';
 import AdminList from './admin-list/admin-list';
 import StudentList from './student-list/student-list';
@@ -33,11 +33,11 @@ const getRole = (user) => {
 const UserMenu = () => {
 
     const handleClick = async () => {
-        await axios.post('https://тгмт.рф/api/logout', {}, {withCredentials: true})
+        await axios.post('https://тгмт.рф/api/logout', {}, { withCredentials: true })
         history.push('/')
     }
 
-    const {user} = useContext(UserContext)
+    const { user } = useContext(UserContext)
     const list = LISTS[user.role]
     const role = getRole(user)
     const history = useHistory()
@@ -47,17 +47,17 @@ const UserMenu = () => {
         <div className="user-menu">
             <div className="user-info">
                 <div className="user-text">
-                    <h3>{user.name}</h3>
-                    <p>{role}</p>
+                    <h3>{ user.name }</h3>
+                    <p>{ role }</p>
                 </div>
                 <div className="logout-con">
-                    <img src={logout} alt="logout" />
-                    <button onClick={handleClick} className="logout-btn" />
+                    <img src={ logout } alt="logout" />
+                    <button onClick={ handleClick } className="logout-btn" />
                 </div>
             </div>
             <hr />
             <ul className="list">
-                {list}
+                { list }
             </ul>
         </div>
     )

@@ -36,19 +36,19 @@ const App = () => {
         getWeek().then(week => {
             setDate(week.date);
             setWeekNumber(week.weekNum);
-            setEven(`${week.even} неделя`);
+            setEven(`${ week.even } неделя`);
         })
     },[])
 
     return (
         <>
-            <WeekContext.Provider value={{date, weekNumber, even}}>
+            <WeekContext.Provider value={{ date, weekNumber, even }}>
                 <Router>
                     <Switch>
-                        <Route exact path='/' component={MainPage} />
-                        <Route path='/user' component={AuthPage} />
+                        <Route exact path='/' component={ MainPage } />
+                        <Route path='/user' component={ AuthPage } />
                         <Route path='/documents' component={Test} />
-                        <Route component={Page404} status={404} />
+                        <Route component={ Page404 } status={ 404 } />
                     </Switch>
                 </Router>
             </WeekContext.Provider>    

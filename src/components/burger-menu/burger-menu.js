@@ -1,8 +1,8 @@
-import React, {useContext} from 'react';
-import {elastic as Menu} from 'react-burger-menu';
+import React, { useContext } from 'react';
+import { elastic as Menu } from 'react-burger-menu';
 import { Link } from 'react-router-dom';
 
-import {WeekContext} from '../../context';
+import { WeekContext } from '../../context';
 
 import Search from '../search/search';
 
@@ -66,17 +66,17 @@ const handleClick = (state) => {
 
 const BurgerMenu = () => {
 
-    const {date, weekNumber, even} = useContext(WeekContext)
+    const { date, weekNumber, even } = useContext(WeekContext)
 
     return (
         <>     
-            <Menu styles={styles} outerContainerId={"root"} pageWrapId={"wrap"} 
-                    right customBurgerIcon={ <img src={burger} alt="burger" /> }
-                    customCrossIcon={ <img src={close} alt="close" /> } disableAutoFocus 
-                    onStateChange={handleClick}>
+            <Menu styles={ styles } outerContainerId={ "root" } pageWrapId={ "wrap" } 
+                    right customBurgerIcon={ <img src={ burger } alt="burger" /> }
+                    customCrossIcon={ <img src={ close } alt="close" /> } disableAutoFocus 
+                    onStateChange={ handleClick }>
                     <div>
                         <div className="title-container">
-                            <img className="menu-logo" src={logo} alt="logo" />
+                            <img className="menu-logo" src={ logo } alt="logo" />
                             <p className="menu-title">ТГМТ</p>
                         </div>
                     </div>
@@ -84,15 +84,15 @@ const BurgerMenu = () => {
                         <div className="week-and-login-container">
                             <div>
                                 <p className="week-date">
-                                    {date}
+                                    { date }
                                 </p>
                                 <p className="week-number">
-                                    {weekNumber} {even} 
+                                    { weekNumber } { even } 
                                 </p>
                             </div>
-                            <Link to='/user' onClick={handleClick}>
-                                <RainbowButton className="login" interval={2000}>
-                                    <img src={student} alt="student" className="student" />
+                            <Link to='/user' onClick={ handleClick }>
+                                <RainbowButton className="login" interval={ 2000 }>
+                                    <img src={ student } alt="student" className="student" />
                                     Личный кабинет
                                 </RainbowButton>
                             </Link>

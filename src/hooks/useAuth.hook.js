@@ -68,7 +68,7 @@ const auth = async () => {
                 }
             }
         }`
-    }, {withCredentials: true});
+    }, { withCredentials: true });
     return query.data.data.auth;
 }
 
@@ -102,7 +102,7 @@ const useAuth = () => {
     if (error) {
         return (
             <>
-                <UserContext.Provider value={{setUser, setError}}>
+                <UserContext.Provider value={{ setUser, setError }}>
                     <Auth />
                 </UserContext.Provider>
             </>
@@ -111,7 +111,7 @@ const useAuth = () => {
     if (user) {
         return (
             <>
-                <UserContext.Provider value={{user, setUser, setError}}>
+                <UserContext.Provider value={{ user, setUser, setError }}>
                     <User />
                 </UserContext.Provider>
             </>

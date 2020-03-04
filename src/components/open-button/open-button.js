@@ -4,11 +4,11 @@ import './open-button.sass';
 import open from './open.svg';
 
 
-const OpenButton = ({onClick}) => {
+const OpenButton = ({ onClick }) => {
     return (
         <div className="open-container">
-            <button className="open" onClick={onClick}>
-                <img src={open} alt="open" />
+            <button className="open" onClick={ onClick }>
+                <img src={ open } alt="open" />
             </button>
         </div>
     );

@@ -27,18 +27,18 @@ const MainPage = () => {
             <MobileHeader />
             <main id="wrap">
                 <AutoplaySlider
-                    play={true}
-                    cancelOnInteraction={false}
-                    interval={5000}
+                    play={ true }
+                    cancelOnInteraction={ false }
+                    interval={ 5000 }
                     className="news">
                     <div>
-                        <img src={bg} alt="bg" />
+                        <img src={ bg } alt="bg" />
                     </div>
                     <div>
-                        <img src={bg} alt="bg" />
+                        <img src={ bg } alt="bg" />
                     </div>
                     <div>
-                        <img src={bg} alt="bg" />
+                        <img src={ bg } alt="bg" />
                     </div>
                 </AutoplaySlider>
             <About />
