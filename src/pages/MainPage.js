@@ -1,5 +1,7 @@
 import React from 'react';
 import MetaTag from 'react-meta-tags';
+import Slider from 'react-awesome-slider';
+import withAutoplay from 'react-awesome-slider/dist/autoplay';
 
 import Header from '../components/header/header';
 import About from '../components/about/about';
@@ -8,7 +10,10 @@ import Resources from '../components/resources/resources';
 
 import bg from '../img/1.jpg';
 import Footer from '../components/footer/footer';
+import 'react-awesome-slider/dist/styles.css';
 
+
+const AutoplaySlider = withAutoplay(Slider)
 
 const MainPage = () => {
     return (
@@ -21,9 +26,21 @@ const MainPage = () => {
             <Header />
             <MobileHeader />
             <main id="wrap">
-                <div className="news">
-                    <img src={bg} alt="bg" />
-                </div>
+                <AutoplaySlider
+                    play={true}
+                    cancelOnInteraction={false}
+                    interval={5000}
+                    className="news">
+                    <div>
+                        <img src={bg} alt="bg" />
+                    </div>
+                    <div>
+                        <img src={bg} alt="bg" />
+                    </div>
+                    <div>
+                        <img src={bg} alt="bg" />
+                    </div>
+                </AutoplaySlider>
             <About />
             <Resources />
             <Footer />

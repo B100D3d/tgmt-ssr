@@ -1,6 +1,7 @@
 import React, {useRef, useContext} from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import cogoToast from 'cogo-toast';
 
 import './auth.sass';
 import back from './previous.svg';
@@ -22,10 +23,51 @@ const auth = async (login, password) => {
     const query = await axios.post('https://тгмт.рф/api/login', {
         query: `{
             login(login: "${login}", password: "${password}") {
-                ... on Admin {
+                ...on Admin {
                     name
                     role
                     email
+                    groups {
+                        id
+                        name
+                        year
+                    }
+                }
+                ...on Teacher {
+                    name
+                    role
+                    email
+                    groups {
+                        id
+                        name
+                        year
+                        subjects {
+                            id
+                        }
+                    }
+                    subjects {
+                        id
+                        name
+                    }
+                }
+                ...on Student {
+                    name
+                    role
+                    email
+                    group {
+                        id
+                        name
+                        year
+                    }
+                    schedule {
+                        subject {
+                            id
+                            name
+                            teacher
+                        }
+                        weekday
+                        classNumber
+                    }
                 }
             }
         }`
@@ -44,15 +86,20 @@ const Auth = () => {
     const password = useRef()
 
     const handleClick = () => {
+        const {hide} = cogoToast.loading('Загрузка...', {hideAfter: 0, position: 'top-right'})
+
         auth(login.current.value, password.current.value)
             .then(user => {
+                hide()
+                cogoToast.success('Данные успешно получены.', {position: 'top-right'})
                 setUser(user)
                 setError(false)
             })
             .catch(error => {
                 console.log(error.response)
                 if (error.response.status === 403) {
-                    document.querySelector('.login-error').classList.remove('hidden')
+                    hide()
+                    cogoToast.error('Неверный логин или пароль.', {position: 'top-right'})
                 }
             })
     }
@@ -70,7 +117,6 @@ const Auth = () => {
                     <img src={back} alt="back" / >
                 </Link>
                 <h1 className="title">Авторизация</h1>
-                <span className="login-error hidden">Неверный логин или пароль</span>
                 <div className="input-container">
                     <div className="input-border">
                         <input type="text" ref={login} className="input" placeholder="Логин" onKeyPress={handleKeyPress} />

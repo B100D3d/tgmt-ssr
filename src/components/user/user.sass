@@ -1,3 +1,18 @@
 .flex-container
     width: 100%
     height: calc( 100vh - 40px )
+    padding-top: 40px
+    display: flex
+    justify-content: space-between
+    align-items: flex-start
+
+    &.open
+        justify-content: space-between
+
+        .user-menu
+            max-width: 300px
+            transform: translate3d(0, 0, 0)
+
+        .user-main
+            flex-basis: 75%
+            margin-right: 25px

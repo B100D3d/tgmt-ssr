@@ -20,10 +20,51 @@ const auth = async () => {
     const query = await axios.post('https://тгмт.рф/api/auth', {
         query: `{
             auth {
-                ... on Admin {
+                ...on Admin {
                     name
                     role
                     email
+                    groups {
+                        id
+                        name
+                        year
+                    }
+                }
+                ...on Teacher {
+                    name
+                    role
+                    email
+                    groups {
+                        id
+                        name
+                        year
+                        subjects {
+                            id
+                        }
+                    }
+                    subjects {
+                        id
+                        name
+                    }
+                }
+                ...on Student {
+                    name
+                    role
+                    email
+                    group {
+                        id
+                        name
+                        year
+                    }
+                    schedule {
+                        subject {
+                            id
+                            name
+                            teacher
+                        }
+                        weekday
+                        classNumber
+                    }
                 }
             }
         }`
@@ -71,7 +112,7 @@ const useAuth = () => {
         return (
             <>
                 <UserContext.Provider value={{user, setUser, setError}}>
-                    <User / >
+                    <User />
                 </UserContext.Provider>
             </>
         )

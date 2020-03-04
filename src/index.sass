@@ -1,3 +1,7 @@
+// $color-1: #737373 переменная
+
+
+
 body
     margin: 0
     background-color: #201E1E
@@ -33,6 +37,11 @@ a
     margin-top: -200px
     z-index: 0  
     background-size: cover
+    --content-background-color: transparent
+
+    .awssld__bullets
+        bottom: 50px
+        z-index: 1000
 
     img
         width: 100%
@@ -46,7 +55,10 @@ a
         margin-top: -30px
         height: 350px
 
-@media (max-width: 700px)
+@media (max-width: 500px)
     .news
         margin-top: -30px
         height: 200px
+
+        .awssld__bullets
+            bottom: -40px
