@@ -7,12 +7,46 @@
     align-items: flex-start
 
     &.open
-        justify-content: space-between
-
         .user-menu
-            max-width: 300px
+            max-width: 25%
             transform: translate3d(0, 0, 0)
 
         .user-main
-            flex-basis: 75%
-            margin-right: 25px
+            flex-basis: 70%
+
+
+@media (max-width: 800px)
+    .flex-container
+        flex-direction: column
+        align-items: center
+        padding: 0
+
+        .user-menu
+            max-height: 0
+            width: 95%
+            max-width: 95%
+            border-radius: 20px
+            transform: translate3d(0,-380px,0)
+            z-index: 0
+
+            .user-info
+                justify-content: space-between
+
+        .user-main
+            margin: 0
+            width: 95%
+            min-height: 500px
+            height: auto
+
+        &.open
+            .user-menu
+                width: 95%
+                max-width: 95%
+                max-height: 100%
+                transform: translate3d(0, 10px, 0)
+
+            .user-main
+                margin-top: 50px
+                width: 95%
+                min-height: 500px
+                height: auto

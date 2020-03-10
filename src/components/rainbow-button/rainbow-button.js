@@ -25,7 +25,8 @@ const RainbowButton = ({ className, interval, children, onClick }) => {
                 ${colorKeys[0]} ${interval+300}ms linear,
                 ${colorKeys[1]} ${interval+300}ms linear,
                 ${colorKeys[2]} ${interval+300}ms linear,
-                box-shadow .3s ease
+                box-shadow .5s ease,
+                transform .5s ease
                 `
             }}
         >

@@ -39,7 +39,6 @@ const Footer = () => {
             </div>
             <div className="social">
                 <h2>Присоединяйтесь</h2>
-                <br />
                 <a href="#" target="_blank"><img src={ google } alt="google+" className="google" /></a>
                 <a href="https://vk.com/tgmt_tuapse" target="_blank"><img src={ vk } alt="vk" className="vk" /></a>
                 <a href="https://www.instagram.com/tgmt_tuapse/" target="_blank"><img src={ inst } 

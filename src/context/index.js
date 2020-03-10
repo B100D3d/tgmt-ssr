@@ -4,4 +4,6 @@ const WeekContext = React.createContext();
 
 const UserContext = React.createContext();
 
-export { WeekContext, UserContext };
+const UserMenuOpenContext = React.createContext();
+
+export { WeekContext, UserContext, UserMenuOpenContext };

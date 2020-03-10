@@ -1,8 +1,27 @@
 .user-main
-    flex-basis: 100%
+    position: relative
+    flex-basis: 95%
+    max-width: 95%
+    box-sizing: border-box
     height: 90%
-    margin: 0 25px
+    margin: 0 2.5%
     background-color: #2c2a2a
     border-radius: 20px
-    transition: flex-basis 1s ease, margin 1s ease
+    transition: all 1s ease
     box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
+
+    .fade-enter
+        opacity: 0
+        z-index: 10
+    
+    .fade-enter-active
+        opacity: 1
+        transition: opacity 500ms ease 500ms
+
+    .fade-exit
+        opacity: 1
+
+    .fade-exit-active
+        opacity: 0
+        transition: opacity 500ms ease
+        

@@ -31,13 +31,13 @@ const MainPage = () => {
                     cancelOnInteraction={ false }
                     interval={ 5000 }
                     className="news">
-                    <div>
+                    <div className="slide">
                         <img src={ bg } alt="bg" />
                     </div>
-                    <div>
+                    <div className="slide">
                         <img src={ bg } alt="bg" />
                     </div>
-                    <div>
+                    <div className="slide">
                         <img src={ bg } alt="bg" />
                     </div>
                 </AutoplaySlider>
