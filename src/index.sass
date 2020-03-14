@@ -10,14 +10,7 @@ body
     background-color: #201E1E
     font-family: 'Noto Sans', sans-serif
 
-p,
-h1,
-h2,
-input,
-button,
-span,
-a,
-li
+*
     font-family: 'Noto Sans', sans-serif
 
 a
@@ -61,6 +54,7 @@ a
 
 .react-grid-Container 
     background-color: transparent
+    width: 100% !important
 
     &.anim
         transition: all 1s ease
@@ -94,7 +88,7 @@ a
         background-color: transparent !important
 
     .rdg-selected
-        transition: all .3s ease
+        transition: transform .3s ease, height 1s ease, width 1s ease
 
 
 #root

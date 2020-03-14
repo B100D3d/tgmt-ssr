@@ -7,6 +7,7 @@ import './schedule.sass';
 
 import { UserMenuOpenContext, UserContext } from '../../../../context';
 import useWindowSize from '../../../../hooks/useWindowSize.hook'
+import Switch from "./switch/switch";
 
 
 const DEFAULT_SCHEDULE_ITEM = {
@@ -84,8 +85,8 @@ const Schedule = () => {
 
     useEffect(() => {
         if (isOpen) {
-            const k = windowSize.width < 800 ? 0.95 : 0.7
-            setWidth(windowSize.width * k)
+            const menuWidth = windowSize.width > 800 ? document.querySelector('.user-menu').clientWidth : 0
+            setWidth(windowSize.width * 0.95 - menuWidth)
         } else {
             setWidth(windowSize.width * 0.95)
         }
@@ -112,6 +113,9 @@ const Schedule = () => {
     return (
         <div className='schedule-container'>
             <h1>Расписание</h1>
+            <div className='buttons-container'>
+                <Switch val0='Чет' val1='Неч' />
+            </div>
             <div className="schedule">
                 <ReactDataGrid
                     columns={ columns }

@@ -12,8 +12,6 @@ import AuthPage from './pages/AuthPage';
 import { WeekContext } from './context';
 
 
-
-
 const getWeek = async () => {
     const query = await axios.post('https://тгмт.рф/api/mainPage', {
             query: `{

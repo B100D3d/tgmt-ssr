@@ -1,18 +1,16 @@
 .flex-container
     width: 100%
     height: calc( 100vh - 40px )
-    padding-top: 40px
+    padding-top: 20px
+    position: relative
+    box-sizing: border-box
     display: flex
-    justify-content: space-between
+    justify-content: flex-end
     align-items: flex-start
 
     &.open
         .user-menu
-            max-width: 25%
-            transform: translate3d(0, 0, 0)
-
-        .user-main
-            flex-basis: 70%
+            left: 0
 
 
 @media (max-width: 800px)
@@ -21,32 +19,7 @@
         align-items: center
         padding: 0
 
-        .user-menu
-            max-height: 0
-            width: 95%
-            max-width: 95%
-            border-radius: 20px
-            transform: translate3d(0,-380px,0)
-            z-index: 0
-
-            .user-info
-                justify-content: space-between
-
-        .user-main
-            margin: 0
-            width: 95%
-            min-height: 500px
-            height: auto
-
         &.open
             .user-menu
-                width: 95%
-                max-width: 95%
-                max-height: 100%
-                transform: translate3d(0, 10px, 0)
-
-            .user-main
-                margin-top: 50px
-                width: 95%
-                min-height: 500px
-                height: auto
+                left: 2.5%
+                top: 20px

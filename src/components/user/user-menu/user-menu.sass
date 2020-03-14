@@ -1,12 +1,12 @@
 .user-menu
-    position: relative
+    position: absolute
+    top: 20px
+    left: -50%
     background-color: #2C2A2A
     border-radius: 0 20px 20px 0
     box-shadow: 4px 8px 4px rgba(0, 0, 0, 0.5)
     box-sizing: border-box
     transition: all 1s ease
-    max-width: 0
-    transform: translate3d(-350px,0,0)
 
     .user-info
         display: flex
@@ -79,3 +79,16 @@
 
             &:hover
                 background-color: rgba(255, 255, 255, 0.1)
+
+
+
+@media (max-width: 800px)
+    .flex-container
+        .user-menu
+            width: 95%
+            border-radius: 20px
+            left: 2.5%
+            top: -70%
+
+            .user-info
+                justify-content: space-between

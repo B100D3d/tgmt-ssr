@@ -10,13 +10,13 @@ import { UserMenuOpenContext } from '../../context';
 
 const User = () => {
 
-    const [isOpen, setOpen] = useState(true)
+    const [isOpen, setOpen] = useState(false)
 
     return (
         <>
             <UserMenuOpenContext.Provider value={ [isOpen, setOpen] }>
                 <UserHeader />
-                <div className="flex-container open">
+                <div className="flex-container">
                     <UserMenu />
                     <UserMain />
                 </div>
