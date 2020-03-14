@@ -14,12 +14,15 @@ const Switch = ({ val0, val1 }) => {
         [0, 1].map(i => {
             const name = `${ COLOR_NAME }${ i }`
             const initialValue = COLORS[i]
-            CSS.registerProperty({
-                name,
-                initialValue,
-                syntax: '<color>',
-                inherits: false
-            })
+            try{
+                CSS.registerProperty({
+                    name,
+                    initialValue,
+                    syntax: '<color>',
+                    inherits: false
+                })
+            } catch(err){}
+            
         })
     }, [])
 
