@@ -19,9 +19,9 @@ const MainPage = () => {
     return (
         <>
             <MetaTag>
-                <meta name="description" content="Главная Туапсинского Гидрометеорологического Техникума" />
+                <meta name="description" content="Главная страница Туапсинского Гидрометеорологического Техникума" />
                 <meta name="keywords" content="ТГМТ, тгмт, туапсинский гидрометеорологический техникум, главная страница тгмт" />
-                <title>Главная</title>
+                <title>Главная | ТГМТ</title>
             </MetaTag>
             <Header />
             <MobileHeader />
