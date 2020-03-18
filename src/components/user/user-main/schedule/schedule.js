@@ -44,9 +44,9 @@ const getRows = (schedule) => {
 const getSchedule = async (group, subgroup, even) => {
     const res = await axios.post('https://тгмт.рф/api/getSchedule', {
         query: `{
-            getSchedule(groupID: '${ group }',
-                        subgroup: '${ subgroup }',
-                        even: '${ even }') {
+            getSchedule(groupID: "${ group }",
+                        subgroup: ${ subgroup },
+                        even: ${ even }) {
                             classNumber
                             weekday
                             subject {
@@ -70,18 +70,24 @@ const Schedule = () => {
     const [rows, setRows] = useState(DEFAULT_ROWS);
     const [width, setWidth] = useState();
     const [height, setHeight] = useState();
+    const [switchState, setSwitch] = useState();
     const [schedule, setSchedule] = useState(user.schedule);
     const windowSize = useWindowSize();
+    const group = user.group.id || params.group
 
     const isAdmin = user.role === 'Admin'
     
     useEffect(() => {
-        schedule 
-            ? setRows(getRows(user.schedule)) 
-            : getSchedule(params.group, 1, true).then((s) => {
+        setRows(getRows(schedule))
+    }, [schedule])
+
+    useEffect(() => {
+        if (switchState) {
+            getSchedule(group, switchState.subgroup, switchState.week).then((s) => {
                 setSchedule(s)
             })
-    }, [schedule])
+        }
+    }, [switchState])
 
     useEffect(() => {
         if (isOpen) {
@@ -99,6 +105,7 @@ const Schedule = () => {
         })
     }, [])
 
+
     const columns = [
         { key: 'classNumber', name: '№ пары', resizable: true, width: 80 },
         { key: '1', name: 'Понедельник', editable: isAdmin, resizable: true },
@@ -114,7 +121,12 @@ const Schedule = () => {
         <div className='schedule-container'>
             <h1>Расписание</h1>
             <div className='buttons-container'>
-                <Switch val0='Чет' val1='Неч' />
+                <div className='switch-container'>
+                    <Switch val0='Чет' val1='Неч' title='Неделя' isAdmin={ isAdmin }
+                         state={ [switchState, setSwitch] } />
+                    <Switch val0='&nbsp;&nbsp;1' val1='&nbsp;&nbsp;2' title='Подгруппа' isAdmin={ isAdmin }
+                         state={ [switchState, setSwitch] } />
+                </div>
             </div>
             <div className="schedule">
                 <ReactDataGrid
@@ -122,7 +134,6 @@ const Schedule = () => {
                     rowGetter={ i => rows[i] }
                     rowsCount={ rows.length }
                     minWidth={ width }
-                    //rowHeight={ 50 }
                     minHeight={ height }
                     enableCellSelect={ true }
                 />
