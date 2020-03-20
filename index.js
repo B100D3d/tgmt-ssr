@@ -18,7 +18,7 @@ require("@babel/register")({
                 "name": "[name].[hash:8].[ext]",
                 "extensions": ["png", "jpg", "svg", "webp", "jpeg", "gif"],
                 "publicPath": "/static/media",
-                "outputPath": "/delete",
+                "outputPath": null,
                 "context": __dirname,
                 "limit": 0
             }

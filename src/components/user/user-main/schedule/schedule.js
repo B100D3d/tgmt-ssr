@@ -76,7 +76,7 @@ const Schedule = () => {
                             }
             }`
         }, { withCredentials: true }) 
-        
+
         return res.data.data.getSchedule;
     }
     
@@ -102,7 +102,7 @@ const Schedule = () => {
     }, [isOpen, windowSize])
 
     useEffect(() => {
-        ReactDataGrid && import("react-data-grid").then(_ReactDataGrid => {
+        import("react-data-grid").then(_ReactDataGrid => {
             setReactDataGrid(_ReactDataGrid);
             new Promise(r => setTimeout(r, 500)).then(() => {
                 document.querySelector('.react-grid-Container').classList.add('anim')
