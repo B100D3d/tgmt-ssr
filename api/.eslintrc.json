@@ -1,0 +1,29 @@
+{
+    "env": {
+        "node": true,
+		"es6": true,
+		"es2017": true
+	},
+    "extends": [
+		"eslint:recommended",
+		// Отключаем правила из базового набора
+		"plugin:@typescript-eslint/eslint-recommended",
+		// Базовые правила для TypeScript
+		"plugin:@typescript-eslint/recommended",
+		 // Правила TS, требующие инфо о типах
+		"plugin:@typescript-eslint/recommended-requiring-type-checking"
+	],
+	// Движок парсинга
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		// Движку нужен проект TS для правил с типами
+		"project": "./tsconfig-api.json",
+		"tsconfigRootDir": "../",
+		"ecmaFeatures": {
+			"jsx": true
+		}
+	},
+	// Плагин с наборами правил для TypeScript
+	"plugins": ["@typescript-eslint"],
+	"rules": {}
+}

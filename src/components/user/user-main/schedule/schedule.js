@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from "react";
-import ReactDataGrid from "react-data-grid";
+//import ReactDataGrid from "react-data-grid";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -129,14 +129,14 @@ const Schedule = () => {
                 </div>
             </div>
             <div className="schedule">
-                <ReactDataGrid
+                {/* <ReactDataGrid
                     columns={ columns }
                     rowGetter={ i => rows[i] }
                     rowsCount={ rows.length }
                     minWidth={ width }
                     minHeight={ height }
                     enableCellSelect={ true }
-                />
+                /> */}
             </div>
         </div>
     )
