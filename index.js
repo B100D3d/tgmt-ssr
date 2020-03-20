@@ -1,4 +1,3 @@
-var path = require("path")
 require("@babel/register")({
 
     ignore: [/node_modules/],

@@ -9,7 +9,7 @@ const COLORS = ["#B326FF", "#5F26FF", "#4106c9", "#29B6F6"]
 const getNewState = (value, title) => {
     if (title === 'Неделя') {
         const v = value === 2 ? null : !value
-        return { week: v }
+        return { even: v }
     } else {
         const v = value === 2 ? null : value + 1
         return { subgroup: v }
@@ -25,7 +25,7 @@ const generateId = (len = 2) => {
     return id;
 }
 
-const Switch = ({ val0, val1, title, isAdmin, state }) => {
+const Switch = ({ val0, val1, title, isAdmin, state, onClick }) => {
     const [colors, setColors] = useState(COLORS.slice(0, 2))
     const checkbox = useRef()
     const id = useRef(generateId())
@@ -60,6 +60,7 @@ const Switch = ({ val0, val1, title, isAdmin, state }) => {
         const [switchState, setSwitch] = state
         setSwitch({ ...switchState, ...newState })
         setColors([COLORS[value], COLORS[value+1]])
+        onClick()
     }
 
     return (

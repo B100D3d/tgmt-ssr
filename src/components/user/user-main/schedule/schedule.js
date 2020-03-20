@@ -1,5 +1,4 @@
 import React, { useEffect, useContext, useState } from "react";
-//import ReactDataGrid from "react-data-grid";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -41,53 +40,57 @@ const getRows = (schedule) => {
     }, [])
 }
 
-const getSchedule = async (group, subgroup, even) => {
-    const res = await axios.post('https://тгмт.рф/api/getSchedule', {
-        query: `{
-            getSchedule(groupID: "${ group }",
-                        subgroup: ${ subgroup },
-                        even: ${ even }) {
-                            classNumber
-                            weekday
-                            subject {
-                                id
-                                name
-                                teacher
-                            }
-                        }
-        }`
-    }, { withCredentials: true }) 
-    return res.data.data.getSchedule;
-}
-
 
 const Schedule = () => {
+
     const params = useParams();
 
     const [isOpen] = useContext(UserMenuOpenContext);
     const { user } = useContext(UserContext);
 
+    const [ReactDataGrid, setReactDataGrid] = useState();
     const [rows, setRows] = useState(DEFAULT_ROWS);
     const [width, setWidth] = useState();
-    const [height, setHeight] = useState();
-    const [switchState, setSwitch] = useState();
+    const [switchState, setSwitch] = useState({subgroup: 1, even: true});
     const [schedule, setSchedule] = useState(user.schedule);
     const windowSize = useWindowSize();
-    const group = user.group.id || params.group
+    const group = user.group ? user.group.id : params.group
 
     const isAdmin = user.role === 'Admin'
+
+    const getSchedule = async () => {
+        const { subgroup, even } = switchState
+
+        const res = await axios.post('https://тгмт.рф/api/getSchedule', {
+            query: `{
+                getSchedule(groupID: "${ group }",
+                            subgroup: ${ subgroup },
+                            even: ${ even }) {
+                                classNumber
+                                weekday
+                                subject {
+                                    id
+                                    name
+                                    teacher
+                                }
+                            }
+            }`
+        }, { withCredentials: true }) 
+        
+        return res.data.data.getSchedule;
+    }
     
     useEffect(() => {
-        setRows(getRows(schedule))
+        schedule && setRows(getRows(schedule))
     }, [schedule])
 
     useEffect(() => {
-        if (switchState) {
-            getSchedule(group, switchState.subgroup, switchState.week).then((s) => {
+        if (!user.schedule){
+            getSchedule(group, switchState).then((s) => {
                 setSchedule(s)
             })
         }
-    }, [switchState])
+    }, [])
 
     useEffect(() => {
         if (isOpen) {
@@ -96,12 +99,14 @@ const Schedule = () => {
         } else {
             setWidth(windowSize.width * 0.95)
         }
-        setHeight(document.querySelector('.schedule').clientHeight)
     }, [isOpen, windowSize])
 
     useEffect(() => {
-        new Promise(r => setTimeout(r, 500)).then(() => {
-            document.querySelector('.react-grid-Container').classList.add('anim')
+        ReactDataGrid && import("react-data-grid").then(_ReactDataGrid => {
+            setReactDataGrid(_ReactDataGrid);
+            new Promise(r => setTimeout(r, 500)).then(() => {
+                document.querySelector('.react-grid-Container').classList.add('anim')
+            })
         })
     }, [])
 
@@ -123,20 +128,19 @@ const Schedule = () => {
             <div className='buttons-container'>
                 <div className='switch-container'>
                     <Switch val0='Чет' val1='Неч' title='Неделя' isAdmin={ isAdmin }
-                         state={ [switchState, setSwitch] } />
+                         state={ [switchState, setSwitch] } onClick={getSchedule} />
                     <Switch val0='&nbsp;&nbsp;1' val1='&nbsp;&nbsp;2' title='Подгруппа' isAdmin={ isAdmin }
-                         state={ [switchState, setSwitch] } />
+                         state={ [switchState, setSwitch] } onClick={getSchedule} />
                 </div>
             </div>
             <div className="schedule">
-                {/* <ReactDataGrid
+                {ReactDataGrid && <ReactDataGrid.default
                     columns={ columns }
                     rowGetter={ i => rows[i] }
                     rowsCount={ rows.length }
                     minWidth={ width }
-                    minHeight={ height }
                     enableCellSelect={ true }
-                /> */}
+                />}
             </div>
         </div>
     )
