@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, useState } from "react";
+import React, { useEffect, useContext, useState, useRef } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
@@ -40,6 +40,27 @@ const getRows = (schedule) => {
     }, [])
 }
 
+const getSchedule = async (group, { subgroup, even }) => {
+
+    const res = await axios.post('https://тгмт.рф/api/getSchedule', {
+        query: `{
+            getSchedule(groupID: "${ group }",
+                        subgroup: ${ subgroup },
+                        even: ${ even }) {
+                            classNumber
+                            weekday
+                            subject {
+                                id
+                                name
+                                teacher
+                            }
+                        }
+        }`
+    }, { withCredentials: true }) 
+
+    return res.data.data.getSchedule;
+}
+
 
 const Schedule = () => {
 
@@ -48,36 +69,28 @@ const Schedule = () => {
     const [isOpen] = useContext(UserMenuOpenContext);
     const { user } = useContext(UserContext);
 
+    const isAdmin = user.role === 'Admin'
+    const group = user.group ? user.group.id : params.group;
+
     const [ReactDataGrid, setReactDataGrid] = useState();
     const [rows, setRows] = useState(DEFAULT_ROWS);
     const [width, setWidth] = useState();
-    const [switchState, setSwitch] = useState({subgroup: 1, even: true});
+    const [switchState, setSwitch] = useState({});
     const [schedule, setSchedule] = useState(user.schedule);
+    const timestamp = useRef();
+
     const windowSize = useWindowSize();
-    const group = user.group ? user.group.id : params.group
 
-    const isAdmin = user.role === 'Admin'
-
-    const getSchedule = async () => {
-        const { subgroup, even } = switchState
-
-        const res = await axios.post('https://тгмт.рф/api/getSchedule', {
-            query: `{
-                getSchedule(groupID: "${ group }",
-                            subgroup: ${ subgroup },
-                            even: ${ even }) {
-                                classNumber
-                                weekday
-                                subject {
-                                    id
-                                    name
-                                    teacher
-                                }
-                            }
-            }`
-        }, { withCredentials: true }) 
-
-        return res.data.data.getSchedule;
+    const handleSchedule = async () => {
+        timestamp.current = new Date().getTime();
+        const localTimestamp = timestamp.current;
+        await new Promise(r => setTimeout(r, 500));
+        if (localTimestamp === timestamp.current) {
+            try {
+                const s = await getSchedule(group, switchState);
+                setSchedule(s)
+            } catch(err) {}
+        }
     }
     
     useEffect(() => {
@@ -85,10 +98,18 @@ const Schedule = () => {
     }, [schedule])
 
     useEffect(() => {
-        if (!user.schedule){
-            getSchedule(group, switchState).then((s) => {
+        if(Object.keys(switchState).length) {
+            handleSchedule()
+        } else {
+            getSchedule(group, { even: true, subgroup: 1 }).then((s) => {
                 setSchedule(s)
             })
+        }
+    }, [switchState])
+
+    useEffect(() => {
+        if (!user.schedule){
+            handleSchedule()
         }
     }, [])
 
@@ -128,9 +149,9 @@ const Schedule = () => {
             <div className='buttons-container'>
                 <div className='switch-container'>
                     <Switch val0='Чет' val1='Неч' title='Неделя' isAdmin={ isAdmin }
-                         state={ [switchState, setSwitch] } onClick={getSchedule} />
+                         state={ [switchState, setSwitch] } />
                     <Switch val0='&nbsp;&nbsp;1' val1='&nbsp;&nbsp;2' title='Подгруппа' isAdmin={ isAdmin }
-                         state={ [switchState, setSwitch] } onClick={getSchedule} />
+                         state={ [switchState, setSwitch] } />
                 </div>
             </div>
             <div className="schedule">

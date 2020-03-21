@@ -1,6 +1,7 @@
 import React from 'react';
+import useStyles from 'isomorphic-style-loader/useStyles'
 
-import './about.sass';
+import s from './about.sass';
 import tgmt from './tgmt.webp';
 import OpenButton from '../open-button/open-button';
 
@@ -15,9 +16,10 @@ const handleClick = el => {
 }
 
 const About = () => {
+    useStyles(s);
     return (
         <>
-            <div className="about">
+            <div className={s.about}>
                 <h2>
                     О техникуме
                 </h2>

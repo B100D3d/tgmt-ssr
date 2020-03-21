@@ -5,6 +5,7 @@ import './switch.sass';
 
 const COLOR_NAME = `--color-`
 const COLORS = ["#B326FF", "#5F26FF", "#4106c9", "#29B6F6"]
+const DEFAULT_SWITCH_STATE = { even: true, subgroup: 1 }
 
 const getNewState = (value, title) => {
     if (title === 'Неделя') {
@@ -58,9 +59,8 @@ const Switch = ({ val0, val1, title, isAdmin, state, onClick }) => {
         const value = +el.value
         const newState = getNewState(value, title)
         const [switchState, setSwitch] = state
-        setSwitch({ ...switchState, ...newState })
+        setSwitch({ ...DEFAULT_SWITCH_STATE, ...switchState, ...newState })
         setColors([COLORS[value], COLORS[value+1]])
-        onClick()
     }
 
     return (

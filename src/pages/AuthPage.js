@@ -1,15 +1,15 @@
 import React from 'react';
-import MetaTag from 'react-meta-tags';
+import Helmet from 'react-helmet';
 
 import useAuth from '../hooks/useAuth.hook';
 
 const AuthPage = () => (    
     <>
-        <MetaTag>
+        <Helmet>
             <meta name="description" content="Личный кабинет Туапсинского Гидрометеорологического Техникума" />
             <meta name="keywords" content="ТГМТ, тгмт, туапсинский гидрометеорологический техникум, личный кабинет тгмт" />
             <title>Личный кабинет | ТГМТ</title>
-        </MetaTag>
+        </Helmet>
         { useAuth() }    
     </>
 )
