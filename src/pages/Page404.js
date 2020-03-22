@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Lottie from 'react-lottie';
 
-import anim from '../img/404page.json';
+import anim from '/static/404page.json';
 
 const Page404 = () => {
     const [defaultOptions, setDefaultOptions] = useState({});

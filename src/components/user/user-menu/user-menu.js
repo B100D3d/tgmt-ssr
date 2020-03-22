@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import './user-menu.sass';
 import { UserContext } from '../../../context'
-import logout from './logout.svg';
+import logout from '/static/logout.svg';
 import AdminList from './admin-list/admin-list';
 import StudentList from './student-list/student-list';
 import TeachertList from './teacher-list/teacher-list';

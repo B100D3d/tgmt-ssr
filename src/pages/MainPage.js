@@ -1,5 +1,5 @@
 import React from 'react';
-import Loadable from 'react-loadable';
+import loadable from '@loadable/component';
 
 import Helmet from 'react-helmet';
 import Slider from 'react-awesome-slider';
@@ -11,19 +11,16 @@ import Resources from '../components/resources/resources';
 
 import useStyles from 'isomorphic-style-loader/useStyles'
 
-import bg from '../img/1.jpg';
+import bg from '/static/1.jpg';
 import Footer from '../components/footer/footer';
 import s from 'react-awesome-slider/src/styles';
 
-const About = Loadable({
-    loader: () => import('../components/about/about'),
-    loading: () => (<></>)
-})
+const About = loadable(() => import('../components/about/about'))
 
 const AutoplaySlider = withAutoplay(Slider)
 
 const MainPage = () => {
-    useStyles(s)
+    //useStyles(s)
     return (
         <>
             <Helmet>

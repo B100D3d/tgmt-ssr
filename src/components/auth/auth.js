@@ -4,11 +4,11 @@ import axios from 'axios';
 import cogoToast from 'cogo-toast';
 
 import './auth.sass';
-import back from './previous.svg';
+import back from '/static/previous.svg';
 import RainbowButton from '../rainbow-button/rainbow-button';
 import { UserContext } from '../../context';
 
-import bublik from './bublik.webp';
+import bublik from '/static/bublik.webp';
 
 
 const styles = {

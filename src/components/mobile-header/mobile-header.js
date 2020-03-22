@@ -1,7 +1,7 @@
 import React from 'react';
 
 import './mobile-header.sass';
-import logo from './logo.webp';
+import logo from '/static/logo.webp';
 import BurgerMenu from '../burger-menu/burger-menu';
 
 

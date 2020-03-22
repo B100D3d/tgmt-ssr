@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 import Search from '../../search/search';
 import './header-top.sass';
-import eye from './eye.svg';
-import student from './student.svg';
+import eye from '/static/eye.svg';
+import student from '/static/student.svg';
 import RainbowButton from '../../rainbow-button/rainbow-button';
 
 
