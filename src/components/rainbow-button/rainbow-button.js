@@ -1,6 +1,6 @@
 import React from 'react';
 
-import useRainbow from '../../hooks/useRainbow.hook';
+import useRainbow from '/hooks/useRainbow.hook';
 
 const RainbowButton = ({ className, interval, children, onClick }) => {
 

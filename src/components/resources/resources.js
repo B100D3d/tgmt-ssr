@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import loadable from '@loadable/component'
+
+const OpenButton = loadable(() => import('/components/open-button/open-button')) 
 
 import './resources.sass';
-import OpenButton from '../open-button/open-button';
 
 
 const getResources = async () => {
@@ -18,25 +20,26 @@ const getResources = async () => {
     return query.data.data.resources;
 }
 
-const handleClick = el => {
-    document.querySelector('.resources')
-        .style.maxHeight = '5000px';
-
-    el.currentTarget.style.display = 'none';
-}
-
 const Resources = () => {
 
     const [res, setRes] = useState([])
+    const resRef = useRef()
+
     useEffect(() => {
         getResources().then(data => {
             setRes(data);
         })       
     }, [])
 
+    const handleClick = el => {
+        resRef.current.style.maxHeight = '5000px';
+    
+        el.currentTarget.style.display = 'none';
+    }
+
     return (
         <>
-            <div className="resources">
+            <div className="resources" ref={ resRef }>
                 <h1>Полезные ресурсы</h1>
                 <ul>
                     {res.map((data, key) => {

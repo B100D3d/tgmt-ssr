@@ -2,6 +2,10 @@
 const path = require("path")
 
 const Dotenv = require("dotenv-webpack")
+const LoadableWebpackPlugin = require('@loadable/webpack-plugin')
+const LoadableBabelPlugin = require('@loadable/babel-plugin')
+const NullishCoalescingBabelPlugin = require("@babel/plugin-proposal-nullish-coalescing-operator")
+const babelPresetRazzle = require('razzle/babel')
 
 
 module.exports = {
@@ -16,11 +20,39 @@ module.exports = {
 
         ///////////// PLUGINS //////////////////////////
         config.plugins.push(new Dotenv())
+
+        if(!isServer) {
+            const filename = path.resolve(__dirname, 'build')
+            config.plugins.push(
+                new LoadableWebpackPlugin({
+                    outputAsset: false,
+                    writeToDisk: { filename },
+                })
+            )
+
+            config.output.filename = dev
+                ? 'static/js/[name].js'
+                : 'static/js/[name].[chunkhash:8].js'
+
+            config.node = { fs: 'empty' }
+
+            config.optimization = Object.assign({}, config.optimization, {
+                runtimeChunk: true,
+                splitChunks: {
+                  chunks: 'all',
+                  name: dev,
+                },
+            })
+        }
         ///////////////////////////////////////////////
 
         ///////////// ALIAS /////////////////////////////////
         config.resolve.alias = {
             "/static": path.resolve(__dirname, "src/static"),
+            "/pages": path.resolve(__dirname, "src/pages"),
+            "/components": path.resolve(__dirname, "src/components"),
+            "/context": path.resolve(__dirname, "src/context"),
+            "/hooks": path.resolve(__dirname, "src/hooks")
         }
         ///////////////////////////////////////////////
 
@@ -58,6 +90,12 @@ module.exports = {
         
     
         return config;
-      }
+      },
+
+      modifyBabelOptions: () => ({
+        babelrc: false,
+        presets: [babelPresetRazzle],
+        plugins: [LoadableBabelPlugin, NullishCoalescingBabelPlugin],
+      }),
     
 };

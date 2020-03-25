@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 import aliceLogo from '/static/alice-logo.svg';
 import './search.sass';
 

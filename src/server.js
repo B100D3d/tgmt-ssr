@@ -2,14 +2,18 @@ import App from './components/app/app'
 import React from 'react'
 import Helmet from 'react-helmet'
 import { StaticRouter } from 'react-router-dom'
+import { matchPath } from "react-router"
 import { renderToString } from 'react-dom/server'
+import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'
+import { html as htmlTemplate, oneLineTrim } from 'common-tags'
+
+import routes from "../dist/routes"
 
 import express from 'express'
 import cors from "cors"
-import fs from "fs"
+import bodyParser from "body-parser"
+import cookieParser from "cookie-parser"
 import path from "path"
-
-const assets = require(process.env.RAZZLE_ASSETS_MANIFEST);
 
 const app = express();
 
@@ -21,48 +25,99 @@ app.use(cors({
     methods: ["GET", "POST"],
     allowedHeaders: "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Origin"
 }))
+app.use(bodyParser.json())
+app.use(cookieParser())
 
 app
   .disable('x-powered-by')
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
-  .get('/*', (req, res) => {
+  .get('/*', async (req, res) => {
 
 	const staticContext = {}
-	const indexFile = path.resolve(__dirname, "../index.html")
 
+	const extractor = new ChunkExtractor({
+		statsFile: path.resolve('build/loadable-stats.json'),
+		entrypoints: ['client'],
+	})
+
+	let promise
+	routes.some(route => {
+		const match = matchPath(req.url, route)
+		if(match && route.loadData) promise = route.loadData()
+		return match
+	})
+	const data = await promise
 
     const markup = renderToString(
-      <StaticRouter context={ staticContext } location={ req.url }>
-        <App />
-      </StaticRouter>
+		<ChunkExtractorManager extractor={ extractor }> 
+			<StaticRouter context={ staticContext } location={ req.url }>
+				<App data={ data }/>
+			</StaticRouter>
+	  	</ChunkExtractorManager>
 	);
 	
 	const helmet = Helmet.renderStatic()
 
 	const status = staticContext.statusCode || 200
 
-	fs.readFile(indexFile, "utf8", (err, html) => {
-		if(err) {
-            console.log(err)
-		}
-		
+	const html = await getHtml(markup, extractor, helmet)
 
-		html = html.replace(`__HELMET__`, `${helmet.title.toString()}${helmet.meta.toString()}`)
-        html = html.replace(`__CSS__`, `${
-			assets.client.css
-			? `<link rel="stylesheet" href="${assets.client.css}">`
-			: ''
-		}`)
-		html = html.replace(`__ROOT__`, markup)
-		html = html.replace(`__SCRIPT__`, `${
-			process.env.NODE_ENV === 'production'
-			? `<script src="${assets.client.js}" defer></script>`
-			: `<script src="${assets.client.js}" defer crossorigin></script>`
-		}`)
-
-
-		res.status(status).send(html)
-	})
+	res.status(status).send(html)
 })
 
 export default app;
+
+
+
+const getHtml = async (markup, extractor, helmet) => {
+	const styles = await extractor.getInlineStyleTags()
+	return oneLineTrim(htmlTemplate`
+	<!DOCTYPE html>
+	<html lang="ru">
+	  <head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		${helmet.title.toString()}
+		${helmet.meta.toString()}
+		${styles}
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+		<link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700&display=swap&subset=cyrillic" rel="stylesheet">
+	</head>
+	  <body>
+		<div id="root">${markup}</div>
+		${extractor.getScriptTags()}
+		 <!-- Yandex.Metrika counter -->
+		 <script type="text/javascript">
+		  (function (m, e, t, r, i, k, a) {
+		  m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
+			m[i].l = 1 * new Date(); k = e.createElement(t), a = e.getElementsByTagName(t)[0],
+			k.async = 1, k.src = r, a.parentNode.insertBefore(k, a)
+		  })
+			(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+	
+		  ym(56458561, "init", {
+			clickmap: true,
+			trackLinks: true,
+			accurateTrackBounce: true
+		  });
+		</script>
+		<noscript>
+		  <div><img src="https://mc.yandex.ru/watch/56458561" style="position:absolute; left:-9999px;"
+			alt="" /></div>
+		</noscript>
+		<!-- /Yandex.Metrika counter -->
+	
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158657926-1"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag() { dataLayer.push(arguments); }
+		  gtag('js', new Date());
+	
+		  gtag('config', 'UA-158657926-1');
+		</script>
+		<noscript>You need to enable JavaScript to run this app.</noscript>
+	  </body>
+	</html>	
+	`)
+}

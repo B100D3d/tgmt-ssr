@@ -38,32 +38,15 @@ a
     height: 100%
     margin: 0 auto
 
-.news
-    position: relative
-    width: 100%
-    height: 600px
-    box-sizing: border-box   
-    margin-top: -210px
-    z-index: 0 
-    
-
-    &.awssld
-        --content-background-color: transparent
-        --organic-arrow-color: #ffffff
-        --control-bullet-color: #ffffff59
-        --control-bullet-active-color: #ffffff
+.awssld
+    --content-background-color: transparent !important
+    --organic-arrow-color: #ffffff !important
+    --control-bullet-color: #ffffff59 !important
+    --control-bullet-active-color: #ffffff !important
 
     .awssld__bullets
-        bottom: 50px
-        z-index: 1000
-
-    .slide
-        width: 100%
-        height: 100%
-
-        *
-            width: 100%
-            height: 100%
+        bottom: 50px !important
+        z-index: 1000 !important
 
 .react-grid-Container 
     background-color: transparent
@@ -107,21 +90,7 @@ a
 #root
     min-height: 100vh
 
-@media (max-width: 1064px)
-    .news
-        margin-top: -20px
-        height: 350px
 
 @media (max-width: 700px)
-    .news .awssld__bullets
-            bottom: -40px
-
-@media (max-width: 550px)
-    .news
-        margin-top: -5px
-        height: 250px
-
-
-@media (max-width: 400px)
-    .news
-        height: 200px
+    .awssld .awssld__bullets
+            bottom: -40px !important

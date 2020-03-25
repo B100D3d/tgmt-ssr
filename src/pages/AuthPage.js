@@ -1,7 +1,8 @@
-import React from 'react';
-import Helmet from 'react-helmet';
+import React from 'react'
+import Helmet from 'react-helmet'
+import loadable from '@loadable/component'
 
-import useAuth from '../hooks/useAuth.hook';
+import useAuth from '/hooks/useAuth.hook'
 
 const AuthPage = () => (    
     <>

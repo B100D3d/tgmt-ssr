@@ -5,7 +5,7 @@ import UserHeader from './user-header/user-header';
 import UserMenu from './user-menu/user-menu';
 import UserMain from './user-main/user-main';
 
-import { UserMenuOpenContext } from '../../context';
+import { UserMenuOpenContext } from '/context';
 
 
 const User = () => {

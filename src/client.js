@@ -1,16 +1,21 @@
 import React from 'react'
 import { BrowserRouter } from 'react-router-dom'
-import ReactDOM from 'react-dom'
+import { hydrate } from 'react-dom'
+import { loadableReady } from '@loadable/component'
 
 import App from "./components/app/app"
 
 import './client.sass'
 
-ReactDOM.hydrate(
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>,
-document.getElementById('root'))
+const root = document.getElementById('root')
+const jsx = (
+	<BrowserRouter>
+		<App />
+	</BrowserRouter>
+)
+
+loadableReady(() => hydrate(jsx, root))
+
 
 if (module.hot) {
   module.hot.accept()

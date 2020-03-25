@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import loadable from '@loadable/component';
 
-import Loading from '../components/loading/loading';
-import Auth from '../components/auth/auth';
 import { UserContext } from '../context/index';
-import User from '../components/user/user';
+
+const Loading = loadable(() => import('/components/loading/loading'))
+const Auth = loadable(() => import('/components/auth/auth'))
+const User = loadable(() => import('/components/user/user')) 
+
 
 const styles = {
     display: 'flex',
@@ -80,8 +83,8 @@ const useAuth = () => {
 
     useEffect(() => {
         auth()
-            .then(auth => {
-                setUser(auth)
+            .then(userData => {
+                setUser(userData)
                 setLoading(false)
             })
             .catch(error => {

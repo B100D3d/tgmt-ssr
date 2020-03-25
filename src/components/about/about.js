@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import loadable from '@loadable/component'
+
+const OpenButton = loadable(() => import('/components/open-button/open-button')) 
 
 import s from './about.module.sass';
 import tgmt from '/static/tgmt.webp';
-import OpenButton from '../open-button/open-button';
 
 import { t, text } from './text.js';
 
-
-const handleClick = el => {
-    document.querySelector('.about')
-    .style.maxHeight = '5000px';
-
-    el.currentTarget.style.display = 'none';
-}
-
 const About = () => {
+    const aboutEl = useRef()
+
+    const handleClick = el => {
+        aboutEl.current.style.maxHeight = '5000px';
+    
+        el.currentTarget.style.display = 'none';
+    }
+
     return (
         <>
-            <div className={s.about}>
+            <div className={s.about} ref={ aboutEl }>
                 <h2>
                     О техникуме
                 </h2>

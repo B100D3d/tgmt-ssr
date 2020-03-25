@@ -1,20 +1,14 @@
 import React from 'react';
-
 import Helmet from 'react-helmet';
-import Slider from 'react-awesome-slider';
-import withAutoplay from 'react-awesome-slider/dist/autoplay';
+import loadable from '@loadable/component'
 
-import Header from '../components/header/header';
-import MobileHeader from '../components/mobile-header/mobile-header';
-import Resources from '../components/resources/resources';
+const Header = loadable(() => import('/components/header/header'))
+const MobileHeader = loadable(() => import('/components/mobile-header/mobile-header')) 
+const Resources = loadable(() => import('/components/resources/resources'))
+const Footer = loadable(() => import('/components/footer/footer'))
+const About = loadable(() => import('/components/about/about'))
+const News = loadable(() => import('/components/news/news'))
 
-import bg from '/static/1.jpg';
-import Footer from '../components/footer/footer';
-import s from 'react-awesome-slider/src/core/styles.scss';
-
-import About from '../components/about/about'
-
-const AutoplaySlider = withAutoplay(Slider)
 
 const MainPage = () => {
     return (
@@ -27,22 +21,7 @@ const MainPage = () => {
             <Header />
             <MobileHeader />
             <main id="wrap">
-                <AutoplaySlider
-                    cssModule={s}
-                    play={ true }
-                    cancelOnInteraction={ true }
-                    interval={ 5000 }
-                    className="news">
-                        <div className="slide">
-                            <img src={ bg } alt="bg" />
-                        </div>
-                        <div className="slide">
-                            <img src={ bg } alt="bg" />
-                        </div>
-                        <div className="slide">
-                            <img src={ bg } alt="bg" />
-                        </div>
-                </AutoplaySlider>
+                <News />
                 <About />
                 <Resources />
                 <Footer />

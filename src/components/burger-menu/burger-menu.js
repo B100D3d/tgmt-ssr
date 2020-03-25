@@ -1,17 +1,19 @@
 import React, { useContext } from 'react';
 import { elastic as Menu } from 'react-burger-menu';
 import { Link } from 'react-router-dom';
+import loadable from '@loadable/component';
 
-import { WeekContext } from '../../context';
+import { WeekContext } from '/context';
 
-import Search from '../search/search';
+import Search from '/components/search/search';
+const RainbowButton = loadable(() => import('/components/rainbow-button/rainbow-button'))
 
 import './burger-menu.sass';
+
 import logo from '/static/logo.webp';
 import burger from '/static/burger.svg';
 import close from '/static/cross.svg';
 import student from '/static/student.svg';
-import RainbowButton from '../rainbow-button/rainbow-button';
 
 
 const styles = {

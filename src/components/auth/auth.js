@@ -1,15 +1,17 @@
 import React, { useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import cogoToast from 'cogo-toast';
+import loadable from '@loadable/component';
+const cogoToast = loadable(() => import('cogo-toast')) 
 
-import './auth.sass';
-import back from '/static/previous.svg';
-import RainbowButton from '../rainbow-button/rainbow-button';
-import { UserContext } from '../../context';
+import { UserContext } from '/context';
+
+const RainbowButton = loadable(() => import('/components/rainbow-button/rainbow-button')) 
 
 import bublik from '/static/bublik.webp';
+import back from '/static/previous.svg';
 
+import './auth.sass';
 
 const styles = {
     background: `url(${ bublik })`,
