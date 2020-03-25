@@ -1,22 +1,45 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom'
-import ReactDOM from 'react-dom';
-import StyleContext from 'isomorphic-style-loader/StyleContext'
+import https from 'https';
+import dotenv from "dotenv"
+import fs from "fs"
+import path from "path"
 
-import App from "./components/app/app"
+const sslDir = "/etc/ssl";
 
-import './index.sass';
+dotenv.config()
 
-const insertCss = (...styles) => {
-    const removeCss = styles.map(style => style._insertCss())
-    return () => removeCss.forEach(dispose => dispose())
+let app = require('./server').default;
+const port = process.env.PORT
+
+const server = +process.env.HTTPS
+	  ? https.createServer({
+		    cert: fs.readFileSync(path.join(sslDir, "tgmt.crt")),
+        key: fs.readFileSync(path.join(sslDir, "tgmt.key"))
+	  }, app)
+	  : app
+
+let currentApp = app;
+
+server.listen(port, error => {
+  if (error) {
+    console.log(error);
+  }
+
+  console.log('🚀 started');
+});
+
+if (module.hot) {
+  console.log('✅  Server-side HMR Enabled!');
+
+  module.hot.accept('./server', () => {
+    console.log('🔁  HMR Reloading `./server`...');
+
+    try {
+      app = require('./server').default;
+      server.removeListener('request', currentApp);
+      server.on('request', app);
+      currentApp = app;
+    } catch (error) {
+      console.error(error);
+    }
+  });
 }
-
-
-ReactDOM.hydrate(
-    <StyleContext.Provider value={{ insertCss }}>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </StyleContext.Provider>, 
-document.getElementById('root'));

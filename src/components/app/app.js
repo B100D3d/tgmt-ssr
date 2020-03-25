@@ -36,7 +36,6 @@ const App = () => {
     },[])
 
     return (
-        <>
             <WeekContext.Provider value={{ date, weekNumber, even }}>
                     <Switch>
                         <Route exact path='/' component={ MainPage } />
@@ -48,7 +47,6 @@ const App = () => {
                         }} />
                     </Switch>
             </WeekContext.Provider>    
-        </>
     )
 }
         

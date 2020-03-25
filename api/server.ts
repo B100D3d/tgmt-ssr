@@ -1,4 +1,3 @@
-/* eslint-disable import/first */
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import cors from "cors"
@@ -12,9 +11,8 @@ import https from "https"
 import path from "path"
 import db from "./Model/mongodb"
 import apiRouter from "./routes/apiRouter"
-import reactRouter from "./routes/reactRouter"
 
-const sslDir = "../../../../etc/ssl/";
+const sslDir = "/etc/ssl";
 
 const app = express()
 const port = process.env.API_PORT
@@ -29,9 +27,7 @@ app.use(cors({
 }))
 app.use(bodyParser.json())
 app.use(cookieParser())
-app.use("/static", express.static(path.join(__dirname, "../build/static")))
 app.use("/api", apiRouter)
-app.use("/", reactRouter)
 
 
 

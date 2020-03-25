@@ -1,5 +1,4 @@
 import React from 'react';
-import useStyles from 'isomorphic-style-loader/useStyles'
 
 import s from './about.module.sass';
 import tgmt from '/static/tgmt.webp';
@@ -16,7 +15,6 @@ const handleClick = el => {
 }
 
 const About = () => {
-    useStyles(s);
     return (
         <>
             <div className={s.about}>

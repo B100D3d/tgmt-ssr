@@ -17,8 +17,8 @@
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		// Движку нужен проект TS для правил с типами
-		"project": "./tsconfig-api.json",
-		"tsconfigRootDir": "../",
+		"project": "./tsconfig.json",
+		"tsconfigRootDir": ".",
 		"ecmaFeatures": {
 			"jsx": true
 		}

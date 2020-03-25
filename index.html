@@ -3,13 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>ТГМТ</title>
+    __HELMET__
+    __CSS__
     <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700&display=swap&subset=cyrillic" rel="stylesheet">
 </head>
   <body>
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
+    <div id="root">__ROOT__</div>
+    __SCRIPT__
+     <!-- Yandex.Metrika counter -->
+     <script type="text/javascript">
       (function (m, e, t, r, i, k, a) {
       m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
         m[i].l = 1 * new Date(); k = e.createElement(t), a = e.getElementsByTagName(t)[0],
@@ -39,6 +42,5 @@
       gtag('config', 'UA-158657926-1');
     </script>
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
   </body>
 </html>
