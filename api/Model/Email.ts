@@ -73,7 +73,7 @@ export const sendLoginEmail = async (name: string, email: string, role: string, 
         attachments: [
             {
                 filename: "logo_back.webp",
-                path: path.join(__dirname, "/EmailTemplates/static/logo_back.webp"),
+                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
                 cid: "logo"
             }
         ]
