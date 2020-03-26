@@ -7,9 +7,9 @@ export default [
         exact: true,
         loadData: async (): Promise<any> => {
             const week = resolver.mainPageResolver.week()
-            const resources = await resolver.mainPageResolver.resources()
+            //const resources = await resolver.mainPageResolver.resources()
 
-            return new Promise(resolve => resolve({ week, resources }))
+            return { week }
         }
     },
     {

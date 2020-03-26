@@ -16,7 +16,7 @@ const News = () => (
         cssModule={ sliderS }
         play={ true }
         cancelOnInteraction={ true }
-        interval={ 5000 }
+        interval={ 8000 }
         className={ s.news }>
             <div className={ s.slide }>
                 <img src={ bg } alt="bg" />

@@ -2,7 +2,7 @@ import React, { useRef, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import loadable from '@loadable/component';
-const cogoToast = loadable(() => import('cogo-toast')) 
+import cogoToast from 'cogo-toast'
 
 import { UserContext } from '/context';
 
@@ -98,7 +98,6 @@ const Auth = () => {
                 setError(false)
             })
             .catch(error => {
-                console.log(error.response)
                 if (error.response.status === 403) {
                     hide()
                     cogoToast.error('Неверный логин или пароль.', { position: 'top-right' })
