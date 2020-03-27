@@ -26,11 +26,11 @@ const Resources = () => {
 
     const data = useContext(InitialDataContext)
 
-    const [res, setRes] = useState(data.resources)
+    const [res, setRes] = useState(data.resources || [])
     const resRef = useRef()
 
     useEffect(() => {
-        
+
         !data.resources && getResources().then(data => setRes(data))
 
     }, [])
