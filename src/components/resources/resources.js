@@ -1,8 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import loadable from '@loadable/component'
 
 const OpenButton = loadable(() => import('/components/open-button/open-button')) 
+
+import { InitialDataContext } from "/context"
 
 import './resources.sass';
 
@@ -22,13 +24,15 @@ const getResources = async () => {
 
 const Resources = () => {
 
-    const [res, setRes] = useState([])
+    const data = useContext(InitialDataContext)
+
+    const [res, setRes] = useState(data.resources)
     const resRef = useRef()
 
     useEffect(() => {
-        getResources().then(data => {
-            setRes(data);
-        })       
+        
+        !data.resources && getResources().then(data => setRes(data))
+
     }, [])
 
     const handleClick = el => {

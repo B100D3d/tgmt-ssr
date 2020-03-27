@@ -1,12 +1,14 @@
 import React, { useEffect, useContext, useState, useRef } from "react";
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import loadable from "@loadable/component"
 
 import './schedule.sass';
 
-import { UserMenuOpenContext, UserContext } from '../../../../context';
-import useWindowSize from '../../../../hooks/useWindowSize.hook'
+import { UserMenuOpenContext, UserContext } from '/context';
+import useWindowSize from '/hooks/useWindowSize.hook'
 import Switch from "./switch/switch";
+const ReactDataGrid = loadable(() => import("react-data-grid"))
 
 
 const DEFAULT_SCHEDULE_ITEM = {
@@ -70,9 +72,8 @@ const Schedule = () => {
     const { user } = useContext(UserContext);
 
     const isAdmin = user.role === 'Admin'
-    const group = user.group ? user.group.id : params.group;
+    const group = user.group?.id || params.group;
 
-    const [ReactDataGrid, setReactDataGrid] = useState();
     const [rows, setRows] = useState(DEFAULT_ROWS);
     const [width, setWidth] = useState();
     const [switchState, setSwitch] = useState({});
@@ -100,18 +101,12 @@ const Schedule = () => {
     useEffect(() => {
         if(Object.keys(switchState).length) {
             handleSchedule()
-        } else {
+        } else if(!user.schedule) {
             getSchedule(group, { even: true, subgroup: 1 }).then((s) => {
                 setSchedule(s)
             })
         }
     }, [switchState])
-
-    useEffect(() => {
-        if (!user.schedule){
-            handleSchedule()
-        }
-    }, [])
 
     useEffect(() => {
         if (isOpen) {
@@ -123,11 +118,8 @@ const Schedule = () => {
     }, [isOpen, windowSize])
 
     useEffect(() => {
-        import("react-data-grid").then(_ReactDataGrid => {
-            setReactDataGrid(_ReactDataGrid);
-            new Promise(r => setTimeout(r, 500)).then(() => {
-                document.querySelector('.react-grid-Container').classList.add('anim')
-            })
+        new Promise(r => setTimeout(r, 500)).then(() => {
+            document.querySelector('.react-grid-Container').classList.add('anim')
         })
     }, [])
 
@@ -155,13 +147,13 @@ const Schedule = () => {
                 </div>
             </div>
             <div className="schedule">
-                {ReactDataGrid && <ReactDataGrid.default
+                <ReactDataGrid
                     columns={ columns }
                     rowGetter={ i => rows[i] }
                     rowsCount={ rows.length }
                     minWidth={ width }
                     enableCellSelect={ true }
-                />}
+                />
             </div>
         </div>
     )

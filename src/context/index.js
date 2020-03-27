@@ -1,9 +1,11 @@
 import React from 'react';
 
-const WeekContext = React.createContext();
+const InitialDataContext = React.createContext()
 
-const UserContext = React.createContext();
+const WeekContext = React.createContext()
 
-const UserMenuOpenContext = React.createContext();
+const UserContext = React.createContext()
 
-export { WeekContext, UserContext, UserMenuOpenContext };
+const UserMenuOpenContext = React.createContext()
+
+export { WeekContext, UserContext, UserMenuOpenContext, InitialDataContext }

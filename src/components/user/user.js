@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import loadable from '@loadable/component';
 
-import './user.sass';
-import UserHeader from './user-header/user-header';
-import UserMenu from './user-menu/user-menu';
-import UserMain from './user-main/user-main';
+const UserHeader = loadable(() => import('./user-header/user-header')) 
+const UserMenu = loadable(() => import('./user-menu/user-menu')) 
+const UserMain = loadable(() => import('./user-main/user-main')) 
 
 import { UserMenuOpenContext } from '/context';
+
+import './user.sass';
 
 
 const User = () => {

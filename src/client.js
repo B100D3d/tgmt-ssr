@@ -7,10 +7,13 @@ import App from "./components/app/app"
 
 import './client.sass'
 
+const data = window.__INITIAL_DATA__
+delete window.__INITIAL_DATA__
+
 const root = document.getElementById('root')
 const jsx = (
 	<BrowserRouter>
-		<App />
+		<App data={ data }/>
 	</BrowserRouter>
 )
 

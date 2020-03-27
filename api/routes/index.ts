@@ -7,12 +7,26 @@ export default [
         exact: true,
         loadData: async (): Promise<any> => {
             const week = resolver.mainPageResolver.week()
-            //const resources = await resolver.mainPageResolver.resources()
+            const resources = await resolver.mainPageResolver.resources()
 
+            return { week, resources }
+        }
+    },
+    {
+        path: "/user",
+        exact: true,
+        loadData: async (): Promise<any> => {
+            const week = resolver.mainPageResolver.week()
+           
             return { week }
         }
     },
     {
-        path: "/user"
+        path: "/user/settings",
+        loadData: async (): Promise<any> => {
+            const week = resolver.mainPageResolver.week()
+
+            return { week }
+        }
     }
 ]

@@ -33,6 +33,8 @@ app
   .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
   .get('/*', async (req, res) => {
 
+	const ua = req.headers["user-agent"]
+
 	const staticContext = {}
 
 	const extractor = new ChunkExtractor({
@@ -60,16 +62,15 @@ app
 
 	const status = staticContext.statusCode || 200
 
-	const html = await getHtml(markup, extractor, helmet)
+	const html = await getHtml(markup, extractor, helmet, data, ua)
 
 	res.status(status).send(html)
 })
 
 export default app;
 
-
-
-const getHtml = async (markup, extractor, helmet) => {
+const getHtml = async (markup, extractor, helmet, initialData, ua) => {
+	const isCrawler = crawlerUserAgents.some(crawler => ua.toLowerCase().indexOf(crawler.toLowerCase()) !== -1)
 	const styles = await extractor.getInlineStyleTags()
 	return oneLineTrim(htmlTemplate`
 	<!DOCTYPE html>
@@ -85,8 +86,9 @@ const getHtml = async (markup, extractor, helmet) => {
 	</head>
 	  <body>
 		<div id="root">${markup}</div>
-		${extractor.getScriptTags()}
-		 <!-- Yandex.Metrika counter -->
+		${!isCrawler && `<script type="text/javascript">window.__INITIAL_DATA__=${JSON.stringify(initialData)}</script>`}
+		${!isCrawler && extractor.getScriptTags()}
+		 ${!isCrawler && `<!-- Yandex.Metrika counter -->
 		 <script type="text/javascript">
 		  (function (m, e, t, r, i, k, a) {
 		  m[i] = m[i] || function () { (m[i].a = m[i].a || []).push(arguments) };
@@ -115,9 +117,47 @@ const getHtml = async (markup, extractor, helmet) => {
 		  gtag('js', new Date());
 	
 		  gtag('config', 'UA-158657926-1');
-		</script>
+		</script>`}
 		<noscript>You need to enable JavaScript to run this app.</noscript>
 	  </body>
 	</html>	
 	`)
 }
+
+
+const crawlerUserAgents = [
+	'googlebot',
+	'Yahoo! Slurp',
+	'bingbot',
+	'yandex',
+	'baiduspider',
+	'facebookexternalhit',
+	'twitterbot',
+	"TelegramBot",
+	'rogerbot',
+	'linkedinbot',
+	'embedly',
+	'quora link preview',
+	'showyoubot',
+	'outbrain',
+	'pinterest/0.',
+	'developers.google.com/+/web/snippet',
+	'slackbot',
+	'vkShare',
+	'W3C_Validator',
+	'redditbot',
+	'Applebot',
+	'WhatsApp',
+	'flipboard',
+	'tumblr',
+	'bitlybot',
+	'SkypeUriPreview',
+	'nuzzel',
+	'Discordbot',
+	'Google Page Speed',
+	'Qwantify',
+	'pinterestbot',
+	'Bitrix link preview',
+	'XING-contenttabreceiver',
+	'Chrome-Lighthouse'
+  ];

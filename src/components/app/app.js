@@ -3,11 +3,11 @@ import { Route, Switch } from 'react-router-dom'
 import axios from 'axios'
 import loadable from '@loadable/component'
 
-const MainPage = loadable(() => import('/pages/MainPage.js'))
+const MainPage = loadable(() => import('/pages/MainPage'))
 const Page404 = loadable(() => import('/pages/Page404'))
 const AuthPage = loadable(() => import('/pages/AuthPage'))
 
-import { WeekContext } from '/context';
+import { WeekContext, InitialDataContext } from '/context';
 
 
 const getWeek = async () => {
@@ -24,23 +24,26 @@ const getWeek = async () => {
 }
 
 const App = (props) => {
-    const week = props.data?.week
-    const [date, setDate] = useState(week?.date || '');
-    const [weekNumber, setWeekNumber] = useState(week?.weekNumber || '');
-    const [even, setEven] = useState(`${week?.even} неделя` || '');
+    const data = props.data
+
+    const { week } = data
+    const [date, setDate] = useState(week?.date || '')
+    const [weekNumber, setWeekNumber] = useState(week?.weekNum || '')
+    const [even, setEven] = useState(`${week?.even} неделя` || '')
 
     useEffect(() => {
         if(!(date && weekNumber && even)) {
             getWeek().then(week => {
-                setDate(week.date);
-                setWeekNumber(week.weekNum);
-                setEven(`${ week.even } неделя`);
+                setDate(week.date)
+                setWeekNumber(week.weekNum)
+                setEven(`${ week.even } неделя`)
             })
         }
         
     },[])
 
     return (
+        <InitialDataContext.Provider value={ data }>
             <WeekContext.Provider value={{ date, weekNumber, even }}>
                     <Switch>
                         <Route exact path='/' component={ MainPage } />
@@ -51,7 +54,8 @@ const App = (props) => {
                             return <Page404></Page404>;
                         }} />
                     </Switch>
-            </WeekContext.Provider>    
+            </WeekContext.Provider>   
+        </InitialDataContext.Provider> 
     )
 }
         

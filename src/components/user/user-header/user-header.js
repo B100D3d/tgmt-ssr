@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 
 import './user-header.sass';
-import { WeekContext, UserMenuOpenContext } from '../../../context';
-import useWindowSize from '../../../hooks/useWindowSize.hook';
+import { WeekContext, UserMenuOpenContext } from '/context';
+import useWindowSize from '/hooks/useWindowSize.hook';
 import burger from '/static/burger.svg';
 
 
