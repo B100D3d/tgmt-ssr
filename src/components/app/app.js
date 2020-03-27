@@ -48,8 +48,8 @@ const App = (props) => {
                     <Switch>
                         <Route exact path='/' component={ MainPage } />
                         <Route path='/user' component={ AuthPage } />
-                        <Route path='/documents' component={Test} />
-                        <Route render={({staticContext}) => {
+                        <Route path='/documents' component={ Test } />
+                        <Route render={({ staticContext }) => {
                             if (staticContext) staticContext.statusCode = 404;
                             return <Page404></Page404>;
                         }} />

@@ -4,9 +4,20 @@ import loadable from '@loadable/component';
 
 import { UserContext } from '../context/index';
 
-const Loading = loadable(() => import('/components/loading/loading'))
-const Auth = loadable(() => import('/components/auth/auth'))
-const User = loadable(() => import('/components/user/user')) 
+import Loading from '/components/loading/loading'
+
+const Auth = loadable(() => import('/components/auth/auth'), { 
+    fallback: 
+    <div style={ styles }>
+        <Loading width={ 700 } height={ 700 } loading={ true } />
+    </div> 
+})
+const User = loadable(() => import('/components/user/user'), { 
+    fallback: 
+    <div style={ styles }>
+        <Loading width={ 700 } height={ 700 } loading={ true } />
+    </div> 
+ }) 
 
 
 const styles = {
