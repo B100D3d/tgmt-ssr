@@ -50,16 +50,16 @@ export interface SubjectData {
     teacher: string;
 }
 
-export interface GradesGetData {
+export interface RecordsGetData {
     month: number;
     groupID?: string;
     subjectID?: string;
 }
 
-export interface GradesSetData extends GradesGetData {
-    grades: {
+export interface RecordsSetData extends RecordsGetData {
+    records: {
         student: string;
-        grades: Array<Grade>;
+        records: Array<Record>;
     }[];
 }
 
@@ -100,8 +100,7 @@ export interface UserModel extends User, Document {
 export interface StudentModel extends Document {
     id: string;
     name: string;
-    grades: Types.Array<Schema.Types.ObjectId & GradesModel>;
-    absences: Types.Array<Schema.Types.ObjectId & AbsenceModel>;
+    records: Types.Array<Schema.Types.ObjectId & RecordsModel>;
     group: Schema.Types.ObjectId & GroupModel;
 }
 
@@ -124,16 +123,11 @@ export interface ResourceModel extends Document {
     url: string;
 }
 
-export interface AbsenceModel extends Document {
-    date: Date;
-    absence: Array<number>;
-}
-
-export interface GradesModel extends Document {
+export interface RecordsModel extends Document {
     student: Schema.Types.ObjectId & StudentModel;
     subject: Schema.Types.ObjectId & SubjectModel;
     month: number;
-    grades: Map<string, number>;
+    records: Map<string, string>;
 }
 
 export interface GroupModel extends Document {
@@ -200,20 +194,14 @@ export interface Subject {
     teacher?: string;
 }
 
-export interface Absence {
-    classNumber: number;
-    date: Date;
-    absence: boolean;
-}
-
-export interface Grades {
+export interface Records {
     entity: string;
-    grades: Array<Grade>;
+    records: Array<Record>;
 }
 
-export interface Grade {
+export interface Record {
     day: number;
-    grade?: number;
+    record?: string;
 }
 
 export interface Login {

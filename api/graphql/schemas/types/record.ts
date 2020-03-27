@@ -7,14 +7,14 @@ import {
 
 
 export default new GraphQLObjectType({
-    name: "Grade",
+    name: "Record",
     fields: () => ({
         entity: {
             type: GraphQLString
         },
-        grades: {
+        records: {
             type: new GraphQLList(new GraphQLObjectType({
-                name: "Grades",
+                name: "Records",
                 fields: () => ({
                     day: {
                         type: GraphQLInt

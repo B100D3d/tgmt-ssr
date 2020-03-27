@@ -1,34 +1,34 @@
 import { 
-    GradesGetData, 
+    RecordsGetData, 
     ExpressParams,
-    Grades,
-    GradesSetData,
-    Grade,
+    Records,
+    RecordsSetData,
+    Record,
     StudentModel,
     SubjectModel
 } from "../types"
 import userModel from "./MongoModels/userModel"
 import studentModel from "./MongoModels/studentModel"
-import gradeModel from "./MongoModels/gradeModel"
+import recordModel from "./MongoModels/recordsModel"
 import subjectModel from "./MongoModels/subjectModel"
 import groupModel from "./MongoModels/groupModel"
 
-const getGradesArrayFromMap = (entity: string, _grades: Map<string, number>): Grades => {
+const getRecordsArrayFromMap = (entity: string, _records: Map<string, string>): Records => {
 
-    const grades: Array<Grade> = []
-    for (const day of _grades.keys()) {
-        const grade = {
+    const records: Array<Record> = []
+    for (const day of _records.keys()) {
+        const record = {
             day: +day,
-            grade: _grades.get(day)
+            record: _records.get(day)
         }
 
-        grades.push(grade)
+        records.push(record)
     }
 
-    return { entity, grades }
+    return { entity, records }
 }
 
-export const getStudentGrades = async ({ month }: GradesGetData, { req }: ExpressParams): Promise<Array<Grades>> => {
+export const getStudentRecords = async ({ month }: RecordsGetData, { req }: ExpressParams): Promise<Array<Records>> => {
 
     const { uniqueId: userID } = req.user
 
@@ -36,34 +36,34 @@ export const getStudentGrades = async ({ month }: GradesGetData, { req }: Expres
 
     const student = await studentModel
                             .findOne({ name: user.name })
-                            .populate({ path: "grades group", populate: { path: "subject subjects" }})
+                            .populate({ path: "records group", populate: { path: "subject subjects" }})
                             .exec()
 
     const subjects = student.group.subjects.map(({ name }: SubjectModel) => name)
 
-    const grades = subjects.map(subject => {
-        const gradesByMonthAnfSubject = 
-            student.grades.find(grade => grade.month === month && grade.subject.name === subject)
-            || { grades: new Map<string, number>() }
+    const records = subjects.map(subject => {
+        const recordsByMonthAndSubject = 
+            student.records.find(record => record.month === month && record.subject.name === subject)
+            || { records: new Map<string, string>() }
                                 
-        const grades = getGradesArrayFromMap(subject, gradesByMonthAnfSubject.grades)
+        const records = getRecordsArrayFromMap(subject, recordsByMonthAndSubject.records)
 
-        return grades
+        return records
     })
 
-    return grades
+    return records
 
 }
 
 
-export const getGrades = async (args: GradesGetData, { res }: ExpressParams): Promise<Array<Grades>> => {
+export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): Promise<Array<Records>> => {
    
     const { month, subjectID, groupID } = args
 
     const subjectDB = await subjectModel.findOne({ id: subjectID }).exec()
     const groupDB = await groupModel
                             .findOne({ id: groupID })
-                            .populate({ path: "students", populate: { path: "grades" }})
+                            .populate({ path: "students", populate: { path: "records" }})
                             .exec()
 
     if (!subjectDB || !groupDB) {
@@ -71,57 +71,57 @@ export const getGrades = async (args: GradesGetData, { res }: ExpressParams): Pr
         return
     }
 
-    const grades = groupDB.students.map(({ name: entity, grades: _grades }: StudentModel) => {
-        const gradesByMonthAnfSubject = 
-            _grades.find(g => g.month === month && g.subject.equals(subjectDB._id)) 
-            || { grades: new Map<string, number>()}
+    const records = groupDB.students.map(({ name: entity, records: _records }: StudentModel) => {
+        const recordsByMonthAndSubject = 
+            _records.find(g => g.month === month && g.subject.equals(subjectDB._id)) 
+            || { records: new Map<string, string>()}
 
-        const grades = getGradesArrayFromMap(entity, gradesByMonthAnfSubject.grades)
-        console.log(grades)
-        return grades
+        const records = getRecordsArrayFromMap(entity, recordsByMonthAndSubject.records)
+
+        return records
     })
 
-    return grades
+    return records
 }
 
 
-export const setGrades = async (args: GradesSetData, ep: ExpressParams): Promise<Array<Grades>> => {
+export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promise<Array<Records>> => {
     
-    const { month, subjectID, groupID, grades } = args
+    const { month, subjectID, groupID, records } = args
 
     const subjectDB = await subjectModel.findOne({ id: subjectID }).exec()
 
-    const gradesDB = await gradeModel.find({ month, subject: subjectDB._id })
+    const recordsDB = await recordModel.find({ month, subject: subjectDB._id })
 
-    for (const item of grades) {
+    for (const item of records) {
         const student = await studentModel.findOne({ name: item.student }).exec()
 
-        let studentGrades = gradesDB.find(grade => grade.student.equals(student._id))
+        let studentGrades = recordsDB.find(records => records.student.equals(student._id))
 
         if (!studentGrades) {
-            studentGrades = new gradeModel({
+            studentGrades = new recordModel({
                 student,
                 subject: subjectDB,
                 month,
                 grades: new Map<string, number>()
             })
 
-            student.grades.push(studentGrades._id)
+            student.records.push(studentGrades._id)
   
             await studentGrades.save()
             await student.save()
 
         }
 
-        item.grades.map(grade => {
-            grade.grade 
-                ? studentGrades.grades.set(grade.day.toString(), grade.grade) 
-                : studentGrades.grades.delete(grade.day.toString())
+        item.records.map(record => {
+            record.record 
+                ? studentGrades.records.set(record.day.toString(), record.record) 
+                : studentGrades.records.delete(record.day.toString())
         })
 
         await studentGrades.save()
 
     }
 
-    return getGrades({ month, subjectID, groupID }, ep)
+    return getRecords({ month, subjectID, groupID }, ep)
 }

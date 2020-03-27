@@ -4,26 +4,25 @@ import {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
-    GraphQLInputObjectType,
-    GraphQLBoolean
+    GraphQLInputObjectType
 } from "graphql"
 
-import Grade from "./types/grade"
+import Record from "./types/record"
 
 export default new GraphQLSchema({
     query: new GraphQLObjectType({
-        name: "GradesQuery",
+        name: "RecordsQuery",
         fields: () => ({
-            getStudentGrades: {
-                type: new GraphQLList(Grade),
+            getStudentRecords: {
+                type: new GraphQLList(Record),
                 args: {
                     month: {
                         type: GraphQLInt
                     }
                 }
             },
-            getGrades: {
-                type: new GraphQLList(Grade),
+            getRecords: {
+                type: new GraphQLList(Record),
                 args: {
                     month: {
                         type: GraphQLInt
@@ -39,10 +38,10 @@ export default new GraphQLSchema({
         })
     }),
     mutation: new GraphQLObjectType({
-        name: "GradesMutation",
+        name: "RecordsMutation",
         fields: () => ({
-            setGrades: {
-                type: new GraphQLList(Grade),
+            setRecords: {
+                type: new GraphQLList(Record),
                 args: {
                     month: {
                         type: GraphQLInt
@@ -53,21 +52,21 @@ export default new GraphQLSchema({
                     groupID: {
                         type: GraphQLString
                     },
-                    grades: {
+                    records: {
                         type: new GraphQLList(new GraphQLInputObjectType({
-                            name: "InputGrades",
+                            name: "InputRecords",
                             fields: () => ({
                                 student: {
                                     type: GraphQLString
                                 },
-                                grades: {
+                                records: {
                                     type: new GraphQLList(new GraphQLInputObjectType({
-                                        name: "InputStudentGrades",
+                                        name: "InputStudentRecords",
                                         fields: () => ({
                                             day: {
                                                 type: GraphQLInt
                                             },
-                                            grade: {
+                                            record: {
                                                 type: GraphQLInt
                                             }
                                         })
