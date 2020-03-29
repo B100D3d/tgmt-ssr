@@ -29,7 +29,7 @@ const App = (props) => {
     const { week } = data
     const [date, setDate] = useState(week?.date || '')
     const [weekNumber, setWeekNumber] = useState(week?.weekNum || '')
-    const [even, setEven] = useState(`${week?.even} неделя` || '')
+    const [even, setEven] = useState((week?.even && `${week?.even} неделя`) || '')
 
     useEffect(() => {
         if(!(date && weekNumber && even)) {

@@ -6,27 +6,42 @@ export default [
         path: "/",
         exact: true,
         loadData: async (): Promise<any> => {
-            const week = resolver.mainPageResolver.week()
-            const resources = await resolver.mainPageResolver.resources()
+            try {
+                const week = resolver.mainPageResolver.week()
+                const resources = await resolver.mainPageResolver.resources()
 
-            return { week, resources }
+                return { week, resources }
+            } catch(err) {
+                console.log(`loadData error: ${err}`)
+            }
+            
         }
     },
     {
         path: "/user",
         exact: true,
         loadData: async (): Promise<any> => {
-            const week = resolver.mainPageResolver.week()
+            try {
+                const week = resolver.mainPageResolver.week()
            
-            return { week }
+                return { week }
+            } catch(err) {
+                console.log(`loadData error: ${err}`)
+            }
+           
         }
     },
     {
         path: "/user/settings",
         loadData: async (): Promise<any> => {
-            const week = resolver.mainPageResolver.week()
+            try {
+                const week = resolver.mainPageResolver.week()
 
-            return { week }
+                return { week }
+            } catch(err) {
+                console.log(`loadData error: ${err}`)
+            }
+            
         }
     }
 ]

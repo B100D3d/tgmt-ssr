@@ -27,11 +27,14 @@ app.use(cors({
 }))
 app.use(bodyParser.json())
 app.use(cookieParser())
+!+process.env.PROD && app.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
 
 app
   .disable('x-powered-by')
-  .use(express.static(process.env.RAZZLE_PUBLIC_DIR))
   .get('/*', async (req, res) => {
+	
+	console.log(process.env.RAZZLE_PUBLIC_DIR)
+	console.log(req.url, req.body)
 
 	const ua = req.headers["user-agent"]
 
@@ -48,7 +51,7 @@ app
 		if(match && route.loadData) promise = route.loadData()
 		return match
 	})
-	const data = await promise
+	const data = await promise || {}
 
     const markup = renderToString(
 		<ChunkExtractorManager extractor={ extractor }> 

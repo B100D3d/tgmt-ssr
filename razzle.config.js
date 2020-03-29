@@ -16,6 +16,7 @@ module.exports = {
 
         const config = Object.assign({}, baseConfig);
         const isServer = target !== 'web';
+        config.devtool = false
 
 
         ///////////// PLUGINS //////////////////////////
@@ -43,6 +44,8 @@ module.exports = {
                   name: dev,
                 },
             })
+
+            config.optimization.minimizer[1].options.cssProcessorOptions.map.annotation = false // disable annotation about css source map
         }
         ///////////////////////////////////////////////
 
@@ -60,6 +63,8 @@ module.exports = {
         /////////////// SASS MODULE /////////////////////
         const sassModuleRegex = /\.module\.(scss|sass)$/;
         config.module.rules[6].exclude = sassModuleRegex; // exclude module regex from razzle/scss
+        const rzUseLength = config.module.rules[6].use.length
+        config.module.rules[6].use[rzUseLength-1].options.sourceMap = false // disable sourceMap for razzle/scss (sass-loader)
 
         /* get razzle/scss config with "modules" options sets to true */ 
         const sassModulesRuleUse = config.module.rules[6].use.map((item) => {
@@ -86,7 +91,6 @@ module.exports = {
         ]
         
         //////////////////////////////////////////////////
-
         
     
         return config;
