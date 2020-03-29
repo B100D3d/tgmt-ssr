@@ -32,9 +32,6 @@ app.use(cookieParser())
 app
   .disable('x-powered-by')
   .get('/*', async (req, res) => {
-	
-	console.log(process.env.RAZZLE_PUBLIC_DIR)
-	console.log(req.url, req.body)
 
 	const ua = req.headers["user-agent"]
 
