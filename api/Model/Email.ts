@@ -2,6 +2,9 @@ import nodemailer from "nodemailer"
 import { UAParser } from "ua-parser-js"
 import path from "path"
 import getLoginHtml from "./EmailTemplates/Login"
+import getUserCreatingHtml from "./EmailTemplates/UserCreating"
+import getPassChangedHtml from "./EmailTemplates/PassChanged"
+import getEmailChangedHtml from "./EmailTemplates/EmailChanged"
 import { UserRegData } from "../types"
 import { getDate, getTime } from "./Date"
 
@@ -35,15 +38,26 @@ const getUAInfo = (userAgent: string) => {
 
 export const sendUserCreatingEmail = async (userData: UserRegData): Promise<void> => {
     const {name, login, password, role, email} = userData
-    const text = `Пользователь ${name} с ролью "${role}" был успешно создан!\n
+    const text = `Пользователь ${name} с ролью "${ROLES[role]}" был успешно создан!\n
     Данные для входа:\n
     Логин: ${login}\n
     Пароль: ${password}\n`
+
+    const html = getUserCreatingHtml(name, ROLES[role], login, password)
+
     const mailOptions = {
         from: "info.tuapsegmt@gmail.com",
         to: email,
         subject: "Пользователь был создан",
-        text
+        text,
+        html,
+        attachments: [
+            {
+                filename: "logo_back.webp",
+                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                cid: "logo"
+            }
+        ]
     }
 
     try{
@@ -89,13 +103,24 @@ export const sendLoginEmail = async (name: string, email: string, role: string, 
 }
 
 
-export const sendPassChangedEmail = async (name: string, email: string, password: string): Promise<void> => {
+export const sendPassChangedEmail = async (name: string, role: string, email: string, password: string): Promise<void> => {
     const text = `У аккаунта "${name}" был изменён пароль.\nНовый пароль: ${password}`
+
+    const html = getPassChangedHtml(name, ROLES[role], password)
+
     const mailOptions = {
         from: "info.tuapsegmt@gmail.com",
         to: email,
         subject: "Изменение пароля",
-        text
+        text,
+        html,
+        attachments: [
+            {
+                filename: "logo_back.webp",
+                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                cid: "logo"
+            }
+        ]
     }
 
     try{
@@ -107,13 +132,24 @@ export const sendPassChangedEmail = async (name: string, email: string, password
     
 }
 
-export const sendEmailChangedEmail = async (name: string, email: string): Promise<void> => {
+export const sendEmailChangedEmail = async (name: string, role: string, email: string): Promise<void> => {
     const text = `Email успешно подключён к учётной записи "${name}"`
+
+    const html = getEmailChangedHtml(name, ROLES[role])
+
     const mailOptions = {
         from: "info.tuapsegmt@gmail.com",
         to: email,
         subject: "Изменение email адреса",
-        text
+        text,
+        html,
+        attachments: [
+            {
+                filename: "logo_back.webp",
+                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                cid: "logo"
+            }
+        ]
     }
 
     try{

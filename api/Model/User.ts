@@ -104,7 +104,7 @@ export const setEmail = async ({ email }: Email, { req, res }: ExpressParams): P
             return
         }
 
-        sendEmailChangedEmail(user.name, user.email)
+        sendEmailChangedEmail(user.name, user.role, user.email)
 
         return { email: user.email }
 
@@ -138,7 +138,7 @@ export const changePassword = async ({ oldPassword, newPassword }: PasswordsInfo
         await user.save()
 
         if (user.email) {
-            sendPassChangedEmail(user.name, user.email, newPassword)
+            sendPassChangedEmail(user.name, user.role, user.email, newPassword)
         }
 
         return true
