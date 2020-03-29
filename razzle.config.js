@@ -45,7 +45,9 @@ module.exports = {
                 },
             })
 
-            config.optimization.minimizer[1].options.cssProcessorOptions = {} // disable css source map
+            if(!dev) {
+                config.optimization.minimizer[1].options.cssProcessorOptions = {} // disable css source map
+            } 
         }
         ///////////////////////////////////////////////
 
