@@ -45,7 +45,7 @@ module.exports = {
                 },
             })
 
-            config.optimization.minimizer[1].options.cssProcessorOptions.map.annotation = false // disable annotation about css source map
+            config.optimization.minimizer[1].options.cssProcessorOptions = {} // disable css source map
         }
         ///////////////////////////////////////////////
 
