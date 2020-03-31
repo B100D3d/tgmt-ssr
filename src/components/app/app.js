@@ -24,7 +24,7 @@ const getWeek = async () => {
 }
 
 const App = (props) => {
-    const data = props.data
+    const data = props.data || {}
 
     const { week } = data
     const [date, setDate] = useState(week?.date || '')

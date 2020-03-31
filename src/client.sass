@@ -38,15 +38,20 @@ a
     height: 100%
     margin: 0 auto
 
-.awssld
-    --content-background-color: transparent !important
-    --organic-arrow-color: #ffffff !important
-    --control-bullet-color: #ffffff59 !important
-    --control-bullet-active-color: #ffffff !important
+main .awssld
+    --content-background-color: transparent
+    --organic-arrow-color: #ffffff
+    --control-bullet-color: #ffffff59
+    --control-bullet-active-color: #ffffff
+    --slider-height-percentage: 50%
+
+    .awssld__timer
+        top: auto
+        bottom: 10%
 
     .awssld__bullets
-        bottom: 50px !important
-        z-index: 1000 !important
+        bottom: 50px
+        z-index: 1000
 
 .react-grid-Container 
     background-color: transparent
@@ -92,5 +97,5 @@ a
 
 
 @media (max-width: 700px)
-    .awssld .awssld__bullets
-            bottom: -40px !important
+    main .awssld .awssld__bullets
+            bottom: -40px

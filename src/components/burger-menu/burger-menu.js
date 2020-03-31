@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { elastic as Menu } from 'react-burger-menu';
+import { slide as Menu } from 'react-burger-menu';
 import { Link } from 'react-router-dom';
 import loadable from '@loadable/component';
 
@@ -17,21 +17,16 @@ import student from '/static/student.svg';
 
 
 const styles = {
-    bmMorphShape: {
-        width: "42%",
-        fill: "#2C2A2A",
-        left: "-5px"
-    },
     bmMenu: {
-        width: "62%",
-        background: "#2C2A2A",
-        padding: "0",
-        paddingTop: "0",
-        right: "-5px"
+        width: '100%',
+        background: '#2C2A2A',
+        padding: '0',
+        paddingTop: '0'
     },
     bmMenuWrap: {
-        transform: "translate3d(101%, 0px, 0px)",
-        width: "100%"
+        width: '100%',
+        transform: 'translate3d(100%, 0px, 0px)',
+        transition: 'transform .8s ease 0s'
     },
     bmBurgerButton: {
         position: 'absolute',
@@ -50,8 +45,7 @@ const styles = {
         outline: 'none'
     },
     bmItemList: {
-        width: "163%",
-        left: "-63%"
+        width: '100%'
     }
 }
 
@@ -61,7 +55,7 @@ const handleClick = (state) => {
         document.body.setAttribute('style', 'overflow: hidden; position: fixed;')
     } else {
         document.body.setAttribute('style', 'overflow: visible; position: static');
-        document.querySelector('.bm-menu-wrap').style.transform = 'translate3d(101%, 0px, 0px)'
+        document.querySelector('.bm-menu-wrap').style.transform = 'translate3d(100%, 0px, 0px)'
     }
 }
 
@@ -72,10 +66,10 @@ const BurgerMenu = () => {
 
     return (
         <>     
-            <Menu styles={ styles } outerContainerId={ "root" } pageWrapId={ "wrap" } 
-                    right customBurgerIcon={ <img src={ burger } alt="burger" /> }
-                    customCrossIcon={ <img src={ close } alt="close" /> } disableAutoFocus 
-                    onStateChange={ handleClick }>
+            <Menu styles={ styles } right 
+                customBurgerIcon={ <img src={ burger } alt="burger" /> }
+                customCrossIcon={ <img src={ close } alt="close" /> } 
+                disableAutoFocus onStateChange={ handleClick }>
                     <div>
                         <div className="title-container">
                             <img className="menu-logo" src={ logo } alt="logo" />

@@ -20,7 +20,7 @@ const MainPage = () => {
             </Helmet>
             <Header />
             <MobileHeader />
-            <main id="wrap">
+            <main>
                 <News />
                 <About />
                 <Resources />

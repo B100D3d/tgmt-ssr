@@ -18,14 +18,9 @@ const News = () => (
         cancelOnInteraction={ true }
         interval={ 8000 }
         className={ s.news }>
-            <div className={ s.slide }>
-                <img src={ bg } alt="bg" />
+            <div className={ s.slide } data-src={ bg }>
             </div>
-            <div className={ s.slide }>
-                <img src={ bg } alt="bg" />
-            </div>
-            <div className={ s.slide }>
-                <img src={ bg } alt="bg" />
+            <div className={ s.slide } data-src={ bg }>
             </div>
     </AutoplaySlider>
 )
