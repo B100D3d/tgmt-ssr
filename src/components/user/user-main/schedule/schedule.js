@@ -78,20 +78,18 @@ const Schedule = () => {
     const [width, setWidth] = useState();
     const [switchState, setSwitch] = useState({});
     const [schedule, setSchedule] = useState(user.schedule);
-    const timestamp = useRef();
+    const switchTimeout = useRef();
 
     const windowSize = useWindowSize();
 
+
     const handleSchedule = async () => {
-        timestamp.current = new Date().getTime();
-        const localTimestamp = timestamp.current;
-        await new Promise(r => setTimeout(r, 500));
-        if (localTimestamp === timestamp.current) {
-            try {
-                const s = await getSchedule(group, switchState);
-                setSchedule(s)
-            } catch(err) {}
-        }
+        clearTimeout(switchTimeout.current)
+        switchTimeout.current = setTimeout(() => {
+            getSchedule(group, switchState)
+                .then(setSchedule)
+                .catch(console.log)
+        }, 500)
     }
     
     useEffect(() => {
@@ -102,19 +100,12 @@ const Schedule = () => {
         if(Object.keys(switchState).length) {
             handleSchedule()
         } else if(!user.schedule) {
-            getSchedule(group, { even: true, subgroup: 1 }).then((s) => {
-                setSchedule(s)
-            })
+            getSchedule(group, { even: true, subgroup: 1 }).then(setSchedule)
         }
     }, [switchState])
 
     useEffect(() => {
-        if (isOpen) {
-            const menuWidth = windowSize.width > 800 ? document.querySelector('.user-menu').clientWidth : 0
-            setWidth(windowSize.width * 0.95 - menuWidth)
-        } else {
-            setWidth(windowSize.width * 0.95)
-        }
+        resize(isOpen, windowSize, setWidth)
     }, [isOpen, windowSize])
 
     useEffect(() => {
@@ -157,6 +148,15 @@ const Schedule = () => {
             </div>
         </div>
     )
+}
+
+const resize = (isOpen, windowSize, setWidth) => {
+    if (isOpen) {
+        const menuWidth = windowSize.width > 800 ? document.querySelector('.user-menu').clientWidth : 0
+        setWidth(windowSize.width * 0.95 - menuWidth)
+    } else {
+        setWidth(windowSize.width * 0.95)
+    }
 }
 
 export default Schedule;

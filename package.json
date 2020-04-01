@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "start": "start http://localhost:3000 && razzle start",
+    "start": "open http://localhost:3000 && razzle start",
     "build": "npm run build:rz && npm run build:ts",
     "build:rz": "razzle build",
     "build:ts": "tsc --project api/tsconfig.json",

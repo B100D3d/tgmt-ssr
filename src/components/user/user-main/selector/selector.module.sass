@@ -1,0 +1,35 @@
+.item
+    display: flex
+    justify-content: center
+    align-items: center
+    font-size: 48px
+    width: 180px
+    height: 180px
+    border-radius: 20px
+    background-color: #201e1e
+    cursor: pointer
+    margin: 20px
+
+    &:hover
+        p
+            font-size: 64px
+
+    p
+        transition: font-size .5s ease
+
+.selector
+    position: absolute
+    left: 0
+    top: 0
+    width: 100%
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    align-items: center
+
+    h1
+        color: white
+
+    .items
+        display: flex
+        width: 100%
