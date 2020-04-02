@@ -43,8 +43,8 @@ const getRows = (schedule) => {
 }
 
 const getSchedule = async (group, { subgroup, even }) => {
-
-    const res = await axios.post('https://тгмт.рф/api/getSchedule', {
+    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+    const res = await axios.post(`${url}/api/getSchedule`, {
         query: `{
             getSchedule(groupID: "${ group }",
                         subgroup: ${ subgroup },

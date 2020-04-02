@@ -21,20 +21,20 @@ const UserMain = () => {
                     timeout={ 1000 }
                     classNames="fade">
                     { role === 'Student' ? 
-                        <Switch>
+                        <Switch location={location}>
                             <Route exact path='/user' component={ Schedule } />
                             <Route path='/user/grades' component={ Schedule } />
                             <Route path='/user/absence' component={ Schedule } />
                             <Route path='/user/settings' component={ Schedule } />
                         </Switch>
                     : role === 'Admin' ? 
-                        <Switch>
+                        <Switch location={location}>
                             <Route exact path='/user' component={ () => <Selector type='year' /> } />
                             <Route exact path='/user/:year' component={ () => <Selector type='group' /> } />
                             <Route exact path='/user/:year/:group' component={ Schedule } />
                         </Switch>
                     : 
-                        <Switch>
+                        <Switch location={location}>
                             <Route exact path='/user' component={ Schedule } />
                         </Switch> }
                 </CSSTransition>
