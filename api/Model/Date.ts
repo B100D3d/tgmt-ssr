@@ -17,7 +17,8 @@ const months: {[key: number]: string} = {
 
 export const getTime = (): string => {
     const date = new Date()
-    return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+    const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+    return `${date.getHours()}:${minutes}:${date.getSeconds()}`
 }
 
 export const getDate = (): string => {
