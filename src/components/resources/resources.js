@@ -10,7 +10,8 @@ import './resources.sass';
 
 
 const getResources = async () => {
-    const query = await axios.post('https://тгмт.рф/api/mainPage', {
+    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+    const query = await axios.post(`${url}/api/mainPage`, {
         query: `{
             resources {
                 img

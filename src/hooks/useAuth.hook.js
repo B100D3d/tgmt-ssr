@@ -30,8 +30,8 @@ const styles = {
 
 const auth = async () => {
     await new Promise(resolve => setTimeout(resolve, 500))
-    
-    const query = await axios.post('https://тгмт.рф/api/auth', {
+    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+    const query = await axios.post(`${url}/api/auth`, {
         query: `{
             auth {
                 ...on Admin {

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
-    "start": "open http://localhost:3000 && razzle start",
+    "start": "razzle start",
     "build": "npm run build:rz && npm run build:ts",
     "build:rz": "razzle build",
     "build:ts": "tsc --project api/tsconfig.json",
@@ -66,6 +66,7 @@
     "dotenv-webpack": "^1.7.0",
     "eslint": "^6.8.0",
     "eslint-loader": "^3.0.3",
+    "open-browser-webpack-plugin": "0.0.5",
     "razzle-plugin-scss": "^3.0.0",
     "typescript": "^3.7.5"
   }

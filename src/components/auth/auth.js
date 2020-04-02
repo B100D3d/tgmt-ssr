@@ -22,7 +22,8 @@ const styles = {
 }
 
 const auth = async (login, password) => {
-    const query = await axios.post('https://тгмт.рф/api/login', {
+    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+    const query = await axios.post(`${url}/api/login`, {
         query: `{
             login(login: "${ login }", password: "${ password }") {
                 ...on Admin {

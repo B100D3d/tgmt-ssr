@@ -3,6 +3,8 @@ const path = require("path")
 
 const Dotenv = require("dotenv-webpack")
 const LoadableWebpackPlugin = require('@loadable/webpack-plugin')
+const OpenBrowserPlugin = require("open-browser-webpack-plugin")
+
 const LoadableBabelPlugin = require('@loadable/babel-plugin')
 const NullishCoalescingBabelPlugin = require("@babel/plugin-proposal-nullish-coalescing-operator")
 const babelPresetRazzle = require('razzle/babel')
@@ -28,7 +30,8 @@ module.exports = {
                 new LoadableWebpackPlugin({
                     outputAsset: false,
                     writeToDisk: { filename },
-                })
+                }),
+                new OpenBrowserPlugin({ url: "http://localhost:3000" })
             )
 
             config.output.filename = dev
