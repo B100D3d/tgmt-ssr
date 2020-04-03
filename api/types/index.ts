@@ -94,6 +94,7 @@ export interface User {
 export interface UserModel extends User, Document {
     setPassword(pass: string): Promise<void>;
     isPasswordValid(pass: string): Promise<boolean>;
+    isFingerprintValid(fingerprint: string): boolean;
     generateJWT(): string;
 }
 

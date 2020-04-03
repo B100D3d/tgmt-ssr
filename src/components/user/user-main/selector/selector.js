@@ -40,7 +40,7 @@ const Selector = ({ type }) => {
 }
 
 const Item = ({ name, id }) => {
-    const [gradient, setHover] = useGradient(useGradient)
+    const [gradient, setHover] = useGradient()
     const CSSProperties = getCSSProperties(gradient)
     const colors = Object.values(noDeg(gradient))
     const colorKeys = Object.keys(noDeg(gradient))

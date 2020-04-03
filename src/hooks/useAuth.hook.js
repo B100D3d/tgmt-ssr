@@ -95,7 +95,7 @@ const useAuth = () => {
     const fingerprint = useContext(FingerprintContext)
 
     useEffect(() => {
-        auth(fingerprint)
+        fingerprint && auth(fingerprint)
             .then(userData => {
                 setUser(userData)
                 setLoading(false)
@@ -106,7 +106,7 @@ const useAuth = () => {
                     setLoading(false)
                 }
             })
-    }, [])
+    }, [fingerprint])
 
     if (loading) {
         return (

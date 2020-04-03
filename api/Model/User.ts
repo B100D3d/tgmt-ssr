@@ -29,12 +29,20 @@ const getUserData = (user: UserModel): Promise<Admin | Teacher | Student> => {
 export const auth = async (_: any, { req, res }: ExpressParams): Promise<Admin | Teacher | Student> => {
 
     const { uniqueId } = req.user;
+    const fingerprint = req.body.fingerprint
 
     try {
         const user = await userModel.findById(uniqueId).exec()
 
         if (!user) {
             res.status(401)
+            return
+        }
+
+        const isFingerprintValid = user.isFingerprintValid(fingerprint)
+
+        if (!isFingerprintValid) {
+            res.status(403)
             return
         }
 
@@ -59,7 +67,7 @@ export const auth = async (_: any, { req, res }: ExpressParams): Promise<Admin |
 export const login = async ({ login, password }: LoginInfo, { req, res }: ExpressParams): Promise<Admin | Teacher | Student> => {
 
     try {
-
+        const fingerprint = req.body.fingerprint
         const user = await userModel.findOne({ login }).exec()
 
         if (!user) {
@@ -74,14 +82,24 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
             return
         }
 
+        const isFingerprintValid = user.isFingerprintValid(fingerprint)
+
+        if (!isFingerprintValid) {
+            user.fingerprints.push(fingerprint)
+            if(user.fingerprints.length === 4) {
+                user.fingerprints.shift()
+            }
+            
+            await user.save()
+
+            if (user.email) {
+                sendLoginEmail(user.name, user.email, user.role, req)
+            }
+        }
+
         const options = +process.env.PROD ? { ...DEFAULT_OPTIONS, secure: true } : DEFAULT_OPTIONS
         const token = user.generateJWT()
         res.cookie("token", token, options)
-
-        if (user.email) {
-            sendLoginEmail(user.name, user.email, user.role, req)
-        }
-
 
         return getUserData(user)
 

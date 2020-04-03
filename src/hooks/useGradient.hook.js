@@ -35,7 +35,7 @@ const CSS_GRADIENTS = [{
         deg: "32.17deg",
         "--3-gradient-0": {
             color: "#ffafbd",
-            percent: "16,39%"
+            percent: "16.39%"
         },
         "--3-gradient-1": {
             color: "#FFC3A0",

@@ -35,6 +35,11 @@ userSchema.methods.isPasswordValid = async function(password: string): Promise<b
     return isValid;
 };
 
+userSchema.methods.isFingerprintValid = function(fingerprint: string): boolean {
+    
+    return this.fingerprints.includes(fingerprint)
+}
+
 userSchema.methods.generateJWT = function(): string {
 
     return jwt.sign({
