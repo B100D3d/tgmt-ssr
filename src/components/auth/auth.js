@@ -4,7 +4,7 @@ import axios from 'axios';
 import loadable from '@loadable/component';
 import cogoToast from 'cogo-toast'
 
-import { UserContext } from '/context';
+import { UserContext, FingerprintContext } from '/context';
 
 const RainbowButton = loadable(() => import('/components/rainbow-button/rainbow-button')) 
 
@@ -21,7 +21,7 @@ const styles = {
     backgroundSize: 'auto 100%'
 }
 
-const auth = async (login, password) => {
+const auth = async (login, password, fingerprint) => {
     const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
     const query = await axios.post(`${url}/api/login`, {
         query: `{
@@ -73,7 +73,8 @@ const auth = async (login, password) => {
                     }
                 }
             }
-        }`
+        }`,
+        fingerprint
     }, { withCredentials: true });
     return query.data.data.login;
 }
@@ -84,6 +85,7 @@ const auth = async (login, password) => {
 const Auth = () => {
 
     const { setUser, setError } = useContext(UserContext);
+    const fingerprint = useContext(FingerprintContext)
 
     const login = useRef()
     const password = useRef()
@@ -91,7 +93,7 @@ const Auth = () => {
     const handleClick = () => {
         const { hide } = cogoToast.loading('Загрузка...', { hideAfter: 0, position: 'top-right' })
 
-        auth(login.current.value, password.current.value)
+        auth(login.current.value, password.current.value, fingerprint)
             .then(user => {
                 hide()
                 cogoToast.success('Данные успешно получены.', { position: 'top-right' })

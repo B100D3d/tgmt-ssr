@@ -8,4 +8,6 @@ const UserContext = React.createContext()
 
 const UserMenuOpenContext = React.createContext()
 
-export { WeekContext, UserContext, UserMenuOpenContext, InitialDataContext }
+const FingerprintContext = React.createContext()
+
+export { WeekContext, UserContext, UserMenuOpenContext, InitialDataContext, FingerprintContext }

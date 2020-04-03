@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import loadable from '@loadable/component';
 
-import { UserContext } from '../context/index';
+import { UserContext, FingerprintContext } from '../context/index';
 
 import Loading from '/components/loading/loading'
 
@@ -28,7 +28,7 @@ const styles = {
     minHeight: '100vh'
 }
 
-const auth = async () => {
+const auth = async (fingerprint) => {
     await new Promise(resolve => setTimeout(resolve, 500))
     const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
     const query = await axios.post(`${url}/api/auth`, {
@@ -81,7 +81,8 @@ const auth = async () => {
                     }
                 }
             }
-        }`
+        }`,
+        fingerprint
     }, { withCredentials: true });
     return query.data.data.auth;
 }
@@ -91,9 +92,10 @@ const useAuth = () => {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
     const [user, setUser] = useState()
+    const fingerprint = useContext(FingerprintContext)
 
     useEffect(() => {
-        auth()
+        auth(fingerprint)
             .then(userData => {
                 setUser(userData)
                 setLoading(false)
