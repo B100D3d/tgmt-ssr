@@ -42,18 +42,13 @@ export const auth = async (_: any, { req, res }: ExpressParams): Promise<Admin |
         const isFingerprintValid = user.isFingerprintValid(fingerprint)
 
         if (!isFingerprintValid) {
-            res.status(403)
+            res.status(401) /*TODO: change status to 403 and add check for frontend*/ 
             return
         }
 
         const options = +process.env.PROD ? { ...DEFAULT_OPTIONS, secure: true } : DEFAULT_OPTIONS
         const token = user.generateJWT()
         res.cookie("token", token, options)
-
-        if (user.email) {
-            sendLoginEmail(user.name, user.email, user.role, req)
-        }
-
 
         return getUserData(user);
 
@@ -89,7 +84,7 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
             if(user.fingerprints.length === 4) {
                 user.fingerprints.shift()
             }
-            
+
             await user.save()
 
             if (user.email) {
