@@ -5,6 +5,7 @@ import * as schema from "../graphql/schemas"
 import checkToken from "../middleware/checkToken"
 import checkAdmin from "../middleware/checkAdmin"
 import checkAdminOrTeacher from "../middleware/checkTeacherOrAdmin"
+import checkFingerprint from "../middleware/checkFingerprint"
 
 const apiRouter = Router()
 
@@ -16,7 +17,7 @@ apiRouter.use("/mainPage", graphqlHTTP({
     schema: schema.mainPageInfo
 }
 ))
-apiRouter.use("/createUser", checkAdmin, (req, res) => graphqlHTTP({
+apiRouter.use("/createUser", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.createUsersResolver,
     schema: schema.userCreating,
@@ -32,7 +33,7 @@ apiRouter.use("/login", (req, res) => graphqlHTTP({
 }
 )(req, res))
 
-apiRouter.use("/auth", checkToken, (req, res) => graphqlHTTP({
+apiRouter.use("/auth", checkToken, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.authResolver,
     schema: schema.auth,
@@ -49,7 +50,7 @@ apiRouter.use("/logout", (req, res) => {
     }
 })
 
-apiRouter.use("/setUserInfo", checkToken, (req, res) => graphqlHTTP({
+apiRouter.use("/setUserInfo", checkToken, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.setUserInfoResolver,
     schema: schema.userInfoSetting,
@@ -57,7 +58,7 @@ apiRouter.use("/setUserInfo", checkToken, (req, res) => graphqlHTTP({
 }
 )(req, res))
 
-apiRouter.use("/groups", checkAdmin, (req, res) => graphqlHTTP({
+apiRouter.use("/groups", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.groupsResolver,
     schema: schema.groups,
@@ -65,7 +66,7 @@ apiRouter.use("/groups", checkAdmin, (req, res) => graphqlHTTP({
 }
 )(req, res))
 
-apiRouter.use("/students", checkAdmin, (req, res) => graphqlHTTP({
+apiRouter.use("/students", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.studentsResolver,
     schema: schema.students,
@@ -73,7 +74,7 @@ apiRouter.use("/students", checkAdmin, (req, res) => graphqlHTTP({
 }
 )(req, res))
 
-apiRouter.use("/teachers", checkAdmin, (req, res) => graphqlHTTP({
+apiRouter.use("/teachers", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.teachersResolver,
     schema: schema.teachers,
@@ -81,7 +82,7 @@ apiRouter.use("/teachers", checkAdmin, (req, res) => graphqlHTTP({
 }
 )(req, res))
 
-apiRouter.use("/subjects", checkAdmin, (req, res) => graphqlHTTP({
+apiRouter.use("/subjects", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.subjectsResolver,
     schema: schema.subjects,
@@ -89,7 +90,7 @@ apiRouter.use("/subjects", checkAdmin, (req, res) => graphqlHTTP({
 }
 )(req, res))
 
-apiRouter.use("/setSchedule", checkAdminOrTeacher, (req, res) => graphqlHTTP({
+apiRouter.use("/setSchedule", checkToken, checkAdminOrTeacher, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.setScheduleResolver,
     schema: schema.schedules,
@@ -105,7 +106,7 @@ apiRouter.use("/getSchedule", checkToken, (req, res) => graphqlHTTP({
 }
 )(req, res))
 
-apiRouter.use("/records", checkAdminOrTeacher, (req, res) => graphqlHTTP({
+apiRouter.use("/records", checkToken, checkAdminOrTeacher, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.recordsResolver,
     schema: schema.records,

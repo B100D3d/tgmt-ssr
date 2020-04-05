@@ -14,7 +14,7 @@ const checkToken = (req: Request, res: Response, next: NextFunction) => {
 
     const { uniqueId } = jwt.verify(req.cookies.token, process.env.SECRET) as TokenInfo;
 
-    req.user = { uniqueId };
+    req.uniqueId = { uniqueId };
     next();
 
   } catch (err) {
