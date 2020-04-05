@@ -30,9 +30,9 @@ const Selector = ({ type }) => {
         <div className={ s.selector }>
             <h1>{ type === 'group' ? 'Выбор группы' : 'Выбор курса' }</h1>
             <div className={ s.items }>
-                { entities.map((e, key) => {
-                    return (<Item key={ key } name={ e.name || e } id={ e.id || e } />) 
-                })}
+                { entities.map((e) => 
+                    <Item key={ e.id || e } name={ e.name || e } id={ e.id || e } />
+                )}
             </div>
         </div>
         
@@ -61,9 +61,7 @@ const Item = ({ name, id }) => {
             )`
     }
 
-    const handleMouseOver = () => {
-        setHover(true)
-    }
+    const handleMouseOver = () => setHover(true)
     const handleMouseOut = () => setHover(false)
 
 

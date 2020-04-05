@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useContext } from 'react'
+
+import { UserMenuOpenContext } from '/context'
 
 
 const CSS_GRADIENTS = [{
@@ -386,6 +388,7 @@ const prefersReducedMotion =
 const useGradient = () => {
 
     const [isHover, setHover] = useState(false)
+    const [isOpen, setOpen] = useContext(UserMenuOpenContext)
     const gradient = useRef(getCSSGradient())
     const defGradient = useRef(getDefaultGradient(gradient.current))
 
@@ -407,6 +410,11 @@ const useGradient = () => {
             }
         }
     }, [isEnabled])
+
+    useEffect(() => {
+        gradient.current = getCSSGradient()
+        defGradient.current = getDefaultGradient(gradient.current)
+    }, [isOpen])
 
     return isHover ? [gradient.current, setHover] : [defGradient.current, setHover]
 }

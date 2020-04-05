@@ -4,12 +4,15 @@ import { useParams } from 'react-router-dom';
 import loadable from "@loadable/component"
 
 import './schedule.sass';
+import { getSchedule, getSubjects } from '/api'
 
 import { UserMenuOpenContext, UserContext } from '/context';
 import useWindowSize from '/hooks/useWindowSize.hook'
 import Switch from "./switch/switch";
 const ReactDataGrid = loadable(() => import("react-data-grid"))
+import { Editors } from "react-data-grid-addons"
 
+const { DropDownEditor } = Editors
 
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",
@@ -42,27 +45,6 @@ const getRows = (schedule) => {
     }, [])
 }
 
-const getSchedule = async (group, { subgroup, even }) => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
-    const res = await axios.post(`${url}/api/getSchedule`, {
-        query: `{
-            getSchedule(groupID: "${ group }",
-                        subgroup: ${ subgroup },
-                        even: ${ even }) {
-                            classNumber
-                            weekday
-                            subject {
-                                id
-                                name
-                                teacher
-                            }
-                        }
-        }`
-    }, { withCredentials: true }) 
-
-    return res.data.data.getSchedule;
-}
-
 
 const Schedule = () => {
 
@@ -78,10 +60,12 @@ const Schedule = () => {
     const [width, setWidth] = useState();
     const [switchState, setSwitch] = useState({});
     const [schedule, setSchedule] = useState(user.schedule);
-    const switchTimeout = useRef();
+    const switchTimeout = useRef()
 
-    const windowSize = useWindowSize();
+    const windowSize = useWindowSize()
 
+    const [subjectTypes, setSubjectTypes] = useState([])
+    const subjectEditor = <DropDownEditor options={ subjectTypes } />
 
     const handleSchedule = async () => {
         clearTimeout(switchTimeout.current)
@@ -91,7 +75,18 @@ const Schedule = () => {
                 .catch(console.log)
         }, 500)
     }
-    
+
+    useEffect(() => {
+        if (isAdmin) {
+            getSubjects().then((subjects) => {
+                setSubjectTypes(subjects.map((subject) => ({
+                    id: subject.id,
+                    value: `${ subject.name } (${ subject.teacher })`
+                })))
+            })
+        }
+    }, [isAdmin])
+
     useEffect(() => {
         schedule && setRows(getRows(schedule))
     }, [schedule])
@@ -114,15 +109,14 @@ const Schedule = () => {
         })
     }, [])
 
-
     const columns = [
         { key: 'classNumber', name: '№ пары', resizable: true, width: 80 },
-        { key: '1', name: 'Понедельник', editable: isAdmin, resizable: true },
-        { key: '2', name: 'Вторник', editable: isAdmin, resizable: true },
-        { key: '3', name: 'Среда', editable: isAdmin, resizable: true },
-        { key: '4', name: 'Четверг', editable: isAdmin, resizable: true },
-        { key: '5', name: 'Пятиница', editable: isAdmin, resizable: true },
-        { key: '6', name: 'Суббота', editable: isAdmin, resizable: true }
+        { key: '1', name: 'Понедельник', editable: isAdmin, resizable: true, editor: subjectEditor },
+        { key: '2', name: 'Вторник', editable: isAdmin, resizable: true, editor: subjectEditor },
+        { key: '3', name: 'Среда', editable: isAdmin, resizable: true, editor: subjectEditor },
+        { key: '4', name: 'Четверг', editable: isAdmin, resizable: true, editor: subjectEditor },
+        { key: '5', name: 'Пятиница', editable: isAdmin, resizable: true, editor: subjectEditor },
+        { key: '6', name: 'Суббота', editable: isAdmin, resizable: true, editor: subjectEditor }
     ];
 
 
