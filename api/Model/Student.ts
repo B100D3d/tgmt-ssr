@@ -4,13 +4,16 @@ import {
     StudentCreatingData,
     ExpressParams,
     StudentRegData,
-    ScheduleModel
+    ScheduleModel,
+    StudentChangedData,
+    GroupModel
 } from "../types"
+import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
-import { generatePassword, generateLogin, generateStudentID } from "./Utils"
+import { generatePassword, generateLogin, generateStudentID, removeNullAndUndefinedProps } from "./Utils"
 import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
-import { sendUserCreatingEmail } from "./Email"
+import { sendUserCreatingEmail, sendEmailChangedEmail } from "./Email"
 import { getWeekNum } from "./Date"
 
 
@@ -30,6 +33,66 @@ export const getStudents = async (): Promise<Array<Student>> => {
     return students
 }
 
+export const changeStudent = async (args: StudentChangedData, { res }: ExpressParams): Promise<Student> => {
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
+    try {
+        
+        const { studentID: id, data: { name, email, groupID } } = args
+
+        const student = await studentModel.findOne({ id }).exec()
+        const user = await userModel.findOne({ student: student._id }).exec()
+        const group = await groupModel.findOne({ id: groupID }).exec()
+        
+        const studentData: Record<string, any> = removeNullAndUndefinedProps({ name })
+        if(name || group) {
+            const oldGroup = await groupModel.findById(student.group).exec()
+            if(group) {
+                oldGroup.students.pull(student._id)
+                group.students.push(student._id)
+                studentData.group = group._id
+                await oldGroup.save(opts)
+                await group.save(opts)
+            }
+            const newId = generateStudentID(name ?? student.name, group?.id ?? oldGroup.id )
+            studentData.id = newId
+        }
+
+        await studentModel.findByIdAndUpdate(student._id, studentData, opts)
+
+        const userData: Record<string, string> = removeNullAndUndefinedProps({ name })
+        if(email) {
+            userData.email = email
+            sendEmailChangedEmail(user.name, user.role, email)
+        }
+        await userModel.updateOne({ student: student._id }, userData, opts).exec()
+        await session.commitTransaction()
+
+        const groupData = group 
+            ? {
+                id: group.id,
+                name: group.name,
+                year: group.year
+            }
+            : undefined
+
+        return { 
+            id: studentData.id ?? id,
+            name,
+            email,
+            group: groupData
+        }
+    } catch(err) {
+        console.log(err)
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500)
+        return
+    }
+}
+
 
 export const createStudent = async (args: StudentCreatingData, { res }: ExpressParams): Promise<StudentRegData | null> => {
 
@@ -38,8 +101,13 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
     const login = generateLogin(name)
     const id = generateStudentID(name, groupName)
     const role = "Student"
-
+    
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
+
+
         const group = await groupModel.findOne({ name: groupName }).exec()
 
         if (!group) {
@@ -66,9 +134,10 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
 
         await user.setPassword(password)
 
-        await student.save()
-        await group.save()
-        await user.save()
+        await student.save(opts)
+        await group.save(opts)
+        await user.save(opts)
+        await session.commitTransaction()
 
         const studentRegData: StudentRegData = {
             ...args,
@@ -85,6 +154,8 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
 
     } catch (err) {
         console.log(`Student didn't saved: \n${err}`)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }

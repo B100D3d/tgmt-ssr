@@ -7,6 +7,7 @@ import {
     StudentModel,
     SubjectModel
 } from "../types"
+import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
 import studentModel from "./MongoModels/studentModel"
 import recordModel from "./MongoModels/recordsModel"
@@ -30,9 +31,9 @@ const getRecordsArrayFromMap = (entity: string, _records: Map<string, string>): 
 
 export const getStudentRecords = async ({ month }: RecordsGetData, { req }: ExpressParams): Promise<Array<Records>> => {
 
-    const { uniqueId: userID } = req.user
+    const { uniqueId } = req.uniqueId
 
-    const user = await userModel.findById(userID).exec()
+    const user = await userModel.findById(uniqueId).exec()
 
     const student = await studentModel
                             .findOne({ name: user.name })
@@ -93,35 +94,46 @@ export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promi
 
     const recordsDB = await recordModel.find({ month, subject: subjectDB._id })
 
-    for (const item of records) {
-        const student = await studentModel.findOne({ name: item.student }).exec()
-
-        let studentGrades = recordsDB.find(records => records.student.equals(student._id))
-
-        if (!studentGrades) {
-            studentGrades = new recordModel({
-                student,
-                subject: subjectDB,
-                month,
-                grades: new Map<string, number>()
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
+    
+    try {
+        for (const item of records) {
+            const student = await studentModel.findOne({ name: item.student }).exec()
+    
+            let studentRecords = recordsDB.find(records => records.student.equals(student._id))
+    
+            if (!studentRecords) {
+                studentRecords = new recordModel({
+                    student,
+                    subject: subjectDB,
+                    month,
+                    records: new Map<string, string>()
+                })
+            }
+    
+            item.records.map(record => {
+                record.record 
+                    ? studentRecords.records.set(record.day.toString(), record.record) 
+                    : studentRecords.records.delete(record.day.toString())
             })
 
-            student.records.push(studentGrades._id)
-  
-            await studentGrades.save()
-            await student.save()
-
+            student.records.push(studentRecords._id)
+            await studentRecords.save(opts)
+            await student.save(opts)
+            await session.commitTransaction()
+    
         }
-
-        item.records.map(record => {
-            record.record 
-                ? studentGrades.records.set(record.day.toString(), record.record) 
-                : studentGrades.records.delete(record.day.toString())
-        })
-
-        await studentGrades.save()
-
+    
+        return getRecords({ month, subjectID, groupID }, ep)
+        
+    } catch(err) {
+        console.log(err)
+		await session.abortTransaction()
+		session.endSession()
+		ep.res.status(500)
+		return
     }
-
-    return getRecords({ month, subjectID, groupID }, ep)
+    
 }

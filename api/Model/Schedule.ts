@@ -7,10 +7,29 @@ import {
     GroupModel,
     SubjectModel
 } from "../types"
+import mongoose, { Schema, ClientSession } from "mongoose"
 import groupModel from "./MongoModels/groupModel"
 import subjectModel from "./MongoModels/subjectModel"
 import scheduleModel from "./MongoModels/scheduleModel"
 
+const SCHEDULE_DATA: Array<{ even: boolean; subgroup: number }> = [
+    {
+        even: true,
+        subgroup: 1
+    },
+    {
+        even: true,
+        subgroup: 2
+    },
+    {
+        even: false,
+        subgroup: 1
+    },
+    {
+        even: false,
+        subgroup: 2
+    }
+]
 
 
 export const getSchedule = async (args: ScheduleGetData, { res }: ExpressParams): Promise<Array<Schedule>> => {
@@ -58,46 +77,30 @@ export const getSchedule = async (args: ScheduleGetData, { res }: ExpressParams)
     return schedule
 }
 
+const deleteUnusedSubjects = async (subjectsId: Array<Schema.Types.ObjectId & SubjectModel>, group: GroupModel): Promise<void> => {
+    for(const id of subjectsId) {
+        const scheduleForSubject = await scheduleModel.findOne({ group: group._id, subject: id }).exec()
+        if (!scheduleForSubject) {
+            group.subjects.pull(id)
+        }
+    }
+}
+
 const createSchedule = async (
     existingSchedule: ScheduleModel[], 
     group: GroupModel,
     subject: SubjectModel,
     weekday: number,
     classNumber: number, 
-    even?: boolean, 
-    subgroup?: number
+    scheduleData: Array<{ even: boolean; subgroup: number }>, 
+	scheduleLength: number,
+	opts: Record<string, ClientSession>
     ): Promise<void> => {
 
     const subjectsIdToFind = Array.from(new Set(existingSchedule.map(s => s.subject._id)))
     const defaultData = { subject: subject._id }
-    const schedulesData = [
-        {
-            even: true,
-            subgroup: 1
-        },
-        {
-            even: true,
-            subgroup: 2
-        },
-        {
-            even: false,
-            subgroup: 1
-        },
-        {
-            even: false,
-            subgroup: 2
-        }
-    ]
-    const data = (!even && !subgroup) ? schedulesData 
-                            : (!even) ? schedulesData.filter(val => val.subgroup === subgroup)
-                            : (!subgroup) ? schedulesData.filter(val => val.even === even)
-                            : schedulesData.filter(val => (val.even === even && val.subgroup === subgroup))
 
-    const schedulesLength = (!even && !subgroup) ? 4
-                          : (!even || !subgroup) ? 2
-                          :                        1
-
-    while(existingSchedule.length < schedulesLength) {
+    while(existingSchedule.length < scheduleLength) {
         const schedule = new scheduleModel({
             classNumber,
             weekday,
@@ -105,41 +108,35 @@ const createSchedule = async (
         })
         existingSchedule.push(schedule)
         group.schedule.addToSet(schedule._id)
-        await schedule.save()
+        await schedule.save(opts)
     }
 
     for (const [i, val] of existingSchedule.entries()) {
-        await scheduleModel.updateOne({ _id: val._id }, { ...defaultData, ...data[i] }).exec()
+        await scheduleModel.updateOne({ _id: val._id }, { ...defaultData, ...scheduleData[i] }, opts).exec()
     }
 
-    for(const id of subjectsIdToFind) {
-        const scheduleForSubject = await scheduleModel.findOne({ group: group._id, subject: id }).exec()
-        if (!scheduleForSubject) {
-            group.subjects.pull(id)
-        }
-    }
+    deleteUnusedSubjects(subjectsIdToFind, group)
     
 }
 
-const deleteSchedule = async (existingSchedule: ScheduleModel[], group: GroupModel): Promise<void> => {
-    const subjectToFind = existingSchedule[0].subject
+const deleteSchedule = async (
+	existingSchedule: ScheduleModel[], 
+	group: GroupModel, 
+	opts: Record<string, ClientSession>
+	): Promise<void> => {
+    const subjectsIdToFind = Array.from(new Set(existingSchedule.map(s => s.subject._id)))
 
     for (const schedule of existingSchedule) {
         group.schedule.pull({ _id: schedule._id })
-        await schedule.remove()
+        await scheduleModel.deleteOne({ _id: schedule._id }, opts)
     }
     
-    const scheduleForSubject = group.schedule.find(
-        ({ subject }: ScheduleModel) => subject._id.equals(subjectToFind._id)
-    )
-
-    if (!scheduleForSubject) {
-        group.subjects.pull(subjectToFind._id)
-    }
+    deleteUnusedSubjects(subjectsIdToFind, group)
 }
 
 
 export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressParams): Promise<Array<Schedule>> => {
+
     const { groupID, even, subgroup, schedule } = args
 
     const group = await groupModel.findOne({ id: groupID }).populate({
@@ -156,58 +153,74 @@ export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressPa
                                                     : s === subgroup && e === even
     )
 
-    for (const item of schedule) {
+    const scheduleData = (!even && !subgroup) ? SCHEDULE_DATA 
+                            : (!even) ? SCHEDULE_DATA.filter(val => val.subgroup === subgroup)
+                            : (!subgroup) ? SCHEDULE_DATA.filter(val => val.even === even)
+                            : SCHEDULE_DATA.filter(val => (val.even === even && val.subgroup === subgroup))
 
-        const { subjectID, weekday, classNumber } = item
+    const scheduleLength = (!even && !subgroup) ? 4
+                          : (!even || !subgroup) ? 2
+                          :                        1
+    
+    const session = await mongoose.startSession()
+    session.startTransaction()
+	const opts = { session }
+	
+	try {
+		for (const item of schedule) {
 
-        const existingSchedule = schedules.filter(
-            ({ weekday: w, classNumber: c }: ScheduleModel) => (w === weekday && c === classNumber)
-        )
+			const { subjectID, weekday, classNumber } = item
+	
+			const existingSchedule = schedules.filter(
+				({ weekday: w, classNumber: c }: ScheduleModel) => (w === weekday && c === classNumber)
+			)
+	
+			if(subjectID) {
+				const subject = await subjectModel.findOne({ id: subjectID }).exec()
+				group.subjects.addToSet(subject._id)
 
-        try {
-            if(subjectID) {
-                const subject = await subjectModel.findOne({ id: subjectID }).exec()
-                group.subjects.addToSet(subject._id)
-
-                await createSchedule(existingSchedule, group, subject, weekday, classNumber, even, subgroup)
-            } else {
-                if(existingSchedule.length) {
-                    await deleteSchedule(existingSchedule, group)
-                }
-            }
-
-        } catch(err) {
-            console.log(err)
-            res.status(500)
-            return
-        }
-    }
-
-    await group.save()
-
-    const scheduleDB = await scheduleModel
-                            .find({ group: group._id })
-                            .populate({ path: "subject", populate: { path: "teacher" }})
-                            .exec()
-
-    return scheduleDB
-                .filter(({ even: e, subgroup: s }: ScheduleModel) => (!even && !subgroup) ? true 
-                                                                        : (!even) ? s === subgroup
-                                                                        : (!subgroup) ? e === even
-                                                                        : s === subgroup && e === even
-                )
-                .reduce((acc, curr) => {
-                    const { weekday, classNumber } = curr
-                    const exist = acc.find(s => (s.weekday === weekday && s.classNumber === classNumber))
-                    if(!exist) {
-                        acc.push({ weekday, classNumber })
-                    }
-                    return acc
-                }, [])
-                .map(({ weekday, classNumber }: ScheduleModel) => 
-                    scheduleDB.find(s => s.weekday === weekday && s.classNumber === classNumber))
-                .map(
-                    ({ weekday, classNumber, subject: { id, name, teacher: { name: teacherName }}}: ScheduleModel) =>
-                    ({ weekday, classNumber, subject: { id, name, teacher: teacherName }})
-                )
+				await createSchedule(existingSchedule, group, subject, weekday, classNumber, scheduleData, scheduleLength, opts)
+			} else {
+				if(existingSchedule.length) {
+					await deleteSchedule(existingSchedule, group, opts)
+				}
+			}
+		}
+	
+		await group.save(opts)
+		await session.commitTransaction()
+	
+		const scheduleDB = await scheduleModel
+								.find({ group: group._id })
+								.populate({ path: "subject", populate: { path: "teacher" }})
+								.exec()
+	
+		return scheduleDB
+					.filter(({ even: e, subgroup: s }: ScheduleModel) => (!even && !subgroup) ? true 
+																			: (!even) ? s === subgroup
+																			: (!subgroup) ? e === even
+																			: s === subgroup && e === even
+					)
+					.reduce((acc, curr) => {
+						const { weekday, classNumber } = curr
+						const exist = acc.find(s => (s.weekday === weekday && s.classNumber === classNumber))
+						if(!exist) {
+							acc.push({ weekday, classNumber })
+						}
+						return acc
+					}, [])
+					.map(({ weekday, classNumber }: ScheduleModel) => 
+						scheduleDB.find(s => s.weekday === weekday && s.classNumber === classNumber))
+					.map(
+						({ weekday, classNumber, subject: { id, name, teacher: { name: teacherName }}}: ScheduleModel) =>
+						({ weekday, classNumber, subject: { id, name, teacher: teacherName }})
+					)
+	} catch(err) {
+		console.log(err)
+		await session.abortTransaction()
+		session.endSession()
+		res.status(500)
+		return
+	}
+    
 }

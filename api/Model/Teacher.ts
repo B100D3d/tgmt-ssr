@@ -7,6 +7,7 @@ import {
     ExpressParams,
     UserRegData
 } from "../types"
+import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
 import groupModel from "./MongoModels/groupModel"
 import { generatePassword, generateLogin, generateTeacherID } from "./Utils"
@@ -97,10 +98,13 @@ export const createTeacher = async (args: UserCreatingData, { res }: ExpressPara
 
     await user.setPassword(password)
 
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
-        await teacher.save()
-        await user.save()
-
+        await teacher.save(opts)
+        await user.save(opts)
+        await session.commitTransaction()
         const teacherRegData: UserRegData = {
             ...args,
             login,
@@ -116,6 +120,8 @@ export const createTeacher = async (args: UserCreatingData, { res }: ExpressPara
 
     } catch(err) {
         console.log(`Teacher didn't saved: \n${err}`)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }

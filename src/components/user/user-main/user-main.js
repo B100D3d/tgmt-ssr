@@ -29,6 +29,9 @@ const UserMain = () => {
                         </Switch>
                     : role === 'Admin' ? 
                         <Switch location={location}>
+                            {/*
+                            * TODO: изменить component на render с сохранением "бага" цвета :D
+                            */}
                             <Route exact path='/user' component={ () => <Selector type='year' /> } />
                             <Route exact path='/user/:year' component={ () => <Selector type='group' /> } />
                             <Route exact path='/user/:year/:group' component={ Schedule } />

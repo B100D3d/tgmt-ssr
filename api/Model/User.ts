@@ -8,12 +8,16 @@ import {
     Student,
     Teacher,
     ExpressParams} from "../types"
+import mongoose from "mongoose"
 import { sendLoginEmail, sendPassChangedEmail, sendEmailChangedEmail } from "./Email"
 import { getAdminData } from "./Admin"
 import { getStudentData } from "./Student"
 import { getTeacherData } from "./Teacher"
 
 const DEFAULT_OPTIONS = { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }
+
+
+const isAdminOrTeacher = (user: UserModel): boolean => user.role === "Admin" || user.role === "Teacher"
 
 const getUserData = (user: UserModel): Promise<Admin | Teacher | Student> => {
     const USER_DATA_FUNC: {[key: string]: Function} = {
@@ -28,23 +32,8 @@ const getUserData = (user: UserModel): Promise<Admin | Teacher | Student> => {
 
 export const auth = async (_: any, { req, res }: ExpressParams): Promise<Admin | Teacher | Student> => {
 
-    const { uniqueId } = req.user;
-    const fingerprint = req.body.fingerprint
-
     try {
-        const user = await userModel.findById(uniqueId).exec()
-
-        if (!user) {
-            res.status(401)
-            return
-        }
-
-        const isFingerprintValid = user.isFingerprintValid(fingerprint)
-
-        if (!isFingerprintValid) {
-            res.status(401) /*TODO: change status to 403 and add check for frontend*/ 
-            return
-        }
+        const user = req.user
 
         const options = +process.env.PROD ? { ...DEFAULT_OPTIONS, secure: true } : DEFAULT_OPTIONS
         const token = user.generateJWT()
@@ -61,6 +50,9 @@ export const auth = async (_: any, { req, res }: ExpressParams): Promise<Admin |
 
 export const login = async ({ login, password }: LoginInfo, { req, res }: ExpressParams): Promise<Admin | Teacher | Student> => {
 
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
         const fingerprint = req.body.fingerprint
         const user = await userModel.findOne({ login }).exec()
@@ -77,20 +69,23 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
             return
         }
 
-        const isFingerprintValid = user.isFingerprintValid(fingerprint)
+        if(isAdminOrTeacher(user)){
+            const isFingerprintValid = user.isFingerprintValid(fingerprint)
 
-        if (!isFingerprintValid) {
-            user.fingerprints.push(fingerprint)
-            if(user.fingerprints.length === 4) {
-                user.fingerprints.shift()
-            }
+            if (!isFingerprintValid) {
+                user.fingerprints.push(fingerprint)
+                if(user.fingerprints.length === 4) {
+                    user.fingerprints.shift()
+                }
 
-            await user.save()
-
-            if (user.email) {
-                sendLoginEmail(user.name, user.email, user.role, req)
+                await user.save(opts)
+                await session.commitTransaction()
+                if (user.email) {
+                    sendLoginEmail(user.name, user.email, user.role, req)
+                }
             }
         }
+        
 
         const options = +process.env.PROD ? { ...DEFAULT_OPTIONS, secure: true } : DEFAULT_OPTIONS
         const token = user.generateJWT()
@@ -100,6 +95,8 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
 
     } catch (err) {
         console.log(err)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }
@@ -107,38 +104,35 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
 
 export const setEmail = async ({ email }: Email, { req, res }: ExpressParams): Promise<Email | null> => {
 
-    const { uniqueId } = req.user;
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
 
     try {
-        const user = await userModel.findByIdAndUpdate(uniqueId, { email }, { new: true }).exec()
-
-        if (!user) {
-            res.status(401)
-            return
-        }
-
+        const user = req.user
+        user.email = email
+        await user.save(opts)
+        await session.commitTransaction()
         sendEmailChangedEmail(user.name, user.role, user.email)
 
         return { email: user.email }
 
     } catch (err) {
         console.log(err)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }
 }
 
 export const changePassword = async ({ oldPassword, newPassword }: PasswordsInfo, { req, res }: ExpressParams): Promise<boolean> => {
-
-    const { uniqueId } = req.user;
-
+    
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
-        const user = await userModel.findById(uniqueId).exec()
-
-        if (!user) {
-            res.status(401)
-            return
-        }
+        const user = req.user
 
         const isPasswordValid = await user.isPasswordValid(oldPassword)
 
@@ -148,8 +142,9 @@ export const changePassword = async ({ oldPassword, newPassword }: PasswordsInfo
         }
 
         await user.setPassword(newPassword)
-        await user.save()
-
+        await user.save(opts)
+        await session.commitTransaction()
+        
         if (user.email) {
             sendPassChangedEmail(user.name, user.role, user.email, newPassword)
         }
@@ -158,6 +153,8 @@ export const changePassword = async ({ oldPassword, newPassword }: PasswordsInfo
 
     } catch (err) {
         console.log(err)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }

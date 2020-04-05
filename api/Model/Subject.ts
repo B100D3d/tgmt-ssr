@@ -5,6 +5,7 @@ import {
     ExpressParams,
     CreatedSubject
 } from "../types"
+import mongoose from "mongoose"
 import subjectModel from "./MongoModels/subjectModel"
 import { generateSubjectID } from "./Utils"
 import teacherModel from "./MongoModels/teacherModel"
@@ -38,15 +39,21 @@ export const createSubject = async (args: SubjectData, { res }: ExpressParams): 
 
     teacher.subjects.addToSet(subject._id)
 
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
 
-        await subject.save()
-        await teacher.save()
+        await subject.save(opts)
+        await teacher.save(opts)
+        await session.commitTransaction()
 
         return { ...args, id }
 
     } catch(err) {
         console.log(`Subject didn't saved: \n${err}`)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }
@@ -58,13 +65,20 @@ export const deleteSubject = async (args: SubjectData, { res }: ExpressParams): 
     const teacher = await teacherModel.findOne({ name: teacherName }).exec()
 
     const subject = await subjectModel.findOne({ name, teacher: teacher._id }).exec()
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
         teacher.subjects.pull(subject._id)
-        await subject.remove()
-        await teacher.save()
+        await subjectModel.deleteOne({ _id: subject._id }, opts)
+        await teacher.save(opts)
+        await session.commitTransaction()
         return true
     } catch(err) {
         console.log(`Subject not deleted: ${err}`)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }

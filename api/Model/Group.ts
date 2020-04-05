@@ -5,6 +5,7 @@ import {
     ExpressParams, 
     CreatedGroup 
 } from "../types"
+import mongoose from "mongoose"
 import groupModel from "./MongoModels/groupModel"
 import { generateGroupID } from "./Utils"
 import studentModel from "./MongoModels/studentModel"
@@ -31,13 +32,18 @@ export const createGroup = async ({ name, year }: GroupCreatingData, { res }: Ex
     const groupData = { id, name, year }
     const group = new groupModel(groupData)
 
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
-        await group.save()
-
+        await group.save(opts)
+        await session.commitTransaction()
         return groupData
 
     } catch (err) {
         console.log(`Group didn't saved: \n ${err}`)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }
@@ -46,13 +52,20 @@ export const createGroup = async ({ name, year }: GroupCreatingData, { res }: Ex
 export const deleteGroup = async ({ name, year }: GroupCreatingData, { res }: ExpressParams): Promise<boolean> => {
     
     const group = await groupModel.findOne({ name, year }).exec()
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try{
-        await studentModel.deleteMany({ group: group._id }).exec()
-        await scheduleModel.deleteMany({ group: group._id }).exec()
-        await group.remove()
+        await studentModel.deleteMany({ group: group._id }, opts).exec()
+        await scheduleModel.deleteMany({ group: group._id }, opts).exec()
+        await groupModel.deleteOne({ _id: group._id }, opts)
+        await session.commitTransaction()
         return true
     } catch(err) {
         console.log(`Group not deleted: ${err}`)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }

@@ -8,11 +8,11 @@ import {
 } from "../Model/User";
 import { createAdmin } from "../Model/Admin"
 import { createTeacher, getTeachers } from "../Model/Teacher"
-import { createStudent, getStudents } from "../Model/Student"
+import { createStudent, getStudents, changeStudent } from "../Model/Student"
 import { getGroups, createGroup, deleteGroup } from "../Model/Group"
 import { getSubjects, createSubject, deleteSubject } from "../Model/Subject"
 import { getSchedule, setSchedule } from "../Model/Schedule"
-import { getStudentRecords, getRecords, setRecords } from "../Model/Grade"
+import { getStudentRecords, getRecords, setRecords } from "../Model/Record"
 
 export default class Resolver {
     public static mainPageResolver = {
@@ -46,7 +46,8 @@ export default class Resolver {
     }
 
     public static studentsResolver = {
-        getStudents
+        getStudents,
+        changeStudent
     }
 
     public static teachersResolver = {

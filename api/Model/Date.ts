@@ -1,6 +1,6 @@
 import { Week } from "../types";
 
-const months: {[key: number]: string} = {
+const months: Record<number, string> = {
     0: "Января",
     1: "Февраля",
     2: "Марта",

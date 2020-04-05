@@ -10,6 +10,17 @@ export const range = (size: number, start?: number): Array<number> =>  {
 } 
 
 
+export const removeNullAndUndefinedProps = (object: Record<string, any>): Record<string, any> => {
+    
+    return Object.keys(object)
+                    .filter(k => object[k] !== undefined && object[k] !== null)
+                    .reduce((a: Record<string, any>, c) => {
+                        a[c] = object[c]
+                        return a
+                    }, {})
+}
+
+
 const generateStr = (length: number): string => {
     let str = ""
     for (let i = 0; i < length; i++){

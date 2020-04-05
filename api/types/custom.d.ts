@@ -1,9 +1,10 @@
-import { TokenInfo } from "./index";
+import { UserModel, TokenInfo } from "./index";
 
 declare global {
   namespace Express{
     export interface Request {
-      user: TokenInfo;
+      uniqueId: TokenInfo;
+      user: UserModel;
     }
   }
 }

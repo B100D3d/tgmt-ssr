@@ -101,10 +101,8 @@ const useAuth = () => {
                 setLoading(false)
             })
             .catch(error => {
-                if (error.response.status === 401) {
-                    setError(true)
-                    setLoading(false)
-                }
+                setError(true)
+                setLoading(false)
             })
     }, [fingerprint])
 

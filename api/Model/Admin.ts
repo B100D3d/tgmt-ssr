@@ -5,6 +5,7 @@ import {
     ExpressParams,
     UserRegData
 } from "../types";
+import mongoose from "mongoose"
 import { getGroups } from "./Group";
 import { generatePassword, generateLogin } from "./Utils";
 import userModel from "./MongoModels/userModel";
@@ -46,8 +47,13 @@ export const createAdmin = async (args: AdminCreatingData, { res }: ExpressParam
 
     await admin.setPassword(password)
 
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
     try {
-        await admin.save()
+        await admin.save(opts)
+        await session.commitTransaction()
+
         const userRegData: UserRegData = {...args, role }
 
         if (email) {
@@ -58,6 +64,8 @@ export const createAdmin = async (args: AdminCreatingData, { res }: ExpressParam
 
     } catch (err) {
         console.log(`Admin didn't saved: \n ${err}`)
+        await session.abortTransaction()
+        session.endSession()
         res.status(500)
         return
     }
