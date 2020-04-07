@@ -1,8 +1,7 @@
-import React from 'react';
-import Lottie from 'react-lottie';
+import React from "react"
+import Lottie from "react-lottie"
 
-
-import anim from './loading.json';
+import anim from "./loading.json"
 
 
 const Loading = ({ width, height, loading }) => {
@@ -12,9 +11,9 @@ const Loading = ({ width, height, loading }) => {
         autoplay: true,
         animationData: anim,
         rendererSettings: {
-            preserveAspectRatio: 'xMidYMid slice'
+            preserveAspectRatio: "xMidYMid slice"
         }
-    };
+    }
 
     return (
         <Lottie options={ defaultOptions }
@@ -26,4 +25,4 @@ const Loading = ({ width, height, loading }) => {
     )
 }
 
-export default Loading;
+export default Loading

@@ -1,12 +1,12 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
-import axios from 'axios';
-import loadable from '@loadable/component'
+import React, { useEffect, useState, useRef, useContext } from "react"
+import axios from "axios"
+import loadable from "@loadable/component"
 
-const OpenButton = loadable(() => import('/components/open-button/open-button')) 
+const OpenButton = loadable(() => import("/components/open-button/open-button"))
 
 import { InitialDataContext } from "/context"
 
-import './resources.sass';
+import "./resources.sass"
 
 
 const getResources = async () => {
@@ -19,8 +19,8 @@ const getResources = async () => {
                 url
             }
         }`
-    });
-    return query.data.data.resources;
+    })
+    return query.data.data.resources
 }
 
 const Resources = () => {
@@ -37,9 +37,9 @@ const Resources = () => {
     }, [])
 
     const handleClick = el => {
-        resRef.current.style.maxHeight = '5000px';
+        resRef.current.style.maxHeight = "5000px"
     
-        el.currentTarget.style.display = 'none';
+        el.currentTarget.style.display = "none"
     }
 
     return (
@@ -52,7 +52,7 @@ const Resources = () => {
                             <li key={ key }>
                                 <a href={ data.url } target="_blank" 
                                                 rel="noopener noreferrer">
-                                    <img src={`https://тгмт.рф/img/${data.img}`}
+                                    <img src={ `https://тгмт.рф/img/${ data.img }` }
                                         alt="Полезные ресурсы" />
                                 </a>
                                 <div className="text-container">
@@ -68,4 +68,4 @@ const Resources = () => {
     )
 }
 
-export default Resources;
+export default Resources

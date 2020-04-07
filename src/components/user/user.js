@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import loadable from '@loadable/component';
+import React, { useState } from "react"
+import loadable from "@loadable/component"
 
-const UserHeader = loadable(() => import('./user-header/user-header')) 
-const UserMenu = loadable(() => import('./user-menu/user-menu')) 
-const UserMain = loadable(() => import('./user-main/user-main')) 
+const UserHeader = loadable(() => import("./user-header/user-header"))
+const UserMenu = loadable(() => import("./user-menu/user-menu"))
+const UserMain = loadable(() => import("./user-main/user-main"))
 
-import { UserMenuOpenContext } from '/context';
+import { UserMenuOpenContext } from "/context"
 
-import './user.sass';
+import "./user.sass"
 
 
 const User = () => {
@@ -28,4 +28,4 @@ const User = () => {
     )
 }
 
-export default User;
+export default User

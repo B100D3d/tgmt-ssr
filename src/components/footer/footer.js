@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react"
 
-import './footer.sass';
-import rggmu from '/static/rggmu.webp';
-import inst from '/static/instagram.svg';
-import vk from '/static/vk.svg';
-import google from '/static/google.svg';
+import "./footer.sass"
+import rggmu from "/static/rggmu.webp"
+import inst from "/static/instagram.svg"
+import vk from "/static/vk.svg"
+import google from "/static/google.svg"
 
 
 const Footer = () => {
 
-    const [diff, setDiff] = useState();
+    const [diff, setDiff] = useState()
 
     useEffect(() => {
-        const currentDate = new Date(); //сегодняшняя дата 
-        const creatingDate = new Date(1952, 6, 16); //дата начала
-        setDiff(Math.floor((currentDate - creatingDate) / (1000 * 60 * 60 * 24 * 365)));
+        const currentDate = new Date() //сегодняшняя дата
+        const creatingDate = new Date(1952, 6, 16) //дата начала
+        setDiff(Math.floor((currentDate - creatingDate) / (1000 * 60 * 60 * 24 * 365)))
     }, [])
 
     return (
@@ -50,4 +50,4 @@ const Footer = () => {
     )
 }
 
-export default Footer;
+export default Footer

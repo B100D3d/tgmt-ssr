@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from "axios"
 
 const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
 
@@ -35,7 +35,6 @@ export const getSubjects = async () => {
 }
 
 export const sendSchedule = async (group, { even, subgroup }, schedule) => {
-    console.log(schedule)
     const res = await axios.post(`${ url }/api/setSchedule`, {
         query: `mutation {
             setSchedule(groupID: "${ group }",

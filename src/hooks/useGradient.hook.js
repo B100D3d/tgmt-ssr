@@ -1,6 +1,6 @@
-import { useState, useEffect, useRef, useContext } from 'react'
+import { useState, useEffect, useRef, useContext } from "react"
 
-import { UserMenuOpenContext } from '/context'
+import { UserMenuOpenContext } from "/context"
 
 
 const CSS_GRADIENTS = [{
@@ -376,14 +376,14 @@ const getDefaultGradient = gradient => {
 }
 
 const hasBrowserSupport =
-    typeof window !== 'undefined' ?
-    typeof window.CSS.registerProperty === 'function' :
+    typeof window !== "undefined" ?
+    typeof window.CSS.registerProperty === "function" :
     false
 
 const prefersReducedMotion =
-    typeof window === 'undefined' ?
+    typeof window === "undefined" ?
     true :
-    window.matchMedia('(prefers-reduced-motion: no-preference)')
+    window.matchMedia("(prefers-reduced-motion: no-preference)")
 
 const useGradient = () => {
 
@@ -401,7 +401,7 @@ const useGradient = () => {
                     CSS.registerProperty({
                         name,
                         initialValue,
-                        syntax: '<color>',
+                        syntax: "<color>",
                         inherits: false,
                     })
                 } catch (err) {

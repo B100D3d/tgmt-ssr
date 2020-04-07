@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react"
 
-import './second-menu.sass';
+import "./second-menu.sass"
 
 const SecondMenu = () => {
     return (
@@ -26,7 +26,7 @@ const SecondMenu = () => {
                 </div>
             </li>
         </ul>
-    );
-};
+    )
+}
 
-export default SecondMenu;
+export default SecondMenu

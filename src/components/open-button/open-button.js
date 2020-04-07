@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react"
 
-import './open-button.sass';
-import open from '/static/open.svg';
+import "./open-button.sass"
+import open from "/static/open.svg"
 
 
 const OpenButton = ({ onClick }) => {
@@ -11,7 +11,7 @@ const OpenButton = ({ onClick }) => {
                 <img src={ open } alt="open" />
             </button>
         </div>
-    );
+    )
 }
 
-export default OpenButton;
+export default OpenButton

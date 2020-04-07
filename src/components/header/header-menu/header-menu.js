@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext } from "react"
+import { Link } from "react-router-dom"
 
-import './header-menu.sass';
-import { WeekContext } from '../../../context';
+import "./header-menu.sass"
+import { WeekContext } from "../../../context"
 
 
 const HeaderMenu = () => {
@@ -22,7 +22,7 @@ const HeaderMenu = () => {
                         Техникум
                         <ul className="sub-menu">
                             <li>О техникуме</li>
-                            <li><Link to='/documents'>Документы</Link></li>
+                            <li><Link to="/documents">Документы</Link></li>
                             <li>Образование</li>
                             <li>Руководство</li>
                             <li>Стипендии и иные виды материальной поддержки</li>
@@ -76,7 +76,7 @@ const HeaderMenu = () => {
                 </ul>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default HeaderMenu;
+export default HeaderMenu

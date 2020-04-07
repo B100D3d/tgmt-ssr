@@ -1,11 +1,11 @@
-import React, { useContext } from 'react';
-import { TransitionGroup, CSSTransition } from 'react-transition-group';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import React, { useContext } from "react"
+import { TransitionGroup, CSSTransition } from "react-transition-group"
+import { Route, Switch, useLocation } from "react-router-dom"
 
-import './user-main.sass';
-import Schedule from './schedule/schedule';
-import { UserContext } from '/context';
-import Selector from './selector/selector';
+import "./user-main.sass"
+import Schedule from "./schedule/schedule"
+import { UserContext } from "/context"
+import Selector from "./selector/selector"
 
 
 const UserMain = () => {
@@ -20,22 +20,22 @@ const UserMain = () => {
                     key={ location.key }
                     timeout={ 1000 }
                     classNames="fade">
-                    { role === 'Student' ? 
+                    { role === "Student" ?
                         <Switch location={location}>
-                            <Route exact path='/user' component={ Schedule } />
-                            <Route path='/user/grades' component={ Schedule } />
-                            <Route path='/user/absence' component={ Schedule } />
-                            <Route path='/user/settings' component={ Schedule } />
+                            <Route exact path="/user" component={ Schedule } />
+                            <Route path="/user/grades" component={ Schedule } />
+                            <Route path="/user/absence" component={ Schedule } />
+                            <Route path="/user/settings" component={ Schedule } />
                         </Switch>
-                    : role === 'Admin' ? 
+                    : role === "Admin" ?
                         <Switch location={location}>
-                            <Route exact path='/user' render={ () => <Selector type='year' /> } />
-                            <Route exact path='/user/:year' render={ () => <Selector type='group' /> } />
-                            <Route exact path='/user/:year/:group' component={ Schedule } />
+                            <Route exact path="/user" render={ () => <Selector type="year" /> } />
+                            <Route exact path="/user/:year" render={ () => <Selector type="group" /> } />
+                            <Route exact path="/user/:year/:group" component={ Schedule } />
                         </Switch>
                     : 
                         <Switch location={location}>
-                            <Route exact path='/user' component={ Schedule } />
+                            <Route exact path="/user" component={ Schedule } />
                         </Switch> }
                 </CSSTransition>
             </TransitionGroup>
@@ -44,4 +44,4 @@ const UserMain = () => {
 }
 
 
-export default UserMain;
+export default UserMain

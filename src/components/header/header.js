@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react"
 
-import HeaderTop from './header-top/header-top';
-import HeaderMenu from './header-menu/header-menu';
-import HeaderMid from './header-mid/header-mid';
-import SecondMenu from './second-menu/second-menu';
+import HeaderTop from "./header-top/header-top"
+import HeaderMenu from "./header-menu/header-menu"
+import HeaderMid from "./header-mid/header-mid"
+import SecondMenu from "./second-menu/second-menu"
 
-import './header.sass';
+import "./header.sass"
 
 const Header = () => {
     return (
@@ -16,7 +16,7 @@ const Header = () => {
             <hr />
             <SecondMenu /> 
         </header>
-    );
-};
+    )
+}
 
-export default Header;
+export default Header

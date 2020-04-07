@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react"
 
-import aliceLogo from '/static/alice-logo.svg';
-import './search.sass';
+import aliceLogo from "/static/alice-logo.svg"
+import "./search.sass"
 
 const Search = () => {
     return (
@@ -11,7 +11,7 @@ const Search = () => {
                 <img src={ aliceLogo } alt="alice" className="alice" />
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Search;
+export default Search

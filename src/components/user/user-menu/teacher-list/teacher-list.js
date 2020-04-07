@@ -1,10 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react"
+import { Link } from "react-router-dom"
 
 
 const handleClick = (event) => {
-    document.querySelector('.active').classList.remove('active')
-    event.target.classList.add('active')
+    document.querySelector(".active").classList.remove("active")
+    event.target.classList.add("active")
 }
 
 const TeachertList = () => {
@@ -18,4 +18,4 @@ const TeachertList = () => {
     )
 }
 
-export default TeachertList;
+export default TeachertList

@@ -1,7 +1,7 @@
-import React from 'react'
-import Helmet from 'react-helmet'
+import React from "react"
+import Helmet from "react-helmet"
 
-import useAuth from '/hooks/useAuth.hook'
+import useAuth from "/hooks/useAuth.hook"
 
 const AuthPage = () => (    
     <>
@@ -14,4 +14,4 @@ const AuthPage = () => (
     </>
 )
 
-export default AuthPage;
+export default AuthPage

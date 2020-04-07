@@ -1,13 +1,13 @@
-import React, { useContext } from 'react';
+import React, { useContext } from "react"
 import axios from 'axios';
-import { useHistory } from 'react-router-dom';
+import { useHistory } from "react-router-dom"
 
-import './user-menu.sass';
-import { UserContext } from '/context'
-import logout from '/static/logout.svg';
-import AdminList from './admin-list/admin-list';
-import StudentList from './student-list/student-list';
-import TeachertList from './teacher-list/teacher-list';
+import "./user-menu.sass"
+import { UserContext } from "/context"
+import logout from "/static/logout.svg"
+import AdminList from "./admin-list/admin-list"
+import StudentList from "./student-list/student-list"
+import TeachertList from "./teacher-list/teacher-list"
 
 
 
@@ -18,14 +18,14 @@ const LISTS = {
 }
 
 const getRole = (user) => {
-    if (user.role === 'Admin') {
-        return 'Администратор'
+    if (user.role === "Admin") {
+        return "Администратор"
     } 
-    if (user.role === 'Student') {
+    if (user.role === "Student") {
         return `Студент | ${user.group.year} курс | группа ${user.group.name}`
     }
-    if (user.role === 'Teacher') {
-        return 'Преподаватель'
+    if (user.role === "Teacher") {
+        return "Преподаватель"
     }
 }
 
@@ -34,7 +34,7 @@ const UserMenu = () => {
 
     const handleClick = async () => {
         const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
-        await axios.post(`${url}/api/logout`, {}, { withCredentials: true })
+        await axios.post(`${ url }/api/logout`, {}, { withCredentials: true })
         history.push('/')
     }
 
@@ -64,4 +64,4 @@ const UserMenu = () => {
     )
 }
 
-export default UserMenu;
+export default UserMenu

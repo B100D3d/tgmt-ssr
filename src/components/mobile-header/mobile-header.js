@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react"
 
-import './mobile-header.sass';
-import logo from '/static/logo.webp';
-import BurgerMenu from '../burger-menu/burger-menu';
+import "./mobile-header.sass"
+import logo from "/static/logo.webp"
+import BurgerMenu from "../burger-menu/burger-menu"
 
 
 const MobileHeader = () => {
@@ -17,7 +17,7 @@ const MobileHeader = () => {
                 </div>
             </header>
         </>
-    );
+    )
 }
 
-export default MobileHeader;
+export default MobileHeader

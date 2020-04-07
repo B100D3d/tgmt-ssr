@@ -1,12 +1,12 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
-import { useParams } from 'react-router-dom'
+import { useParams } from "react-router-dom"
 import loadable from "@loadable/component"
 
-import './schedule.sass';
-import {getSchedule, getSubjects, sendSchedule} from '/api'
+import "./schedule.sass"
+import {getSchedule, getSubjects, sendSchedule} from "/api"
 
-import { UserMenuOpenContext, UserContext } from '/context'
-import useWindowSize from '/hooks/useWindowSize.hook'
+import { UserMenuOpenContext, UserContext } from "/context"
+import useWindowSize from "/hooks/useWindowSize.hook"
 import Switch from "./switch/switch";
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 import SelectEditor from "./select-editor"
@@ -52,7 +52,7 @@ const Schedule = () => {
     const [isOpen] = useContext(UserMenuOpenContext)
     const { user } = useContext(UserContext)
 
-    const isAdmin = user.role === 'Admin'
+    const isAdmin = user.role === "Admin"
     const group = user.group?.id || params.group
 
     const [rows, setRows] = useState(DEFAULT_ROWS)
@@ -108,20 +108,20 @@ const Schedule = () => {
 
     useEffect(() => {
         new Promise(r => setTimeout(r, 500)).then(() => {
-            document.querySelector('.react-grid-Container').classList.add('anim')
+            document.querySelector(".react-grid-Container").classList.add("anim")
         })
     }, [])
 
     useEffect(() => setSaveBtnVisibility(changedCells.length), [changedCells])
 
     const [columns, setColumns] = useState([
-        { key: 'classNumber', name: '№ пары', resizable: true, width: 80 },
-        { key: '1', name: 'Понедельник', editable: isAdmin, resizable: true },
-        { key: '2', name: 'Вторник', editable: isAdmin, resizable: true },
-        { key: '3', name: 'Среда', editable: isAdmin, resizable: true },
-        { key: '4', name: 'Четверг', editable: isAdmin, resizable: true },
-        { key: '5', name: 'Пятиница', editable: isAdmin, resizable: true },
-        { key: '6', name: 'Суббота', editable: isAdmin, resizable: true }
+        { key: "classNumber", name: "№ пары", resizable: true, width: 80 },
+        { key: "1", name: "Понедельник", editable: isAdmin, resizable: true },
+        { key: "2", name: "Вторник", editable: isAdmin, resizable: true },
+        { key: "3", name: "Среда", editable: isAdmin, resizable: true },
+        { key: "4", name: "Четверг", editable: isAdmin, resizable: true },
+        { key: "5", name: "Пятиница", editable: isAdmin, resizable: true },
+        { key: "6", name: "Суббота", editable: isAdmin, resizable: true }
     ])
 
     const onGridRowsUpdated = (data) => {
@@ -147,28 +147,28 @@ const Schedule = () => {
 
     const handleSave = () => {
         document.querySelector(".save-button").disabled = false
-        const { hide } = cogoToast.loading('Загрузка...', { hideAfter: 0, position: 'top-right' })
+        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
         const opts = { even: true, subgroup: 1, ...switchState }
         sendSchedule(group, opts, changedCells)
             .then((s) => {
                 hide()
-                cogoToast.success('Данные успешно получены.', { position: 'top-right' })
+                cogoToast.success("Данные успешно получены.", { position: "top-right" })
                 setSchedule(s)
             })
             .catch(error => {
                 hide()
-                cogoToast.error('Ошибка сервера.', { position: 'top-right' })
+                cogoToast.error("Ошибка сервера.", { position: "top-right" })
             })
     }
 
     return (
-        <div className='schedule-container'>
+        <div className="schedule-container">
             <h1>Расписание</h1>
-            <div className='buttons-container'>
-                <div className='switch-container'>
-                    <Switch val0='Чет' val1='Неч' title='Неделя' isAdmin={ isAdmin }
+            <div className="buttons-container">
+                <div className="switch-container">
+                    <Switch val0="Чет" val1="Неч" title="Неделя" isAdmin={ isAdmin }
                          state={ [switchState, setSwitch] } />
-                    <Switch val0='&nbsp;&nbsp;1' val1='&nbsp;&nbsp;2' title='Подгруппа' isAdmin={ isAdmin }
+                    <Switch val0="&nbsp;&nbsp;1" val1="&nbsp;&nbsp;2" title="Подгруппа" isAdmin={ isAdmin }
                          state={ [switchState, setSwitch] } />
                 </div>
                 <button className="save-button" onClick={ handleSave }>Сохранить</button>
@@ -189,7 +189,7 @@ const Schedule = () => {
 
 const resize = (isOpen, windowSize, setWidth) => {
     if (isOpen) {
-        const menuWidth = windowSize.width > 800 ? document.querySelector('.user-menu').clientWidth : 0
+        const menuWidth = windowSize.width > 800 ? document.querySelector(".user-menu").clientWidth : 0
         setWidth(windowSize.width * 0.95 - menuWidth)
     } else {
         setWidth(windowSize.width * 0.95)

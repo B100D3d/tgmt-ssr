@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react"
-import { Route, Switch } from 'react-router-dom'
-import axios from 'axios'
-import loadable from '@loadable/component'
-import Fingerprint from 'fingerprintjs2'
-import UAParser from 'ua-parser-js'
+import { Route, Switch } from "react-router-dom"
+import axios from "axios"
+import loadable from "@loadable/component"
+import Fingerprint from "fingerprintjs2"
+import UAParser from "ua-parser-js"
 
-const MainPage = loadable(() => import('/pages/MainPage'))
-const Page404 = loadable(() => import('/pages/Page404'))
-const AuthPage = loadable(() => import('/pages/AuthPage'))
+const MainPage = loadable(() => import("/pages/MainPage"))
+const Page404 = loadable(() => import("/pages/Page404"))
+const AuthPage = loadable(() => import("/pages/AuthPage"))
 
-import { WeekContext, InitialDataContext, FingerprintContext } from '/context';
+import { WeekContext, InitialDataContext, FingerprintContext } from "/context";
 
 
 const getWeek = async () => {
     const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
-    const query = await axios.post(`${url}/api/mainPage`, {
+    const query = await axios.post(`${ url }/api/mainPage`, {
             query: `{
                  week {
                         date
@@ -22,8 +22,8 @@ const getWeek = async () => {
                         even
                     }
                 }`
-            });
-    return query.data.data.week;
+            })
+    return query.data.data.week
 }
 
 const getFingerPrint = async () => {
@@ -84,8 +84,8 @@ const App = (props) => {
                             <Route path='/user' component={ AuthPage } />
                             <Route path='/documents' component={ Test } />
                             <Route render={({ staticContext }) => {
-                                if (staticContext) staticContext.statusCode = 404;
-                                return <Page404></Page404>;
+                                if (staticContext) staticContext.statusCode = 404
+                                return <Page404 />
                             }} />
                         </Switch>
                 </WeekContext.Provider>   
@@ -93,11 +93,11 @@ const App = (props) => {
         </FingerprintContext.Provider> 
     )
 }
-        
+
 const Test = () => (
     <>
         <div>Lorem</div>
     </>
 )
 
-export default App;
+export default App

@@ -1,61 +1,61 @@
-import React, { useContext } from 'react';
-import { slide as Menu } from 'react-burger-menu';
-import { Link } from 'react-router-dom';
-import loadable from '@loadable/component';
+import React, { useContext } from "react"
+import { slide as Menu } from "react-burger-menu"
+import { Link } from "react-router-dom"
+import loadable from "@loadable/component"
 
-import { WeekContext } from '/context';
+import { WeekContext } from "/context"
 
-import Search from '/components/search/search';
-const RainbowButton = loadable(() => import('/components/rainbow-button/rainbow-button'))
+import Search from "/components/search/search"
+const RainbowButton = loadable(() => import("/components/rainbow-button/rainbow-button"))
 
-import './burger-menu.sass';
+import "./burger-menu.sass"
 
-import logo from '/static/logo.webp';
-import burger from '/static/burger.svg';
-import close from '/static/cross.svg';
-import student from '/static/student.svg';
+import logo from "/static/logo.webp"
+import burger from "/static/burger.svg"
+import close from "/static/cross.svg"
+import student from "/static/student.svg"
 
 
 const styles = {
     bmMenu: {
-        width: '100%',
-        background: '#2C2A2A',
-        padding: '0',
-        paddingTop: '0'
+        width: "100%",
+        background: "#2C2A2A",
+        padding: "0",
+        paddingTop: "0"
     },
     bmMenuWrap: {
-        width: '100%',
-        transform: 'translate3d(100%, 0px, 0px)',
-        transition: 'transform .8s ease 0s'
+        width: "100%",
+        transform: "translate3d(100%, 0px, 0px)",
+        transition: "transform .8s ease 0s"
     },
     bmBurgerButton: {
-        position: 'absolute',
-        width: '30px',
-        height: '30px',
-        right: '3%',
-        top: '5px',
-        outline: 'none'
+        position: "absolute",
+        width: "30px",
+        height: "30px",
+        right: "3%",
+        top: "5px",
+        outline: "none"
     },
     bmCrossButton: {
-        position: 'absolute',
-        width: '30px',
-        height: '30px',
-        right: '15px',
-        top: '20px',
-        outline: 'none'
+        position: "absolute",
+        width: "30px",
+        height: "30px",
+        right: "15px",
+        top: "20px",
+        outline: "none"
     },
     bmItemList: {
-        width: '100%'
+        width: "100%"
     }
 }
 
 
 const handleClick = (state) => {
     if (state.isOpen) {
-        document.body.setAttribute('style', 'overflow: hidden; position: fixed;')
+        document.body.setAttribute("style", "overflow: hidden; position: fixed")
     } else {
-        document.body.setAttribute('style', 'overflow: visible; position: static');
-        document.querySelector('.bm-menu-wrap').style.transform = 'translate3d(100%, 0px, 0px)'
+        document.body.setAttribute("style", "overflow: visible; position: static");
+        document.querySelector(".bm-menu-wrap").style.transform = "translate3d(100%, 0px, 0px)"
     }
 }
 
@@ -86,7 +86,7 @@ const BurgerMenu = () => {
                                     { weekNumber } { even } 
                                 </p>
                             </div>
-                            <Link to='/user' onClick={ handleClick }>
+                            <Link to="/user" onClick={ handleClick }>
                                 <RainbowButton className="login" interval={ 2000 }>
                                     <img src={ student } alt="student" className="student" />
                                     Личный кабинет
@@ -97,7 +97,7 @@ const BurgerMenu = () => {
                     </div>
             </Menu>         
         </>
-    );
+    )
 }
 
-export default BurgerMenu;
+export default BurgerMenu

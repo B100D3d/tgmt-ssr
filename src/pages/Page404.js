@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import loadable from '@loadable/component'
+import React, { useEffect, useState } from "react"
+import loadable from "@loadable/component"
 
-const Lottie = loadable(() => import('react-lottie')) 
+const Lottie = loadable(() => import("react-lottie"))
 
-import anim from '/static/404page.json';
+import anim from "/static/404page.json"
 
 const Page404 = () => {
-    const [defaultOptions, setDefaultOptions] = useState({});
+    const [defaultOptions, setDefaultOptions] = useState({})
 
     useEffect(() => {
         const viewBoxSize = window.innerWidth < 800 ? "200 0 600 512" : "0 0 1024 512"
@@ -15,11 +15,11 @@ const Page404 = () => {
             autoplay: true,
             animationData: anim,
             rendererSettings: {
-                preserveAspectRatio: 'none',
+                preserveAspectRatio: "none",
                 viewBoxSize
             }
         })
-    }, []);
+    }, [])
 
     return (
         <Lottie options={ defaultOptions }
@@ -31,4 +31,4 @@ const Page404 = () => {
     )
 }
 
-export default Page404;
+export default Page404

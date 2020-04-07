@@ -1,9 +1,9 @@
-import React, { useContext } from 'react'
+import React, { useContext } from "react"
 
-import s from './selector.module.sass'
-import useGradient from '/hooks/useGradient.hook'
-import { UserContext } from '/context'
-import { Link, useParams, useLocation } from 'react-router-dom'
+import s from "./selector.module.sass"
+import useGradient from "/hooks/useGradient.hook"
+import { UserContext } from "/context"
+import { Link, useParams, useLocation } from "react-router-dom"
 
 
 const noDeg = ({ deg, ...rest }) => rest
@@ -28,7 +28,7 @@ const Selector = ({ type }) => {
 
     return (
         <div className={ s.selector }>
-            <h1>{ type === 'group' ? 'Выбор группы' : 'Выбор курса' }</h1>
+            <h1>{ type === "group" ? "Выбор группы" : "Выбор курса" }</h1>
             <div className={ s.items }>
                 { entities.map((e) => 
                     <Item key={ e.id || e } name={ e.name || e } id={ e.id || e } />
