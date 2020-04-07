@@ -1,7 +1,8 @@
 import axios from 'axios'
 
+const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+
 export const getSchedule = async (group, { subgroup, even }) => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
     const res = await axios.post(`${ url }/api/getSchedule`, {
         query: `{
             getSchedule(groupID: "${ group }",
@@ -21,7 +22,6 @@ export const getSchedule = async (group, { subgroup, even }) => {
 }
 
 export const getSubjects = async () => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
     const res = await axios.post(`${ url }/api/subjects`, {
         query: `{
             getSubjects{
@@ -32,4 +32,28 @@ export const getSubjects = async () => {
         }`
     }, { withCredentials: true })
     return res.data.data.getSubjects
+}
+
+export const sendSchedule = async (group, { even, subgroup }, schedule) => {
+    console.log(schedule)
+    const res = await axios.post(`${ url }/api/setSchedule`, {
+        query: `mutation {
+            setSchedule(groupID: "${ group }",
+                        even: ${ even },
+                        subgroup: ${ subgroup },
+                        schedule: ${ schedule.map((s) => `
+                            { weekday: ${ s.weekday },
+                              classNumber: ${ s.classNumber },
+                              subjectID: "${ s.subjectID }" },`) }) {
+                            classNumber
+                            weekday
+                            subject {
+                                id
+                                name
+                                teacher
+                            }
+            }
+        }`
+    }, { withCredentials: true })
+    return res.data.data.setSchedule
 }

@@ -118,7 +118,7 @@ const Auth = () => {
         <div className="auth-back" style={ styles }>
             <div className="auth">
                 <Link to="/">
-                    <img src={ back } alt="back" / >
+                    <img src={ back } alt="back" />
                 </Link>
                 <h1 className="title">Авторизация</h1>
                 <div className="input-container">
