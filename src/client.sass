@@ -58,11 +58,18 @@ main .awssld
     width: 100% !important
 
     .react-grid-Canvas
+        width: 100% !important
+        &::-webkit-scrollbar
+            width: 0
         .select-editor
             background-color: #201E1E !important
             color: white
             transition: none
             font-size: 16px
+
+        > div:nth-child(2)
+            width: 100% !important
+            transition: none
 
     &.anim
         transition: all 1s ease
@@ -77,6 +84,11 @@ main .awssld
         border: none
         border-top: 2px solid white
 
+    .react-grid-Header
+        border-bottom: 2px solid #29B6F6
+
+    .react-grid-Row
+        border-bottom: 1px solid #ddd
 
     .react-grid-HeaderCell
         border-bottom: 2px solid #29B6F6
@@ -94,9 +106,6 @@ main .awssld
         text-align: center
         box-sizing: border-box
         background-color: transparent !important
-
-    .rdg-selected
-        transition: transform .3s ease, height 1s ease, width 1s ease
 
 
 #root

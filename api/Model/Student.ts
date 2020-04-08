@@ -184,7 +184,7 @@ export const getStudentData = async (user: UserModel): Promise<Student> => {
     }).execPopulate()
 
     const schedule = studentDB.student.group.schedule
-    .filter(({ subgroup, even }: ScheduleModel) => (subgroup === 1 && even === !!(getWeekNum() % 2)))
+    .filter(({ subgroup, even }: ScheduleModel) => (subgroup === 1 && even === !(getWeekNum() % 2)))
     .map(
         ({ subject: { id, name, teacher }, classNumber, weekday }: ScheduleModel) => 
         ({ subject: { id, name, teacher: teacher.name }, classNumber, weekday })

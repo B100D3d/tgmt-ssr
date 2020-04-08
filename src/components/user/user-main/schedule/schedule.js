@@ -12,7 +12,6 @@ const ReactDataGrid = loadable(() => import("react-data-grid"))
 import SelectEditor from "./select-editor"
 import cogoToast from "cogo-toast"
 
-
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",
     2: "",
@@ -33,17 +32,13 @@ const DEFAULT_ROWS = [
 
 const getRows = (schedule) => {
     return schedule.reduce((acc, curr) => {
-        if (!acc.length) {
-            acc.push(...DEFAULT_ROWS)
-        }
 
         const scheduleItem = acc.find(({ classNumber }) => classNumber === curr.classNumber)
         scheduleItem[curr.weekday] = `${curr.subject.name} (${curr.subject.teacher})`
 
         return acc
-    }, [])
+    }, DEFAULT_ROWS.map(r => ({...r})))
 }
-
 
 const Schedule = () => {
 
@@ -55,7 +50,7 @@ const Schedule = () => {
     const isAdmin = user.role === "Admin"
     const group = user.group?.id || params.group
 
-    const [rows, setRows] = useState(DEFAULT_ROWS)
+    const [rows, setRows] = useState(DEFAULT_ROWS.map(r => ({...r})))
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
     const [switchState, setSwitch] = useState({})
@@ -66,15 +61,22 @@ const Schedule = () => {
 
     const [subjectTypes, setSubjectTypes] = useState()
 
-    const handleSchedule = async () => {
+    const handleSchedule = () => {
         clearTimeout(switchTimeout.current)
         switchTimeout.current = setTimeout(() => {
-            getSchedule(group, switchState)
+            const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+            const opts = { even: true, subgroup: 1, ...switchState }
+            getSchedule(group, opts)
                 .then((s) => {
+                    hide()
+                    cogoToast.success("Данные успешно загружены.", { position: "top-right" })
                     setSchedule(s)
                     setChangedCells([])
                 })
-                .catch(console.log)
+                .catch((error) => {
+                    hide()
+                    cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                })
         }, 500)
     }
 
@@ -91,15 +93,15 @@ const Schedule = () => {
 
     useEffect(() => {
         schedule && setRows(getRows(schedule))
-        subjectTypes && setColumns(columns.map((c, i) => i === 0 ? c : ({ ...c, editor: <SelectEditor options={ subjectTypes }/> })))
-    }, [schedule, subjectTypes])
+    }, [schedule])
 
     useEffect(() => {
-        if(Object.keys(switchState).length) {
-            handleSchedule()
-        } else if(!user.schedule) {
-            getSchedule(group, { even: true, subgroup: 1 }).then(setSchedule)
-        }
+        subjectTypes && setColumns(columns.map((c, i) => i === 0 ? c : ({ ...c, editor: <SelectEditor options={ subjectTypes }/> })))
+    }, [subjectTypes])
+
+    useEffect(() => {
+        if(user.schedule && !Object.keys(switchState).length) return
+        handleSchedule()
     }, [switchState])
 
     useEffect(() => {
@@ -146,16 +148,19 @@ const Schedule = () => {
     }
 
     const handleSave = () => {
-        document.querySelector(".save-button").disabled = false
+        document.querySelector(".save-button").disabled = true
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
         const opts = { even: true, subgroup: 1, ...switchState }
         sendSchedule(group, opts, changedCells)
             .then((s) => {
+                document.querySelector(".save-button").disabled = false
                 hide()
-                cogoToast.success("Данные успешно получены.", { position: "top-right" })
+                cogoToast.success("Данные успешно загружены.", { position: "top-right" })
                 setSchedule(s)
+                setChangedCells([])
             })
             .catch(error => {
+                document.querySelector(".save-button").disabled = false
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
             })

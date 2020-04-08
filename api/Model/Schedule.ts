@@ -12,6 +12,8 @@ import groupModel from "./MongoModels/groupModel"
 import subjectModel from "./MongoModels/subjectModel"
 import scheduleModel from "./MongoModels/scheduleModel"
 
+const isNull = (v: any) => v === null
+
 const SCHEDULE_DATA: Array<{ even: boolean; subgroup: number }> = [
     {
         even: true,
@@ -54,9 +56,9 @@ export const getSchedule = async (args: ScheduleGetData, { res }: ExpressParams)
     }
 
     const schedule = groupDB.schedule
-        .filter(({ even: e, subgroup: s }: ScheduleModel) => (!even && !subgroup) ? true 
-                                                                : (!even) ? s === subgroup
-                                                                : (!subgroup) ? e === even
+        .filter(({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
+                                                                : (isNull(even)) ? s === subgroup
+                                                                : (isNull(subgroup)) ? e === even
                                                                 : s === subgroup && e === even
         )
         .reduce((acc, curr) => {
@@ -115,7 +117,7 @@ const createSchedule = async (
         await scheduleModel.updateOne({ _id: val._id }, { ...defaultData, ...scheduleData[i] }, opts).exec()
     }
 
-    deleteUnusedSubjects(subjectsIdToFind, group)
+    await deleteUnusedSubjects(subjectsIdToFind, group)
     
 }
 
@@ -131,7 +133,7 @@ const deleteSchedule = async (
         await scheduleModel.deleteOne({ _id: schedule._id }, opts)
     }
     
-    deleteUnusedSubjects(subjectsIdToFind, group)
+    await deleteUnusedSubjects(subjectsIdToFind, group)
 }
 
 
@@ -147,20 +149,20 @@ export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressPa
     }).exec()
 
     const schedules = group.schedule.filter(
-        ({ even: e, subgroup: s }: ScheduleModel) => (!even && !subgroup) ? true 
-                                                    : (!even) ? s === subgroup
-                                                    : (!subgroup) ? e === even
+        ({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
+                                                    : (isNull(even)) ? s === subgroup
+                                                    : (isNull(subgroup)) ? e === even
                                                     : s === subgroup && e === even
     )
 
-    const scheduleData = (!even && !subgroup) ? SCHEDULE_DATA 
-                            : (!even) ? SCHEDULE_DATA.filter(val => val.subgroup === subgroup)
-                            : (!subgroup) ? SCHEDULE_DATA.filter(val => val.even === even)
+    const scheduleData = (isNull(even) && isNull(subgroup)) ? SCHEDULE_DATA
+                            : (isNull(even)) ? SCHEDULE_DATA.filter(val => val.subgroup === subgroup)
+                            : (isNull(subgroup)) ? SCHEDULE_DATA.filter(val => val.even === even)
                             : SCHEDULE_DATA.filter(val => (val.even === even && val.subgroup === subgroup))
 
-    const scheduleLength = (!even && !subgroup) ? 4
-                          : (!even || !subgroup) ? 2
-                          :                        1
+    const scheduleLength =  (isNull(even) && isNull(subgroup)) ?  4
+                          : (isNull(even) || isNull(subgroup)) ?  2
+                          :                                       1
     
     const session = await mongoose.startSession()
     session.startTransaction()
@@ -196,9 +198,9 @@ export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressPa
 								.exec()
 	
 		return scheduleDB
-					.filter(({ even: e, subgroup: s }: ScheduleModel) => (!even && !subgroup) ? true 
-																			: (!even) ? s === subgroup
-																			: (!subgroup) ? e === even
+					.filter(({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
+																			: (isNull(even)) ? s === subgroup
+																			: (isNull(subgroup)) ? e === even
 																			: s === subgroup && e === even
 					)
 					.reduce((acc, curr) => {
