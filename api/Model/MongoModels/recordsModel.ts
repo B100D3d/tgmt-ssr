@@ -18,4 +18,4 @@ const recordsSchema = new mongoose.Schema({
     } // [оценки/пропуски за месяц] { day: String, value: string }
 });
 
-export default mongoose.model<RecordsModel>("Record", recordsSchema)
+export default mongoose.model<RecordsModel>("Records", recordsSchema)

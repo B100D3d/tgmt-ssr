@@ -56,3 +56,18 @@ export const sendSchedule = async (group, { even, subgroup }, schedule) => {
     }, { withCredentials: true })
     return res.data.data.setSchedule
 }
+
+export const getStudentRecords = async (month) => {
+    const res = await axios.post(`${ url }/api/studentRecords`, {
+        query: `{
+            getStudentRecords(month: ${ month }) {
+                entity
+                records {
+                    day
+                    record
+                }
+            }
+        }`
+    }, { withCredentials: true })
+    return res.data.data.getStudentRecords
+}

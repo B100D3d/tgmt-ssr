@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import loadable from "@loadable/component"
 
 import "./schedule.sass"
-import {getSchedule, getSubjects, sendSchedule} from "/api"
+import { getSchedule, getSubjects, sendSchedule } from "/api"
 
 import { UserMenuOpenContext, UserContext } from "/context"
 import useWindowSize from "/hooks/useWindowSize.hook"
@@ -96,7 +96,8 @@ const Schedule = () => {
     }, [schedule])
 
     useEffect(() => {
-        subjectTypes && setColumns(columns.map((c, i) => i === 0 ? c : ({ ...c, editor: <SelectEditor options={ subjectTypes }/> })))
+        subjectTypes && setColumns(columns.map((c, i) => i === 0 ? c
+            : ({ ...c, editor: <SelectEditor options={ subjectTypes }/> })))
     }, [subjectTypes])
 
     useEffect(() => {

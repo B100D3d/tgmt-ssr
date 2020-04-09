@@ -18,7 +18,7 @@ const getCSSProperties = (gradient) => {
 }
 
 
-const Selector = ({ type }) => {
+const Selector = ({ type, title }) => {
     const params = useParams()
     const { user } = useContext(UserContext)
     const years = new Set(user.groups.map(({ year }) => year).sort((a, b) => a - b))
@@ -28,7 +28,8 @@ const Selector = ({ type }) => {
 
     return (
         <div className={ s.selector }>
-            <h1>{ type === "group" ? "Выбор группы" : "Выбор курса" }</h1>
+            <h1>{ title }</h1>
+            <h2>{ type === "group" ? "Выбор группы" : "Выбор курса" }</h2>
             <div className={ s.items }>
                 { entities.map((e) => 
                     <Item key={ e.id || e } name={ e.name || e } id={ e.id || e } />

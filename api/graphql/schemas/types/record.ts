@@ -19,7 +19,7 @@ export default new GraphQLObjectType({
                     day: {
                         type: GraphQLInt
                     },
-                    grade: {
+                    record: {
                         type: GraphQLInt
                     }
                 })

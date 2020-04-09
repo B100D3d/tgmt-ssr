@@ -29,9 +29,28 @@
 
     h1
         color: white
+        margin-bottom: 0
+        font-size: 44px
+
+    h2
+        color: white
+        align-self: flex-start
+        font-size: 36px
+        margin-left: 20px
+        border-bottom: 2px solid #19CCF3
 
     .items
         display: flex
         flex-wrap: wrap
         overflow: auto
         width: 100%
+
+@media (max-width: 695px)
+    .selector
+        h1
+            font-size: 30px
+
+        h2
+            font-size: 26px
+        .items
+            justify-content: center
