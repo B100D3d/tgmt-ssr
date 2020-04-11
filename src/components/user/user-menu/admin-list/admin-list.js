@@ -9,7 +9,8 @@ const handleClick = (event) => {
 const AdminList = () => {
     return (
         <>
-            <Link><li className="active" onClick={ handleClick }>Расписание</li></Link>
+            <Link to="/user"><li className="active" onClick={ handleClick }>Расписание</li></Link>
+            <Link to="/user/register"><li onClick={ handleClick }>Журнал</li></Link>
             <Link><li onClick={ handleClick }>Группы</li></Link>
             <Link><li onClick={ handleClick }>Студенты</li></Link>
             <Link><li onClick={ handleClick }>Преподаватели</li></Link>

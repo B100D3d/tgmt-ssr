@@ -4,6 +4,8 @@ import "./user-header.sass"
 import { WeekContext, UserMenuOpenContext } from "/context"
 import useWindowSize from "/hooks/useWindowSize.hook"
 import burger from "/static/burger.svg"
+import home from "/static/home.svg"
+import { Link } from "react-router-dom";
 
 
 const UserHeader = () => {
@@ -43,9 +45,14 @@ const UserHeader = () => {
 
     return (
         <header className="user-header">
-            <div className="burger-con">
-                <img src={ burger } alt="burger" />
-                <button className="burger-btn" onClick={ handleClick } />
+            <div className="btn-con">
+                <div className="burger-con">
+                    <img src={ burger } alt="burger" />
+                    <button className="burger-btn" onClick={ handleClick } />
+                </div>
+                <Link to="/" >
+                    <img src={ home } alt="home" className="home" />
+                </Link>
             </div>
             <p className="week">
                 { date }

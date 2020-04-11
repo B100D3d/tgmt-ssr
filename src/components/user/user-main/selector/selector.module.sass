@@ -3,8 +3,9 @@
     justify-content: center
     align-items: center
     font-size: 48px
-    width: 180px
+    width: auto
     height: 180px
+    min-width: 180px
     border-radius: 20px
     background-color: #201e1e
     cursor: pointer
@@ -38,6 +39,19 @@
         font-size: 36px
         margin-left: 20px
         border-bottom: 2px solid #19CCF3
+
+    img
+        position: absolute
+        width: 40px
+        top: 35px
+        left: 35px
+        border-radius: 50%
+        cursor: pointer
+        transition: all .3s ease
+
+        &:hover
+            box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.5)
+            transform: scale(1.1)
 
     .items
         display: flex

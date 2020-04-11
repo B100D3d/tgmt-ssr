@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import loadable from "@loadable/component"
 
 import "./schedule.sass"
@@ -11,6 +11,8 @@ import Switch from "./switch/switch";
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 import SelectEditor from "./select-editor"
 import cogoToast from "cogo-toast"
+import back from "/static/previous.svg"
+
 
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",
@@ -43,11 +45,13 @@ const getRows = (schedule) => {
 const Schedule = () => {
 
     const params = useParams()
+    const history = useHistory()
 
     const [isOpen] = useContext(UserMenuOpenContext)
     const { user } = useContext(UserContext)
 
     const isAdmin = user.role === "Admin"
+    const isStudent = user.role === "Student"
     const group = user.group?.id || params.group
 
     const [rows, setRows] = useState(DEFAULT_ROWS.map(r => ({...r})))
@@ -167,8 +171,13 @@ const Schedule = () => {
             })
     }
 
+    const onBack = () => {
+        history.goBack()
+    }
+
     return (
         <div className="schedule-container">
+            { !isStudent && <img src={back} alt="back" onClick={ onBack }/> }
             <h1>Расписание</h1>
             <div className="buttons-container">
                 <div className="switch-container">

@@ -21,10 +21,10 @@ export const getSchedule = async (group, { subgroup, even }) => {
     return res.data.data.getSchedule;
 }
 
-export const getSubjects = async () => {
+export const getSubjects = async (groupId = null) => {
     const res = await axios.post(`${ url }/api/subjects`, {
         query: `{
-            getSubjects{
+            getSubjects(groupID: ${ groupId ? `"${ groupId }"` : null }) {
                 id
                 name
                 teacher
@@ -70,4 +70,21 @@ export const getStudentRecords = async (month) => {
         }`
     }, { withCredentials: true })
     return res.data.data.getStudentRecords
+}
+
+export const getRecords = async (month, groupId, subjectId) => {
+    const res = await axios.post(`${ url }/api/records`, {
+        query: `{
+        getRecords(month: ${ month },
+                   groupID: "${ groupId }",
+                   subjectID: "${ subjectId }") {
+                        entity
+                        records {
+                            day
+                            record
+                        } 
+                   }
+        }`
+    }, { withCredentials: true })
+    return res.data.data.getRecords
 }
