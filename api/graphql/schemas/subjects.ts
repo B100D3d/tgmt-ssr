@@ -13,7 +13,13 @@ export default new GraphQLSchema({
         name: "GroupQuery",
         fields: () => ({
             getSubjects: {
-                type: new GraphQLList(Subject)
+                type: new GraphQLList(Subject),
+                args: {
+                    groupID: {
+                        type: GraphQLString,
+                        defaultValue: null
+                    }
+                }
             }
         })
     }),

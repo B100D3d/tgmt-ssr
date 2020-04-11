@@ -1,20 +1,25 @@
-import { 
-    Subject, 
-    SubjectModel, 
+import {
+    Subject,
+    SubjectModel,
     SubjectData,
     ExpressParams,
-    CreatedSubject
+    CreatedSubject, SubjectGetData
 } from "../types"
 import mongoose from "mongoose"
 import subjectModel from "./MongoModels/subjectModel"
 import { generateSubjectID } from "./Utils"
 import teacherModel from "./MongoModels/teacherModel"
+import groupModel from "./MongoModels/groupModel";
 
 
 
-export const getSubjects = async (): Promise<Array<Subject>> => {
+export const getSubjects = async ({ groupID }: SubjectGetData, { res }: ExpressParams): Promise<Array<Subject>> => {
 
-    const subjectsDB = await subjectModel.find().populate("teacher").exec()
+    const subjectsDB = groupID
+        ? (await groupModel.findOne({ id: groupID }).populate({
+            path: "subjects",
+            populate: { path: "teacher" }}).exec()).subjects as SubjectModel[]
+        : await subjectModel.find().populate("teacher").exec()
 
     const subjects = subjectsDB.map(
         ({ id, name, teacher: { name: teacher }}: SubjectModel) =>

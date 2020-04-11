@@ -54,6 +54,11 @@ export interface GroupCreatingData {
 export interface CreatedGroup extends GroupCreatingData {
     id: string;
 }
+
+export interface SubjectGetData {
+    groupID: string;
+}
+
 export interface SubjectData {
     name: string;
     teacher: string;
