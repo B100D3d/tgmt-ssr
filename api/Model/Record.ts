@@ -72,15 +72,17 @@ export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): 
         return
     }
 
-    const records = groupDB.students.map(({ name: entity, records: _records }: StudentModel) => {
-        const recordsByMonthAndSubject = 
-            _records.find(g => g.month === month && g.subject.equals(subjectDB._id)) 
-            || { records: new Map<string, string>()}
+    const records = groupDB.students
+        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .map(({ name: entity, records: _records }: StudentModel) => {
+            const recordsByMonthAndSubject =
+                _records.find(g => g.month === month && g.subject.equals(subjectDB._id))
+                || { records: new Map<string, string>()}
 
-        const records = getRecordsArrayFromMap(entity, recordsByMonthAndSubject.records)
+            const records = getRecordsArrayFromMap(entity, recordsByMonthAndSubject.records)
 
-        return records
-    })
+            return records
+        })
 
     return records
 }
