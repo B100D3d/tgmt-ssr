@@ -5,7 +5,7 @@ import { WeekContext, UserMenuOpenContext } from "/context"
 import useWindowSize from "/hooks/useWindowSize.hook"
 import burger from "/static/burger.svg"
 import home from "/static/home.svg"
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom"
 
 
 const UserHeader = () => {
