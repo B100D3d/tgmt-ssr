@@ -88,3 +88,53 @@ export const getRecords = async (month, groupId, subjectId) => {
     }, { withCredentials: true })
     return res.data.data.getRecords
 }
+
+export const sendRecords = async (month, groupId, subjectId, records) => {
+    console.log(`mutation {
+        setRecords(month: ${ month },
+                   groupID: "${ groupId }",
+                   subjectID: "${ subjectId }",
+                   records: ${ records.map((r) => `
+                        {
+                            student: "${ r.student }",
+                            records: ${ r.records.map((re) => `
+                                {
+                                    day: ${ re.day },
+                                    record: "${ re.record }"
+                                },
+                            `) }
+                        },
+                   `) }) {
+                        entity
+                        records {
+                            day
+                            record
+                        } 
+                   }
+        }`)
+    const res = await axios.post(`${ url }/api/records`, {
+        query: `mutation {
+        setRecords(month: ${ month },
+                   groupID: "${ groupId }",
+                   subjectID: "${ subjectId }",
+                   records: ${ records.map((r) => `
+                        {
+                            student: "${ r.student }",
+                            records: ${ r.records.map((re) => `
+                                {
+                                    day: ${ re.day },
+                                    record: "${ re.record }"
+                                },
+                            `) }
+                        },
+                   `) }) {
+                        entity
+                        records {
+                            day
+                            record
+                        } 
+                   }
+        }`
+    }, { withCredentials: true })
+    return res.data.data.setRecords
+}

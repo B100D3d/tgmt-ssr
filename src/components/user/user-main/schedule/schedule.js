@@ -132,17 +132,18 @@ const Schedule = () => {
     ])
 
     const onGridRowsUpdated = (data) => {
-        if (Object.values(data.updated)[0] !== undefined) {
+        console.log(data)
+        if (data.updated !== undefined) {
             const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
             const weekday = +data.cellKey
             const { fromRow, toRow } = data
             const rowsCount = toRow - fromRow + 1
-            const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday])
+            const subject = subjectTypes.find((subject) => subject.value === data.updated)
             const newRows = [...rows]
             const newChangedCells = [...changedCells]
 
             range(rowsCount, fromRow).map((i) => {
-                newRows[i] = { ...newRows[i], ...data.updated }
+                newRows[i] = { ...newRows[i], [weekday]: data.updated }
                 newChangedCells.push(
                         { weekday, classNumber: i+1, subjectID: subject.id }
                     )
@@ -177,7 +178,7 @@ const Schedule = () => {
 
     return (
         <div className="schedule-container">
-            { !isStudent && <img src={back} alt="back" onClick={ onBack }/> }
+            { !isStudent && <img src={ back } alt="back" onClick={ onBack }/> }
             <h1>Расписание</h1>
             <div className="buttons-container">
                 <div className="switch-container">

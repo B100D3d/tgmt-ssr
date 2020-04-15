@@ -18,7 +18,7 @@ export default class SelectEditor extends React.Component {
         return (
             <select ref={ this.select } onChange={ this.handleChange }
                     defaultValue={ this.props.value } className="select-editor" name="grid-editor">
-                { this.props.options.map(opt =>
+                { [{ id: "", value: "" }, ...this.props.options].map(opt =>
                     <option key={ opt.id } value={ opt.value } > { opt.value } </option>
                 )}
             </select>

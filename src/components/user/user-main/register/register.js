@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, {useContext, useEffect, useRef, useState} from "react"
 import { useParams, useHistory } from "react-router-dom"
 import loadable from "@loadable/component"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
@@ -6,7 +6,7 @@ const ReactDataGrid = loadable(() => import("react-data-grid"))
 import "./register.sass"
 import { UserContext, UserMenuOpenContext } from "/context"
 import useWindowSize from "/hooks/useWindowSize.hook"
-import { getRecords, getStudentRecords } from "/api"
+import { getRecords, getStudentRecords, sendRecords } from "/api"
 import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
 import back from "/static/previous.svg"
@@ -17,10 +17,29 @@ const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
 
 const getRows = (records) => {
     return records.reduce((acc, curr) => {
-        const recordsObj = { ...curr.records }
+        const recordsObj = curr.records.reduce((acc, curr) => {
+            acc[curr.day] = curr.record
+            return acc
+        }, {})
         acc.push({ entity: curr.entity, ...recordsObj })
         return acc
     }, [])
+}
+
+const getDaysCount = (m) => {
+    const year = new Date().getFullYear()
+    const month = m === 11 ? 0 : m === 0 ? 11 : m + 1
+    return new Date(year, month, 0).getDate()
+}
+
+const getColumns = (month, role) => {
+    const isAdmin = role === "Admin"
+    const isStudent = role === "Student"
+    return range(getDaysCount(month) + 1, 0).map((i) => {
+        if (i === 0) return { key: "entity", name: isStudent ? "Предмет" : "Студент",
+            resizable: true, width: 150 }
+        return { key: `${ i }`, name: i, editable: isAdmin, resizable: true, width: 50 }
+    })
 }
 
 
@@ -41,23 +60,34 @@ const Register = () => {
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
     const [records, setRecords] = useState()
+    const [month, setMonth] = useState(new Date().getMonth())
+    const [columns, setColumns] = useState([])
+    const monthTimeout = useRef()
 
     const windowSize = useWindowSize()
 
     const handleRecords = (month) => {
-        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-        const getRecordsFunc = isStudent ? getStudentRecords : getRecords
-        getRecordsFunc(month, groupId, subjectId)
-            .then((r) => {
-                hide()
-                cogoToast.success("Данные успешно загружены.", { position: "top-right" })
-                setRecords(r)
-            })
-            .catch((error) => {
-                hide()
-                cogoToast.error("Ошибка сервера.", { position: "top-right" })
-            })
+        setMonth(month)
+        clearTimeout(monthTimeout.current)
+        monthTimeout.current = setTimeout(() => {
+            const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+            const getRecordsFunc = isStudent ? getStudentRecords : getRecords
+            getRecordsFunc(month, groupId, subjectId)
+                .then((r) => {
+                    hide()
+                    cogoToast.success("Данные успешно загружены.", { position: "top-right" })
+                    setRecords(r)
+                })
+                .catch((error) => {
+                    hide()
+                    cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                })
+        }, 500)
     }
+
+    useEffect(() => {
+        setColumns(getColumns(month, user.role))
+    }, [month])
 
     useEffect(() => {
         records && setRows(getRows(records))
@@ -75,15 +105,59 @@ const Register = () => {
 
     useEffect(() => setSaveBtnVisibility(changedCells.length), [changedCells])
 
-    const [columns, setColumns] = useState(range(32, 0).map((i) => {
-        if (i === 0) return { key: "entity", name: isStudent ? "Предмет" : "Студент",
-            resizable: true, width: 150 }
-        return { key: `${ i - 1 }`, name: i, editable: isAdmin, resizable: true, width: 50 }
-    }))
+    useEffect(() => {
+        console.log(changedCells)
+    }, [changedCells])
 
     const onBack = () => {
         history.goBack()
     }
+
+    const onGridRowsUpdated = (data) => {
+        const day = +data.cellKey
+        const updated = data.updated[data.cellKey]
+        const { fromRow, toRow } = data
+        const rowsCount = toRow - fromRow + 1
+        const newRows = [...rows]
+        const newChangedCells = [...changedCells]
+
+        range(rowsCount, fromRow).map((i) => {
+            const student = rows[i].entity
+            newRows[i] = { ...newRows[i], ...data.updated }
+            const cell =  newChangedCells.find((c) => c.student === student)
+            if (cell) {
+                const record = cell.records.find((r) => r.day === day)
+                if (record) {
+                    record.record = updated
+                } else {
+                    cell.records.push({ day, record: updated })
+                }
+            } else {
+                newChangedCells.push({ student, records: [{ day, record: updated }] })
+            }
+        })
+        setRows(newRows)
+        setChangedCells(newChangedCells)
+    }
+
+    const handleSave = () => {
+        document.querySelector(".save-button").disabled = true
+        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+        sendRecords(month, groupId, subjectId, changedCells)
+            .then((r) => {
+                document.querySelector(".save-button").disabled = false
+                hide()
+                cogoToast.success("Данные успешно загружены.", { position: "top-right" })
+                setRecords(r)
+                setChangedCells([])
+            })
+            .catch(error => {
+                document.querySelector(".save-button").disabled = false
+                hide()
+                cogoToast.error("Ошибка сервера.", { position: "top-right" })
+            })
+    }
+
 
     return (
         <div className="register-container">
@@ -91,7 +165,7 @@ const Register = () => {
             <h1>Журнал</h1>
             <div className="buttons-container">
                 <MonthSelector onChange={ handleRecords } />
-                <button className="save-button">Сохранить</button>
+                <button className="save-button" onClick={ handleSave }>Сохранить</button>
             </div>
             <div className="register">
                 <ReactDataGrid
@@ -100,7 +174,7 @@ const Register = () => {
                     rowsCount={ rows.length }
                     minWidth={ width }
                     enableCellSelect={ true }
-                    // onGridRowsUpdated={ onGridRowsUpdated }
+                    onGridRowsUpdated={ onGridRowsUpdated }
                 />
             </div>
         </div>

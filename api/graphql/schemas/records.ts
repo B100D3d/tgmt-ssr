@@ -67,7 +67,7 @@ export default new GraphQLSchema({
                                                 type: GraphQLInt
                                             },
                                             record: {
-                                                type: GraphQLInt
+                                                type: GraphQLString
                                             }
                                         })
                                     }))

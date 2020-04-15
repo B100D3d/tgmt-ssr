@@ -20,7 +20,7 @@ export default new GraphQLObjectType({
                         type: GraphQLInt
                     },
                     record: {
-                        type: GraphQLInt
+                        type: GraphQLString
                     }
                 })
             }))
