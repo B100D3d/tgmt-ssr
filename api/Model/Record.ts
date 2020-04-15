@@ -8,6 +8,7 @@ import {
     SubjectModel
 } from "../types"
 import mongoose from "mongoose"
+import db from "./mongodb"
 import userModel from "./MongoModels/userModel"
 import studentModel from "./MongoModels/studentModel"
 import recordModel from "./MongoModels/recordsModel"
@@ -89,7 +90,8 @@ export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): 
 
 
 export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promise<Array<Records>> => {
-    
+    await recordModel.createCollection()
+
     const { month, subjectID, groupID, records } = args
 
     const subjectDB = await subjectModel.findOne({ id: subjectID }).exec()
