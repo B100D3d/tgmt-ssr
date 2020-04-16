@@ -5,7 +5,7 @@ import loadable from "@loadable/component"
 import "./schedule.sass"
 import { getSchedule, getSubjects, sendSchedule } from "/api"
 
-import { UserMenuOpenContext, UserContext } from "/context"
+import { UserMenuOpenContext, UserContext, FingerprintContext } from "/context"
 import useWindowSize from "/hooks/useWindowSize.hook"
 import Switch from "./switch/switch";
 const ReactDataGrid = loadable(() => import("react-data-grid"))
@@ -49,6 +49,7 @@ const Schedule = () => {
 
     const [isOpen] = useContext(UserMenuOpenContext)
     const { user } = useContext(UserContext)
+    const fingerprint = useContext(FingerprintContext)
 
     const isAdmin = user.role === "Admin"
     const isStudent = user.role === "Student"
@@ -86,7 +87,7 @@ const Schedule = () => {
 
     useEffect(() => {
         if (isAdmin) {
-            getSubjects().then((subjects) => {
+            getSubjects(fingerprint).then((subjects) => {
                 setSubjectTypes(subjects.map((subject) => ({
                     id: subject.id,
                     value: `${ subject.name } (${ subject.teacher })`
@@ -132,21 +133,21 @@ const Schedule = () => {
     ])
 
     const onGridRowsUpdated = (data) => {
-        console.log(data)
-        if (data.updated !== undefined) {
+        if(Object.values(data.updated)[0] !== undefined) {
             const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
             const weekday = +data.cellKey
-            const { fromRow, toRow } = data
+            const { toRow } = data
+            const fromRow = data.action === "CELL_DRAG" ? data.fromRow + 1 : data.fromRow
             const rowsCount = toRow - fromRow + 1
-            const subject = subjectTypes.find((subject) => subject.value === data.updated)
+            const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday]) || { id: "" }
             const newRows = [...rows]
             const newChangedCells = [...changedCells]
 
             range(rowsCount, fromRow).map((i) => {
-                newRows[i] = { ...newRows[i], [weekday]: data.updated }
+                newRows[i] = {...newRows[i], ...data.updated }
                 newChangedCells.push(
-                        { weekday, classNumber: i+1, subjectID: subject.id }
-                    )
+                    { weekday, classNumber: i + 1, subjectID: subject.id }
+                )
             })
             setRows(newRows)
             setChangedCells(newChangedCells)
@@ -157,7 +158,7 @@ const Schedule = () => {
         document.querySelector(".save-button").disabled = true
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
         const opts = { even: true, subgroup: 1, ...switchState }
-        sendSchedule(group, opts, changedCells)
+        sendSchedule(fingerprint, group, opts, changedCells)
             .then((s) => {
                 document.querySelector(".save-button").disabled = false
                 hide()

@@ -4,7 +4,7 @@ import loadable from "@loadable/component"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 
 import "./register.sass"
-import { UserContext, UserMenuOpenContext } from "/context"
+import { FingerprintContext, UserContext, UserMenuOpenContext } from "/context"
 import useWindowSize from "/hooks/useWindowSize.hook"
 import { getRecords, getStudentRecords, sendRecords } from "/api"
 import cogoToast from "cogo-toast"
@@ -50,6 +50,7 @@ const Register = () => {
 
     const [isOpen] = useContext(UserMenuOpenContext)
     const { user } = useContext(UserContext)
+    const fingerprint = useContext(FingerprintContext)
 
     const isAdmin = user.role === "Admin"
     const isStudent = user.role === "Student"
@@ -67,15 +68,15 @@ const Register = () => {
     const windowSize = useWindowSize()
 
     const handleRecords = (month) => {
-        setMonth(month)
         clearTimeout(monthTimeout.current)
         monthTimeout.current = setTimeout(() => {
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
             const getRecordsFunc = isStudent ? getStudentRecords : getRecords
-            getRecordsFunc(month, groupId, subjectId)
+            getRecordsFunc(month, groupId, subjectId, fingerprint)
                 .then((r) => {
                     hide()
                     cogoToast.success("Данные успешно загружены.", { position: "top-right" })
+                    setMonth(month)
                     setRecords(r)
                 })
                 .catch((error) => {
@@ -116,7 +117,8 @@ const Register = () => {
     const onGridRowsUpdated = (data) => {
         const day = +data.cellKey
         const updated = data.updated[data.cellKey]
-        const { fromRow, toRow } = data
+        const { toRow } = data
+        const fromRow = data.action === "CELL_DRAG" ? data.fromRow + 1 : data.fromRow
         const rowsCount = toRow - fromRow + 1
         const newRows = [...rows]
         const newChangedCells = [...changedCells]
@@ -143,7 +145,7 @@ const Register = () => {
     const handleSave = () => {
         document.querySelector(".save-button").disabled = true
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-        sendRecords(month, groupId, subjectId, changedCells)
+        sendRecords(fingerprint, month, groupId, subjectId, changedCells)
             .then((r) => {
                 document.querySelector(".save-button").disabled = false
                 hide()

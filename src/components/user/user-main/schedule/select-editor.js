@@ -4,13 +4,13 @@ export default class SelectEditor extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state = { selected: {} }
+        this.state = { }
         this.select = React.createRef()
     }
 
-    handleChange = e => this.setState({ selected: e.target })
+    handleChange = e => this.setState({ selected: e.target.value })
 
-    getValue = () => ({ [this.props.column.key]: this.state.selected.value })
+    getValue = () => ({ [this.props.column.key]: this.state.selected })
 
     getInputNode = () => this.select.current
 

@@ -1,8 +1,8 @@
-import React, {useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 import s from "./selector.module.sass"
 import useGradient from "/hooks/useGradient.hook"
-import { UserContext } from "/context"
+import { FingerprintContext, UserContext } from "/context"
 import { Link, useParams, useLocation, useHistory } from "react-router-dom"
 import { getSubjects } from "/api"
 import back from "/static/previous.svg"
@@ -24,6 +24,7 @@ const Selector = ({ type, title }) => {
     const params = useParams()
     const history = useHistory()
     const { user } = useContext(UserContext)
+    const fingerprint = useContext(FingerprintContext)
     const years = new Set(user.groups.map(({ year }) => year).sort((a, b) => a - b))
     const [subjects, setSubjects] = useState([])
     const entities = type === "group"
@@ -33,7 +34,7 @@ const Selector = ({ type, title }) => {
         : subjects
 
     useEffect(() => {
-        type === "subject" && getSubjects(params.group)
+        type === "subject" && getSubjects(fingerprint, params.group)
                 .then(setSubjects)
                 .catch(console.log)
     }, [])
