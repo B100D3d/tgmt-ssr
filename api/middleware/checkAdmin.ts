@@ -3,27 +3,27 @@ import userModel from "../Model/MongoModels/userModel"
 
 const checkAdmin = async (req: Request, res: Response, next: NextFunction) => {
 
-      const { uniqueId } = req.uniqueId
+    const { uniqueId } = req.uniqueId
 
-      const user = await userModel.findById(uniqueId).exec()
+    const user = await userModel.findById(uniqueId).exec()
 
-      if(!user) {
-        res.status(403).json({
+    if(!user) {
+    res.status(403).json({
+      error: {
+        msg: "No user"
+      }
+    });
+    }
+
+    if (user.role !== "Admin"){
+      return res.status(403).json({
           error: {
-            msg: "No user"
+            msg: "No Admin"
           }
         });
-      }
-
-      if (user.role !== "Admin"){
-          return res.status(403).json({
-              error: {
-                msg: "No Admin"
-              }
-            });
-      }
-      req.user = user
-      next()
+    }
+    req.user = user
+    next()
 }
 
 export default checkAdmin

@@ -138,6 +138,7 @@ const deleteSchedule = async (
 
 
 export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressParams): Promise<Array<Schedule>> => {
+    await scheduleModel.createCollection()
 
     const { groupID, even, subgroup, schedule } = args
 

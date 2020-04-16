@@ -96,7 +96,7 @@ export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promi
 
     const subjectDB = await subjectModel.findOne({ id: subjectID }).exec()
 
-    const recordsDB = await recordModel.find({ month, subject: subjectDB._id })
+    const recordsDB = await recordModel.find({ month, subject: subjectDB._id }).exec()
 
     const session = await mongoose.startSession()
     session.startTransaction()
@@ -124,11 +124,12 @@ export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promi
             })
 
             student.records.push(studentRecords._id)
+
             await studentRecords.save(opts)
             await student.save(opts)
-            await session.commitTransaction()
-    
         }
+
+        await session.commitTransaction()
     
         return getRecords({ month, subjectID, groupID }, ep)
         

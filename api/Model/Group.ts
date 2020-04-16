@@ -27,6 +27,8 @@ export const getGroups = async (): Promise<Array<Group>> => {
 
 
 export const createGroup = async ({ name, year }: GroupCreatingData, { res }: ExpressParams): Promise<CreatedGroup | null> => {
+    await groupModel.createCollection()
+
     const id = generateGroupID(name)
 
     const groupData = { id, name, year }

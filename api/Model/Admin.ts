@@ -30,6 +30,7 @@ export const getAdminData = async (user: UserModel): Promise<Admin> => {
 
 
 export const createAdmin = async (args: AdminCreatingData, { res }: ExpressParams): Promise<UserRegData | null> => {
+    await userModel.createCollection()
 
     const { name, email } = args
     let { login, password } = args

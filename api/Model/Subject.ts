@@ -30,6 +30,7 @@ export const getSubjects = async ({ groupID }: SubjectGetData, { res }: ExpressP
 }
 
 export const createSubject = async (args: SubjectData, { res }: ExpressParams): Promise<CreatedSubject> => {
+    await subjectModel.createCollection()
 
     const { name, teacher: teacherName } = args
     const id = generateSubjectID(name, teacherName)

@@ -95,6 +95,8 @@ export const changeStudent = async (args: StudentChangedData, { res }: ExpressPa
 
 
 export const createStudent = async (args: StudentCreatingData, { res }: ExpressParams): Promise<StudentRegData | null> => {
+    await studentModel.createCollection()
+    await userModel.createCollection()
 
     const { name, email, groupName } = args
     const password = generatePassword()

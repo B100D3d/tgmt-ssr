@@ -17,6 +17,7 @@ apiRouter.use("/mainPage", graphqlHTTP({
     schema: schema.mainPageInfo
 }
 ))
+
 apiRouter.use("/createUser", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.createUsersResolver,

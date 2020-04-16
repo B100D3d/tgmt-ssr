@@ -77,7 +77,9 @@ export const getTeacherData = async (user: UserModel): Promise<Teacher> => {
 }
 
 export const createTeacher = async (args: UserCreatingData, { res }: ExpressParams): Promise<UserRegData | null> => {
-    
+    await userModel.createCollection()
+    await teacherModel.createCollection()
+
     const { name, email } = args
     const password = generatePassword()
     const login = generateLogin(name)
