@@ -1,4 +1,7 @@
 import React from "react"
+import { Dropdown } from "semantic-ui-react"
+
+import "./select-editor.sass"
 
 export default class SelectEditor extends React.Component {
 
@@ -8,20 +11,23 @@ export default class SelectEditor extends React.Component {
         this.select = React.createRef()
     }
 
-    handleChange = e => this.setState({ selected: e.target.value })
+    handleChange = (_, data) => this.setState({ selected: data.value })
 
     getValue = () => ({ [this.props.column.key]: this.state.selected })
 
-    getInputNode = () => this.select.current
+    getInputNode = () => document.querySelector(".dropdown-con")
 
     render() {
         return (
-            <select ref={ this.select } onChange={ this.handleChange }
-                    defaultValue={ this.props.value } className="select-editor" name="grid-editor">
-                { [{ id: "", value: "" }, ...this.props.options].map(opt =>
-                    <option key={ opt.id } value={ opt.value } > { opt.value } </option>
-                )}
-            </select>
+            <div className="dropdown-con" tabIndex="-1">
+                <Dropdown placeholder={ this.props.value }
+                          options={ [{ key: "", value: "", text: "" }, ...this.props.options] }
+                          search
+                          selection
+                          onChange={ this.handleChange }
+                          defaultValue={ this.props.value }
+                />
+            </div>
         )
     }
 }

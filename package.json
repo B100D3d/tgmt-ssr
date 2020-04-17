@@ -41,6 +41,7 @@
     "react-lottie": "^1.2.3",
     "react-router-dom": "5.1.2",
     "react-transition-group": "^4.3.0",
+    "semantic-ui-react": "^0.88.2",
     "transliteration": "^2.1.8",
     "ua-parser-js": "^0.7.21"
   },

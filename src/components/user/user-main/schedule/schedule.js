@@ -89,8 +89,9 @@ const Schedule = () => {
         if (isAdmin) {
             getSubjects(fingerprint).then((subjects) => {
                 setSubjectTypes(subjects.map((subject) => ({
-                    id: subject.id,
-                    value: `${ subject.name } (${ subject.teacher })`
+                    key: subject.id,
+                    value: `${ subject.name } (${ subject.teacher })`,
+                    text: `${ subject.name } (${ subject.teacher })`
                 })))
             })
         }
@@ -139,14 +140,14 @@ const Schedule = () => {
             const { toRow } = data
             const fromRow = data.action === "CELL_DRAG" ? data.fromRow + 1 : data.fromRow
             const rowsCount = toRow - fromRow + 1
-            const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday]) || { id: "" }
+            const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday]) || { key: "" }
             const newRows = [...rows]
             const newChangedCells = [...changedCells]
 
             range(rowsCount, fromRow).map((i) => {
                 newRows[i] = {...newRows[i], ...data.updated }
                 newChangedCells.push(
-                    { weekday, classNumber: i + 1, subjectID: subject.id }
+                    { weekday, classNumber: i + 1, subjectID: subject.key }
                 )
             })
             setRows(newRows)

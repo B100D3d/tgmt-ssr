@@ -55,22 +55,13 @@ export const getSchedule = async (args: ScheduleGetData, { res }: ExpressParams)
         return
     }
 
+
     const schedule = groupDB.schedule
         .filter(({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
                                                                 : (isNull(even)) ? s === subgroup
                                                                 : (isNull(subgroup)) ? e === even
                                                                 : s === subgroup && e === even
         )
-        .reduce((acc, curr) => {
-            const { weekday, classNumber } = curr
-            const exist = acc.find(s => (s.weekday === weekday && s.classNumber === classNumber))
-            if(!exist) {
-                acc.push({ weekday, classNumber })
-            }
-            return acc
-        }, [])
-        .map(({ weekday, classNumber }: ScheduleModel) => 
-            groupDB.schedule.find(s => s.weekday === weekday && s.classNumber === classNumber))
         .map(
             ({ weekday, classNumber, subject: { id, name, teacher: { name: teacherName }}}: ScheduleModel) =>
             ({ weekday, classNumber, subject: { id, name, teacher: teacherName }})
@@ -197,23 +188,13 @@ export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressPa
 								.find({ group: group._id })
 								.populate({ path: "subject", populate: { path: "teacher" }})
 								.exec()
-	
+
 		return scheduleDB
 					.filter(({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
 																			: (isNull(even)) ? s === subgroup
 																			: (isNull(subgroup)) ? e === even
 																			: s === subgroup && e === even
 					)
-					.reduce((acc, curr) => {
-						const { weekday, classNumber } = curr
-						const exist = acc.find(s => (s.weekday === weekday && s.classNumber === classNumber))
-						if(!exist) {
-							acc.push({ weekday, classNumber })
-						}
-						return acc
-					}, [])
-					.map(({ weekday, classNumber }: ScheduleModel) => 
-						scheduleDB.find(s => s.weekday === weekday && s.classNumber === classNumber))
 					.map(
 						({ weekday, classNumber, subject: { id, name, teacher: { name: teacherName }}}: ScheduleModel) =>
 						({ weekday, classNumber, subject: { id, name, teacher: teacherName }})
