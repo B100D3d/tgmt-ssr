@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import loadable from "@loadable/component"
 
 import "./schedule.sass"
@@ -7,11 +7,10 @@ import { getSchedule, getSubjects, sendSchedule } from "/api"
 
 import { UserMenuOpenContext, UserContext, FingerprintContext } from "/context"
 import useWindowSize from "/hooks/useWindowSize.hook"
-import Switch from "./switch/switch";
+import Switch from "./switch/switch"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 import SelectEditor from "./select-editor"
 import cogoToast from "cogo-toast"
-import back from "/static/previous.svg"
 
 
 const DEFAULT_SCHEDULE_ITEM = {
@@ -36,16 +35,15 @@ const getRows = (schedule) => {
     return schedule.reduce((acc, curr) => {
 
         const scheduleItem = acc.find(({ classNumber }) => classNumber === curr.classNumber)
-        scheduleItem[curr.weekday] = `${curr.subject.name} (${curr.subject.teacher})`
+        scheduleItem[curr.weekday] = `${ curr.subject.name } (${ curr.subject.teacher })`
 
         return acc
-    }, DEFAULT_ROWS.map(r => ({...r})))
+    }, DEFAULT_ROWS.map(r => ({ ...r })))
 }
 
 const Schedule = () => {
 
     const params = useParams()
-    const history = useHistory()
 
     const [isOpen] = useContext(UserMenuOpenContext)
     const { user } = useContext(UserContext)
@@ -55,7 +53,7 @@ const Schedule = () => {
     const isStudent = user.role === "Student"
     const group = user.group?.id || params.group
 
-    const [rows, setRows] = useState(DEFAULT_ROWS.map(r => ({...r})))
+    const [rows, setRows] = useState(DEFAULT_ROWS.map(r => ({ ...r })))
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
     const [switchState, setSwitch] = useState({})
@@ -117,7 +115,7 @@ const Schedule = () => {
 
     useEffect(() => {
         new Promise(r => setTimeout(r, 500)).then(() => {
-            document.querySelector(".react-grid-Container").classList.add("anim")
+            document.querySelector(".schedule-container").classList.add("anim")
         })
     }, [])
 
@@ -174,13 +172,9 @@ const Schedule = () => {
             })
     }
 
-    const onBack = () => {
-        history.goBack()
-    }
 
     return (
         <div className="schedule-container">
-            { !isStudent && <img src={ back } alt="back" onClick={ onBack }/> }
             <h1>Расписание</h1>
             <div className="buttons-container">
                 <div className="switch-container">

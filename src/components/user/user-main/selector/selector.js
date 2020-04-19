@@ -3,10 +3,8 @@ import React, { useContext, useEffect, useState } from "react"
 import s from "./selector.module.sass"
 import useGradient from "/hooks/useGradient.hook"
 import { FingerprintContext, UserContext } from "/context"
-import { Link, useParams, useLocation, useHistory } from "react-router-dom"
+import { Link, useParams, useLocation } from "react-router-dom"
 import { getSubjects } from "/api"
-import back from "/static/previous.svg"
-
 
 const noDeg = ({ deg, ...rest }) => rest
 
@@ -22,7 +20,6 @@ const getCSSProperties = (gradient) => {
 
 const Selector = ({ type, title }) => {
     const params = useParams()
-    const history = useHistory()
     const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const years = new Set(user.groups.map(({ year }) => year).sort((a, b) => a - b))
@@ -39,14 +36,9 @@ const Selector = ({ type, title }) => {
                 .catch(console.log)
     }, [])
 
-    const onBack = () => {
-        history.goBack()
-    }
-
 
     return (
         <div className={ s.selector }>
-            { type !== "year" && <img src={back} alt="back" onClick={ onBack }/> }
             <h1>{ title }</h1>
             <h2>{ type === "group" ? "Выбор группы"
                 : type === "year" ? "Выбор курса"
@@ -54,7 +46,8 @@ const Selector = ({ type, title }) => {
             </h2>
             <div className={ s.items }>
                 { entities.map((e) => 
-                    <Item key={ e.id || e } name={ e.name || e } id={ e.id || e } />
+                    <Item key={ e.id || e } name={ e.name || e }
+                          id={ e.id || e } type={ type } />
                 )}
             </div>
         </div>
@@ -62,7 +55,7 @@ const Selector = ({ type, title }) => {
     )
 }
 
-const Item = ({ name, id }) => {
+const Item = ({ name, id, type }) => {
     const [gradient, setHover] = useGradient()
     const CSSProperties = getCSSProperties(gradient)
     const colors = Object.values(noDeg(gradient))
@@ -90,9 +83,10 @@ const Item = ({ name, id }) => {
 
     return (
         <Link to={ `${ location.pathname }/${ id }` }>
-            <div className={ s.item } style={ styles } 
+            <div className={ s.item } id={ s[type] } style={ styles }
                 onMouseOver={ handleMouseOver } onMouseOut={ handleMouseOut }>
-                <p>{ name }</p>
+                <p className={ s.name }>{ name }</p>
+                <p className={ s.size }>{ name }</p>
             </div>
         </Link>
     )

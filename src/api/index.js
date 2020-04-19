@@ -127,3 +127,36 @@ export const sendRecords = async (fingerprint, month, groupId, subjectId, record
     }, { withCredentials: true })
     return res.data.data.setRecords
 }
+
+export const getStudents = async (fingerprint) => {
+    const res = await axios.post(`${ url }/api/students`, {
+        query: `{
+            getStudents {
+                id
+                name
+                group {
+                    name
+                    id
+                    year
+                }
+                email
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.getStudents
+}
+
+export const getTeachers = async (fingerprint) => {
+    const res = await axios.post(`${ url }/api/teachers`, {
+        query: `{
+            getTeachers {
+                id
+                name
+                email
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.getTeachers
+}

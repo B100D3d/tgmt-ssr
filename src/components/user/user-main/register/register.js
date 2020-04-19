@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import loadable from "@loadable/component"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 
@@ -9,7 +9,6 @@ import useWindowSize from "/hooks/useWindowSize.hook"
 import { getRecords, getStudentRecords, sendRecords } from "/api"
 import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
-import back from "/static/previous.svg"
 
 
 
@@ -46,7 +45,6 @@ const getColumns = (month, role) => {
 const Register = () => {
 
     const params = useParams()
-    const history = useHistory()
 
     const [isOpen] = useContext(UserMenuOpenContext)
     const { user } = useContext(UserContext)
@@ -100,7 +98,7 @@ const Register = () => {
 
     useEffect(() => {
         new Promise(r => setTimeout(r, 500)).then(() => {
-            document.querySelector(".react-grid-Container").classList.add("anim")
+            document.querySelector(".register-container").classList.add("anim")
         })
     }, [])
 
@@ -110,9 +108,6 @@ const Register = () => {
         console.log(changedCells)
     }, [changedCells])
 
-    const onBack = () => {
-        history.goBack()
-    }
 
     const onGridRowsUpdated = (data) => {
         const day = +data.cellKey
@@ -163,7 +158,6 @@ const Register = () => {
 
     return (
         <div className="register-container">
-            { !isStudent && <img src={back} alt="back" onClick={ onBack }/> }
             <h1>Журнал</h1>
             <div className="buttons-container">
                 <MonthSelector onChange={ handleRecords } />

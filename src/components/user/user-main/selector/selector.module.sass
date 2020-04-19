@@ -1,8 +1,8 @@
 .item
+    position: relative
     display: flex
     justify-content: center
     align-items: center
-    font-size: 48px
     width: auto
     height: 180px
     min-width: 180px
@@ -11,12 +11,39 @@
     cursor: pointer
     margin: 20px
 
+    .name
+        transition: font-size .5s ease
+        position: absolute
+        width: 100%
+        height: 100%
+        top: 0
+        left: 0
+        text-align: center
+        vertical-align: middle
+        line-height: 200px
+        margin: 0
+        font-size: 48px
+
     &:hover
-        p
+        .name
             font-size: 64px
 
-    p
-        transition: font-size .5s ease
+    .size
+        font-size: 64px
+        color: transparent
+
+    &#subject
+        padding: 10px
+
+        .size
+            font-size: 36px
+
+        .name
+            font-size: 30px
+
+        &:hover
+            .name
+                font-size: 36px
 
 .selector
     position: absolute
@@ -40,22 +67,10 @@
         margin-left: 20px
         border-bottom: 2px solid #19CCF3
 
-    img
-        position: absolute
-        width: 40px
-        top: 35px
-        left: 35px
-        border-radius: 50%
-        cursor: pointer
-        transition: all .3s ease
-
-        &:hover
-            box-shadow: 6px 8px 12px rgba(0, 0, 0, 0.5)
-            transform: scale(1.1)
-
     .items
         display: flex
         flex-wrap: wrap
+        justify-content: center
         overflow: auto
         width: 100%
 
