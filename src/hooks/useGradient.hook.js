@@ -388,7 +388,7 @@ const prefersReducedMotion =
 const useGradient = () => {
 
     const [isHover, setHover] = useState(false)
-    const [isOpen, setOpen] = useContext(UserMenuOpenContext)
+    const [isOpen] = useContext(UserMenuOpenContext)
     const gradient = useRef(getCSSGradient())
     const defGradient = useRef(getDefaultGradient(gradient.current))
 
@@ -404,12 +404,10 @@ const useGradient = () => {
                         syntax: "<color>",
                         inherits: false,
                     })
-                } catch (err) {
-
-                }
+                } catch (err) {}
             }
         }
-    }, [isEnabled])
+    }, [gradient.current])
 
     useEffect(() => {
         gradient.current = getCSSGradient()
