@@ -8,7 +8,6 @@ import {
     SubjectModel
 } from "../types"
 import mongoose from "mongoose"
-import db from "./mongodb"
 import userModel from "./MongoModels/userModel"
 import studentModel from "./MongoModels/studentModel"
 import recordModel from "./MongoModels/recordsModel"

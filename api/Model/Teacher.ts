@@ -26,7 +26,9 @@ export const getTeachers = async (): Promise<Array<Teacher>> => {
                         .populate("teacher")
                         .exec()
 
-    const teachers = teachersDB.map(
+    const teachers = teachersDB
+        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .map(
         ({ name, email, teacher: { id }}: UserModel) => 
         ({ name, email, id })
     )

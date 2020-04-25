@@ -27,7 +27,9 @@ export const getStudents = async (): Promise<Array<Student>> => {
                         .populate({ path: "student", populate: { path: "group" }})
                         .exec()
 
-    const students = studentsDB.map(
+    const students = studentsDB
+        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .map(
         ({ name, email, student: { id, group: { year, id: groupId, name: groupName }}}: UserModel) => 
         ({ name, email, id, group: { year, id: groupId, name: groupName }})
     )
@@ -185,8 +187,9 @@ export const deleteStudent = async ({ studentID }: StudentDeletingData, { res }:
 
     try {
         await recordsModel.deleteMany({ student: student._id }, opts).exec()
-        group.students.pull({ _id: student._id }, opts)
+        group.students.pull(student._id)
 
+        await group.save(opts)
         await studentModel.deleteOne({ _id: student._id }, opts).exec()
         await userModel.deleteOne({ _id: user._id }, opts).exec()
 

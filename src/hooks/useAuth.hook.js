@@ -6,7 +6,7 @@ import { UserContext, FingerprintContext } from "../context/index"
 
 import Loading from "/components/loading/loading"
 
-const Auth = loadable(() => import("/components/auth/auth"), {
+const Login = loadable(() => import("/components/login/login"), {
     fallback: 
     <div style={ styles }>
         <Loading width={ 700 } height={ 700 } loading={ true } />
@@ -29,7 +29,6 @@ const styles = {
 }
 
 const auth = async (fingerprint) => {
-    await new Promise(resolve => setTimeout(resolve, 500))
     const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
     const query = await axios.post(`${ url }/api/auth`, {
         query: `{
@@ -117,7 +116,7 @@ const useAuth = () => {
         return (
             <>
                 <UserContext.Provider value={{ setUser, setError }}>
-                    <Auth />
+                    <Login />
                 </UserContext.Provider>
             </>
         )

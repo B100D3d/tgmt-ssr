@@ -33,7 +33,7 @@ app
   .disable('x-powered-by')
   .get('/*', async (req, res) => {
 
-	const ua = req.headers["user-agent"]
+	const ua = req.headers["user-agent"] || ""
 
 	const staticContext = {}
 

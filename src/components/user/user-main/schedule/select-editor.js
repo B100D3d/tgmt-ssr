@@ -1,7 +1,7 @@
 import React from "react"
-import { Dropdown } from "semantic-ui-react"
 
 import "./select-editor.sass"
+import Dropdown from "/components/dropdown/dropdown"
 
 export default class SelectEditor extends React.Component {
 
@@ -22,8 +22,6 @@ export default class SelectEditor extends React.Component {
             <div className="dropdown-con" tabIndex="-1">
                 <Dropdown placeholder={ this.props.value }
                           options={ [{ key: "", value: "", text: "" }, ...this.props.options] }
-                          search
-                          selection
                           onChange={ this.handleChange }
                           defaultValue={ this.props.value }
                 />

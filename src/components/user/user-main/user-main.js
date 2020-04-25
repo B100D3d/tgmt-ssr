@@ -10,6 +10,7 @@ import Register from "./register/register"
 import UsersList from "./users-list/users-list"
 
 import back from "/static/previous.svg"
+import NewUser from "./users-list/new-user/new-user";
 
 const LINKS = [
     "/user/register",
@@ -66,8 +67,14 @@ const UserMain = () => {
                             <Route exact path="/user/students" render={ () =>
                                 <UsersList type="Student" /> }
                             />
+                            <Route exact path="/user/students/new" render={ () =>
+                                <NewUser type="Student" /> }
+                            />
                             <Route exact path="/user/teachers" render={ () =>
-                                <UsersList type="Teachers" /> }
+                                <UsersList type="Teacher" /> }
+                            />
+                            <Route exact path="/user/teachers/new" render={ () =>
+                                <NewUser type="Teacher" /> }
                             />
 
                             <Route exact path="/user" render={ () =>

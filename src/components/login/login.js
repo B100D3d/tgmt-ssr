@@ -11,7 +11,7 @@ const RainbowButton = loadable(() => import("/components/rainbow-button/rainbow-
 import bublik from "/static/bublik.webp"
 import back from "/static/previous.svg"
 
-import "./auth.sass"
+import "./login.sass"
 
 const styles = {
     background: `url(${ bublik })`,
@@ -21,7 +21,7 @@ const styles = {
     backgroundSize: "auto 100%"
 }
 
-const auth = async (login, password, fingerprint) => {
+const login = async (login, password, fingerprint) => {
     const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
     const query = await axios.post(`${ url }/api/login`, {
         query: `{
@@ -82,18 +82,18 @@ const auth = async (login, password, fingerprint) => {
 
 
 
-const Auth = () => {
+const Login = () => {
 
     const { setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
 
-    const login = useRef()
-    const password = useRef()
+    const loginInput = useRef()
+    const passwordInput = useRef()
 
     const handleClick = () => {
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
 
-        auth(login.current.value, password.current.value, fingerprint)
+        login(loginInput.current.value, passwordInput.current.value, fingerprint)
             .then(user => {
                 hide()
                 cogoToast.success("Данные успешно получены.", { position: "top-right" })
@@ -123,11 +123,11 @@ const Auth = () => {
                 <h1 className="title">Авторизация</h1>
                 <div className="input-container">
                     <div className="input-border">
-                        <input type="text" ref={ login } className="input" placeholder="Логин" 
+                        <input type="text" ref={ loginInput } className="input" placeholder="Логин"
                             onKeyPress={ handleKeyPress } />
                     </div>
                     <div className="input-border">
-                        <input type="password" ref={ password } className="input" placeholder="Пароль" 
+                        <input type="password" ref={ passwordInput } className="input" placeholder="Пароль"
                             onKeyPress={ handleKeyPress } />
                     </div>
                 </div>
@@ -139,4 +139,4 @@ const Auth = () => {
     )
 }
 
-export default Auth
+export default Login
