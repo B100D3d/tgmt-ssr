@@ -8,7 +8,7 @@ export default buildSchema(`
 
     type Mutation {
         createAdmin(name: String, email: String = "", login: String = "", password: String = ""): UserReg
-        createStudent(name: String, email: String = "", groupName: String): StudentReg
+        createStudent(name: String, email: String = "", group: String): StudentReg
         createTeacher(name: String, email: String = ""): UserReg
     }
 
@@ -25,6 +25,6 @@ export default buildSchema(`
         password: String,
         role: String,
         email: String,
-        groupName: String
+        group: String
     }
 `)

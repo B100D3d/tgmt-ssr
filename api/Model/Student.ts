@@ -98,10 +98,10 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
     await studentModel.createCollection()
     await userModel.createCollection()
 
-    const { name, email, groupName } = args
+    const { name, email, group } = args
     const password = generatePassword()
     const login = generateLogin(name)
-    const id = generateStudentID(name, groupName)
+    const id = generateStudentID(name, group)
     const role = "Student"
     
     const session = await mongoose.startSession()
@@ -110,9 +110,9 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
     try {
 
 
-        const group = await groupModel.findOne({ name: groupName }).exec()
+        const groupDB = await groupModel.findOne({ id: group }).exec()
 
-        if (!group) {
+        if (!groupDB) {
             console.log("Group not found")
             res.status(404)
             return
@@ -121,7 +121,7 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
         const student = new studentModel({
             id,
             name,
-            group: group._id
+            group: groupDB._id
         })
 
         const user = new userModel({
@@ -132,12 +132,12 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
             student: student._id
         })
 
-        group.students.addToSet(student._id)
+        groupDB.students.addToSet(student._id)
 
         await user.setPassword(password)
 
         await student.save(opts)
-        await group.save(opts)
+        await groupDB.save(opts)
         await user.save(opts)
         await session.commitTransaction()
 

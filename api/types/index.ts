@@ -19,7 +19,7 @@ export interface UserRegData {
 }
 
 export interface StudentRegData extends UserRegData {
-    groupName: string;
+    group: string;
 }
 
 export interface UserCreatingData {
@@ -33,7 +33,7 @@ export interface AdminCreatingData extends UserCreatingData {
 }
 
 export interface StudentCreatingData extends UserCreatingData {
-    groupName: string;
+    group: string;
 }
 
 export interface StudentChangedData {
