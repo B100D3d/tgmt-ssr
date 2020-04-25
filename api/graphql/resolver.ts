@@ -7,8 +7,8 @@ import {
     changePassword,
 } from "../Model/User";
 import { createAdmin } from "../Model/Admin"
-import { createTeacher, getTeachers } from "../Model/Teacher"
-import { createStudent, getStudents, changeStudent } from "../Model/Student"
+import { createTeacher, getTeachers, deleteTeacher } from "../Model/Teacher"
+import { createStudent, getStudents, changeStudent, deleteStudent } from "../Model/Student"
 import { getGroups, createGroup, deleteGroup } from "../Model/Group"
 import { getSubjects, createSubject, deleteSubject } from "../Model/Subject"
 import { getSchedule, setSchedule } from "../Model/Schedule"
@@ -24,6 +24,11 @@ export default class Resolver {
         createAdmin,
         createStudent,
         createTeacher
+    };
+
+    public static deleteUsersResolver = {
+        deleteStudent,
+        deleteTeacher
     };
 
     public static loginResolver = {

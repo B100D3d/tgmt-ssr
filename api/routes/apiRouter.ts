@@ -26,6 +26,14 @@ apiRouter.use("/createUser", checkToken, checkAdmin, checkFingerprint, (req, res
 }
 )(req, res))
 
+apiRouter.use("/deleteUser", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
+        graphiql: isDev,
+        rootValue: resolver.deleteUsersResolver,
+        schema: schema.userDeleting,
+        context: {req, res}
+    }
+)(req, res))
+
 apiRouter.use("/login", (req, res) => graphqlHTTP({
     graphiql: isDev,
     rootValue: resolver.loginResolver,

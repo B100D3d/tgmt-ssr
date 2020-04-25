@@ -36,8 +36,11 @@ export interface StudentCreatingData extends UserCreatingData {
     group: string;
 }
 
-export interface StudentChangedData {
+export interface StudentDeletingData {
     studentID: string;
+}
+
+export interface StudentChangedData extends StudentDeletingData{
     data: {
         name?: string;
         email?: string;
@@ -45,6 +48,16 @@ export interface StudentChangedData {
     };
 }
 
+export interface TeacherDeletingData {
+    teacherID: string;
+}
+
+export interface TeacherChangedData extends TeacherDeletingData{
+    data: {
+        name?: string,
+        email?: string
+    };
+}
 
 export interface GroupCreatingData {
     name: string;

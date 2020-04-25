@@ -61,7 +61,7 @@ export const deleteGroup = async ({ name, year }: GroupCreatingData, { res }: Ex
     try{
         await studentModel.deleteMany({ group: group._id }, opts).exec()
         await scheduleModel.deleteMany({ group: group._id }, opts).exec()
-        await groupModel.deleteOne({ _id: group._id }, opts)
+        await groupModel.deleteOne({ _id: group._id }, opts).exec()
         await session.commitTransaction()
         return true
     } catch(err) {

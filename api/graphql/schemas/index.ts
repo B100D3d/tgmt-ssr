@@ -1,5 +1,6 @@
 import mainPageInfo from "./mainPageInfo"
 import userCreating from "./userCreating"
+import userDeleting from "./userDeleting"
 import userInfoSetting from "./userInfoSetting"
 import login from "./login"
 import auth from "./auth"
@@ -14,6 +15,7 @@ import records from "./records"
 export {
     mainPageInfo,
     userCreating,
+    userDeleting,
     userInfoSetting,
     login,
     auth,

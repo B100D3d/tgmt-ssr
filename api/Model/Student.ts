@@ -1,12 +1,12 @@
-import { 
-    Student, 
-    UserModel, 
+import {
+    Student,
+    UserModel,
     StudentCreatingData,
     ExpressParams,
     StudentRegData,
     ScheduleModel,
     StudentChangedData,
-    GroupModel
+    GroupModel, StudentDeletingData
 } from "../types"
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
@@ -15,6 +15,8 @@ import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
 import { sendUserCreatingEmail, sendEmailChangedEmail } from "./Email"
 import { getWeekNum } from "./Date"
+import user from "../graphql/schemas/types/user";
+import recordsModel from "./MongoModels/recordsModel";
 
 
 
@@ -156,6 +158,44 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
 
     } catch (err) {
         console.log(`Student didn't saved: \n${err}`)
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500)
+        return
+    }
+
+}
+
+export const deleteStudent = async ({ studentID }: StudentDeletingData, { res }: ExpressParams): Promise<Boolean> => {
+
+    const student = await studentModel.findOne({ id: studentID }).exec()
+
+    if(!student) {
+        console.log("Student not found")
+        res.status(404)
+        return
+    }
+
+    const user = await userModel.findOne({ student: student._id }).exec()
+    const group = await groupModel.findById(student.group).exec()
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
+
+    try {
+        await recordsModel.deleteMany({ student: student._id }, opts).exec()
+        group.students.pull({ _id: student._id }, opts)
+
+        await studentModel.deleteOne({ _id: student._id }, opts).exec()
+        await userModel.deleteOne({ _id: user._id }, opts).exec()
+
+        await session.commitTransaction()
+
+        return true
+
+    } catch(e) {
+        console.log("Student not deleted", e)
         await session.abortTransaction()
         session.endSession()
         res.status(500)

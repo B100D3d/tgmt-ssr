@@ -1,11 +1,11 @@
-import { 
-    Teacher, 
-    UserModel, 
+import {
+    Teacher,
+    UserModel,
     SubjectModel,
     GroupModel,
     UserCreatingData,
     ExpressParams,
-    UserRegData
+    UserRegData, TeacherDeletingData
 } from "../types"
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
@@ -13,6 +13,7 @@ import groupModel from "./MongoModels/groupModel"
 import { generatePassword, generateLogin, generateTeacherID } from "./Utils"
 import teacherModel from "./MongoModels/teacherModel"
 import { sendUserCreatingEmail } from "./Email"
+import subjectModel from "./MongoModels/subjectModel";
 
 
 
@@ -127,4 +128,32 @@ export const createTeacher = async (args: UserCreatingData, { res }: ExpressPara
         res.status(500)
         return
     }
+}
+
+export const deleteTeacher = async ({ teacherID }: TeacherDeletingData, { res }: ExpressParams): Promise<Boolean> => {
+
+    const teacher = await teacherModel.findOne({ id: teacherID }).exec()
+    const user = await userModel.findOne({ teacher: teacher._id }).exec()
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
+
+    try {
+        await subjectModel.deleteMany({ teacher: teacher._id }, opts).exec()
+        await teacherModel.deleteOne({ _id: teacher._id }, opts).exec()
+        await userModel.deleteOne({ _id: user._id }, opts).exec()
+
+        await session.commitTransaction()
+
+        return true
+
+    }catch (e) {
+        console.log("Teacher not deleted", e)
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500)
+        return
+    }
+
 }
