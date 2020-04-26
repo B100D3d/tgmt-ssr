@@ -67,7 +67,9 @@ const UsersList = ({ type }) => {
             <h1>{ type === "Student" ? "Студенты" : "Преподаватели" }</h1>
             <div className="navigation-con">
                 <input placeholder="Поиск..." ref={ search } onChange={ handleChange } />
-                <div className="plus" role="button">+</div>
+                <div className="plus" role="button">
+                    <Link to={ `${ location.pathname }/new` }>+</Link>
+                </div>
             </div>
             <ul className="users-list">
                 { filteringEntities.map((e) => (
@@ -77,7 +79,9 @@ const UsersList = ({ type }) => {
                         </span>
                         <div className="right">
                             <span>{ e.group?.name || "" }</span>
-                            <div className="delete" role="button">&#215;</div>
+                            <div className="delete" id={ e.id } role="button" onClick={ handleDelete } >
+                                <span>&#215;</span>
+                            </div>
                         </div>
                     </li>
                 )) }
