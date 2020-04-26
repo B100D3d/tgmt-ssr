@@ -16,9 +16,7 @@ const months: Record<number, string> = {
 };
 
 export const getTime = (): string => {
-    const date = new Date()
-    const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
-    return `${date.getHours()}:${minutes}:${date.getSeconds()}`
+    return new Date().toUTCString().split(" ")[4]
 }
 
 export const getDate = (): string => {
