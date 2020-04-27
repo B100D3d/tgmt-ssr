@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
 
 import "./users-list.sass"
-import {deleteStudent, deleteTeacher, getStudents, getTeachers} from "/api"
-import { FingerprintContext } from "/context"
+import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "/api"
+import { FingerprintContext, UserContext } from "/context"
 import cogoToast from "cogo-toast"
 import { Link, useLocation } from "react-router-dom"
+import { CSSTransition, TransitionGroup } from "react-transition-group";
 
 
 const UsersList = ({ type }) => {
     const [entities, setEntities] = useState([])
     const [filteringEntities, setFilteringEntities] = useState([])
     const fingerprint = useContext(FingerprintContext)
+    const { user, setUser } = useContext(UserContext)
     const search = useRef()
     const location = useLocation()
 
@@ -23,6 +25,7 @@ const UsersList = ({ type }) => {
                 cogoToast.success("Данные успешно загружены.", { position: "top-right" })
                 setEntities(e)
                 setFilteringEntities(e)
+                setUser({ ...user, entities: e })
             })
             .catch((error) => {
                 hide()
@@ -67,25 +70,30 @@ const UsersList = ({ type }) => {
             <h1>{ type === "Student" ? "Студенты" : "Преподаватели" }</h1>
             <div className="navigation-con">
                 <input placeholder="Поиск..." ref={ search } onChange={ handleChange } />
-                <div className="plus" role="button">
-                    <Link to={ `${ location.pathname }/new` }>+</Link>
-                </div>
+                <Link className="plus" to={ `${ location.pathname }/new` }>+</Link>
             </div>
-            <ul className="users-list">
-                { filteringEntities.map((e) => (
-                    <li key={ e.id }>
-                        <span>
-                            { e.name }
-                        </span>
-                        <div className="right">
-                            <span>{ e.group?.name || "" }</span>
-                            <div className="delete" id={ e.id } role="button" onClick={ handleDelete } >
-                                <span>&#215;</span>
-                            </div>
-                        </div>
-                    </li>
-                )) }
-            </ul>
+                <TransitionGroup className="users-list" component="ul">
+                    { filteringEntities.map((e) => (
+                        <CSSTransition
+                            key={ e.id }
+                            timeout={ 1000 }
+                            classNames="fade">
+                            <li key={ e.id }>
+                                <Link to={ `${ location.pathname }/${ e.id }` }>
+                                    <span>
+                                        { e.name }
+                                    </span>
+                                    <div className="right">
+                                        <span>{ e.group?.name || "" }</span>
+                                        <div className="delete" id={ e.id } role="button" onClick={ handleDelete } >
+                                            <span>&#215;</span>
+                                        </div>
+                                    </div>
+                                </Link>
+                            </li>
+                        </CSSTransition>
+                    )) }
+                </TransitionGroup>
         </div>
     )
 }

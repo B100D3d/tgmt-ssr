@@ -128,10 +128,10 @@ export const sendRecords = async (fingerprint, month, groupId, subjectId, record
     return res.data.data.setRecords
 }
 
-export const getStudents = async (fingerprint) => {
+export const getStudents = async (fingerprint, studentID = "") => {
     const res = await axios.post(`${ url }/api/students`, {
         query: `{
-            getStudents {
+            getStudents(studentID: "${ studentID }") {
                 id
                 name
                 group {
@@ -145,6 +145,10 @@ export const getStudents = async (fingerprint) => {
         fingerprint
     }, { withCredentials: true })
     return res.data.data.getStudents
+}
+
+export const getStudent = async (fingerprint, studentID) => {
+    return (await getStudents(fingerprint, studentID))[0]
 }
 
 export const getTeachers = async (fingerprint) => {
@@ -181,6 +185,24 @@ export const createStudent = async (fingerprint, name, email, group) => {
     return res.data.data.createStudent
 }
 
+export const createTeacher = async (fingerprint, name, email) => {
+    const res = await axios.post(`${ url }/api/createUser`, {
+        query: `mutation {
+            createTeacher(
+                name: "${ name }",
+                email: "${ email }") {
+                    name
+                    email
+                    login
+                    password
+                    role
+                }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.createTeacher
+}
+
 export const deleteStudent = async (fingerprint, studentID) => {
     const res = await axios.post(`${ url }/api/deleteUser`, {
         query: `mutation { deleteStudent(studentID: "${ studentID }") }`,
@@ -195,4 +217,21 @@ export const deleteTeacher = async (fingerprint, teacherID) => {
         fingerprint
     }, { withCredentials: true })
     return res.data.data.deleteTeacher
+}
+
+export const changeStudent = async (fingerprint, studentID, name, email, groupID) => {
+    const res = await axios.post(`${ url }/api/students`, {
+        query: `mutation{
+            changeStudent(
+                studentID: "${ studentID }",
+                data: {
+                    name: "${ name }",
+                    email: "${ email }",
+                    groupID: "${ groupID }"
+                }
+            )
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.changeStudent
 }

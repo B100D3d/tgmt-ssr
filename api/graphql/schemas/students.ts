@@ -31,7 +31,12 @@ export default new GraphQLSchema({
         name: "StudentsQuery",
         fields: () => ({
             getStudents: {
-                type: new GraphQLList(StudentEntity)
+                type: new GraphQLList(StudentEntity),
+                args: {
+                    studentID: {
+                        type: GraphQLString
+                    }
+                }
             }
         })
     }),
