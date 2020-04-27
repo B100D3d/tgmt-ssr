@@ -25,11 +25,13 @@ import recordsModel from "./MongoModels/recordsModel";
 
 
 
-export const getStudents = async ({ name }: UserName, { res }: ExpressParams): Promise<Array<Student>> => {
+export const getStudents = async ({ studentID }: StudentID, { res }: ExpressParams): Promise<Array<Student>> => {
 
-    const studentsDB = name
+    const student = studentID ? await studentModel.findOne({ id: studentID }) : null
+
+    const studentsDB = studentID
                         ? [await userModel
-                            .findOne({ role: "Student", name })
+                            .findOne({ role: "Student", name: student.name })
                             .populate({ path: "student", populate: { path: "group" }})
                             .exec()]
                         : await userModel
