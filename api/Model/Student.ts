@@ -6,26 +6,42 @@ import {
     StudentRegData,
     ScheduleModel,
     StudentChangedData,
-    GroupModel, StudentDeletingData
+    StudentID,
+    UserName
 } from "../types"
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
-import { generatePassword, generateLogin, generateStudentID, removeNullAndUndefinedProps } from "./Utils"
+import {
+    generatePassword,
+    generateLogin,
+    generateStudentID,
+    removeNullAndUndefinedProps
+} from "./Utils"
 import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
 import { sendUserCreatingEmail, sendEmailChangedEmail } from "./Email"
 import { getWeekNum } from "./Date"
-import user from "../graphql/schemas/types/user";
 import recordsModel from "./MongoModels/recordsModel";
 
 
 
-export const getStudents = async (): Promise<Array<Student>> => {
+export const getStudents = async ({ name }: UserName, { res }: ExpressParams): Promise<Array<Student>> => {
 
-    const studentsDB = await userModel
-                        .find({ role: "Student" })
-                        .populate({ path: "student", populate: { path: "group" }})
-                        .exec()
+    const studentsDB = name
+                        ? [await userModel
+                            .findOne({ role: "Student", name })
+                            .populate({ path: "student", populate: { path: "group" }})
+                            .exec()]
+                        : await userModel
+                            .find({ role: "Student" })
+                            .populate({ path: "student", populate: { path: "group" }})
+                            .exec()
+
+    if (!studentsDB) {
+        console.log("Students not found")
+        res.status(404)
+        return
+    }
 
     const students = studentsDB
         .sort((a, b) => a.name > b.name ? 1 : -1)
@@ -168,7 +184,7 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
 
 }
 
-export const deleteStudent = async ({ studentID }: StudentDeletingData, { res }: ExpressParams): Promise<Boolean> => {
+export const deleteStudent = async ({ studentID }: StudentID, { res }: ExpressParams): Promise<Boolean> => {
 
     const student = await studentModel.findOne({ id: studentID }).exec()
 

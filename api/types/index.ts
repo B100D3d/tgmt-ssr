@@ -10,8 +10,11 @@ export interface TokenInfo {
     uniqueId: string;
 }
 
-export interface UserRegData {
+export interface UserName {
     name: string;
+}
+
+export interface UserRegData extends UserName{
     login: string;
     password: string;
     role: string;
@@ -22,8 +25,7 @@ export interface StudentRegData extends UserRegData {
     group: string;
 }
 
-export interface UserCreatingData {
-    name: string;
+export interface UserCreatingData extends UserName{
     email: string;
 }
 
@@ -36,11 +38,11 @@ export interface StudentCreatingData extends UserCreatingData {
     group: string;
 }
 
-export interface StudentDeletingData {
+export interface StudentID {
     studentID: string;
 }
 
-export interface StudentChangedData extends StudentDeletingData{
+export interface StudentChangedData extends StudentID{
     data: {
         name?: string;
         email?: string;
