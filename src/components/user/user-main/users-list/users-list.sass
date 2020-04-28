@@ -61,22 +61,27 @@
         padding: 0
         overflow-y: scroll
 
-        .fade-enter
-            opacity: 0
-        .fade-enter-active, .fade-exit-active
-            transition: opacity .5s ease
-        .fade-exit
-            opasity: 1
-
-
         li
             background-color: #201E1E
             border-radius: 10px
             font-size: 26px
             cursor: pointer
-            transition: transform .5s ease
             margin-bottom: 15px
             margin-right: 5px
+
+            &.fade-enter
+                opacity: 0
+
+            &.fade-exit
+                opacity: 1
+
+            &.fade-enter-active
+                opacity: 1
+                transition: opacity 500ms ease-in-out
+
+            &.fade-exit-active
+                opacity: 0
+                transition: opacity 500ms ease-in-out
 
             a
                 width: 100%

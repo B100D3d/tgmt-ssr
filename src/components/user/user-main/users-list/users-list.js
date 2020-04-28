@@ -76,7 +76,7 @@ const UsersList = ({ type }) => {
                     { filteringEntities.map((e) => (
                         <CSSTransition
                             key={ e.id }
-                            timeout={ 1000 }
+                            timeout={ 500 }
                             classNames="fade">
                             <li key={ e.id }>
                                 <Link to={ `${ location.pathname }/${ e.id }` }>
