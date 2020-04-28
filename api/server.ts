@@ -41,10 +41,7 @@ const server = +process.env.HTTPS
     : app
 
 
-server.listen(port, error => {
-        if(error) {
-            console.log(error)
-        }
+server.listen(port, () => {
 
         console.log(`Server is running on port ${port}. (${ new Date().toUTCString() })`)
     
