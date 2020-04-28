@@ -2,9 +2,9 @@ import React, { useEffect, useState, useContext } from "react"
 import axios from "axios"
 import loadable from "@loadable/component"
 
-import { UserContext, FingerprintContext } from "../context/index"
+import { UserContext, FingerprintContext } from "context"
 
-import Loading from "/components/loading/loading"
+import Loading from "components/loading/loading"
 
 const styles = {
     display: "flex",
@@ -20,15 +20,15 @@ const LoadingWrapper = () => (
     </div>
 )
 
-const Login = loadable(() => import("/components/login/login"), {
+const Login = loadable(() => import("components/login/login"), {
     fallback: LoadingWrapper
 })
-const User = loadable(() => import('/components/user/user'), { 
+const User = loadable(() => import('components/user/user'), {
     fallback: LoadingWrapper
  })
 
 const auth = async (fingerprint) => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
     const query = await axios.post(`${ url }/api/auth`, {
         query: `{
             auth {

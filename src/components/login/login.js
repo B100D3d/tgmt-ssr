@@ -4,12 +4,12 @@ import axios from "axios"
 import loadable from "@loadable/component"
 import cogoToast from "cogo-toast"
 
-import { UserContext, FingerprintContext } from "/context"
+import { UserContext, FingerprintContext } from "context"
 
-const RainbowButton = loadable(() => import("/components/rainbow-button/rainbow-button"))
+const RainbowButton = loadable(() => import("components/rainbow-button/rainbow-button"))
 
-import bublik from "/static/bublik.webp"
-import back from "/static/previous.svg"
+import bublik from "static/bublik.webp"
+import back from "static/previous.svg"
 
 import "./login.sass"
 
@@ -22,7 +22,7 @@ const styles = {
 }
 
 const login = async (login, password, fingerprint) => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
     const query = await axios.post(`${ url }/api/login`, {
         query: `{
             login(login: "${ login }", password: "${ password }") {

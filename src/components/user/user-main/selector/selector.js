@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react"
 
 import s from "./selector.module.sass"
-import useGradient from "/hooks/useGradient.hook"
-import { FingerprintContext, UserContext } from "/context"
+import useGradient from "hooks/useGradient.hook"
+import { FingerprintContext, UserContext } from "context"
 import { Link, useParams, useLocation } from "react-router-dom"
-import { getSubjects } from "/api"
+import { getSubjects } from "api"
 
 const noDeg = ({ deg, ...rest }) => rest
 

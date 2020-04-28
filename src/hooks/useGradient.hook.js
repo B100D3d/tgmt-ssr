@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext } from "react"
 
-import { UserMenuOpenContext } from "/context"
+import { UserMenuOpenContext } from "context"
 
 
 const CSS_GRADIENTS = [{

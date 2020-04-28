@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
 
 export const getSchedule = async (group, { subgroup, even }) => {
     const res = await axios.post(`${ url }/api/getSchedule`, {

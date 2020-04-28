@@ -4,12 +4,12 @@ import { Route, Switch, useLocation, useHistory } from "react-router-dom"
 
 import "./user-main.sass"
 import Schedule from "./schedule/schedule"
-import { UserContext } from "/context"
+import { UserContext } from "context"
 import Selector from "./selector/selector"
 import Register from "./register/register"
 import UsersList from "./users-list/users-list"
 
-import back from "/static/previous.svg"
+import back from "static/previous.svg"
 import UserInfo from "./users-list/user-info/user-info";
 
 const LINKS = [

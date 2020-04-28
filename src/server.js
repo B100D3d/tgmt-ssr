@@ -7,10 +7,10 @@ import { renderToString } from 'react-dom/server'
 import { ChunkExtractor, ChunkExtractorManager } from '@loadable/server'
 import { html as htmlTemplate, oneLineTrim } from 'common-tags'
 
-import routes from "../dist/routes"
+import routes from "../api/routes/index.ts"
+import api from "../api/server.ts"
 
 import express from 'express'
-import cors from "cors"
 import bodyParser from "body-parser"
 import cookieParser from "cookie-parser"
 import path from "path"
@@ -21,6 +21,8 @@ app.set("trust proxy", true)
 app.use(bodyParser.json())
 app.use(cookieParser())
 !+process.env.PROD && app.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
+
+app.use(api)
 
 app
   .disable('x-powered-by')

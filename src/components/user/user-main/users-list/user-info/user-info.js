@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
 
-import Dropdown from "/components/dropdown/dropdown"
+import Dropdown from "components/dropdown/dropdown"
 import "./user-info.sass"
 
-import { FingerprintContext, UserContext } from "/context"
+import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
-import {createStudent, createTeacher, getStudent} from "/api"
+import {createStudent, createTeacher, getStudent} from "api"
 
 const UserInfo = ({ type }) => {
     const { user } = useContext(UserContext)

@@ -4,9 +4,9 @@ import loadable from "@loadable/component"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 
 import "./register.sass"
-import { FingerprintContext, UserContext, UserMenuOpenContext } from "/context"
-import useWindowSize from "/hooks/useWindowSize.hook"
-import { getRecords, getStudentRecords, sendRecords } from "/api"
+import { FingerprintContext, UserContext, UserMenuOpenContext } from "context"
+import useWindowSize from "hooks/useWindowSize.hook"
+import { getRecords, getStudentRecords, sendRecords } from "api"
 import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
 

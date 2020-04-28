@@ -3,10 +3,10 @@ import { useParams } from "react-router-dom"
 import loadable from "@loadable/component"
 
 import "./schedule.sass"
-import { getSchedule, getSubjects, sendSchedule } from "/api"
+import { getSchedule, getSubjects, sendSchedule } from "api"
 
-import { UserMenuOpenContext, UserContext, FingerprintContext } from "/context"
-import useWindowSize from "/hooks/useWindowSize.hook"
+import { UserMenuOpenContext, UserContext, FingerprintContext } from "context"
+import useWindowSize from "hooks/useWindowSize.hook"
 import Switch from "./switch/switch"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 import SelectEditor from "./select-editor"

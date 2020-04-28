@@ -5,15 +5,15 @@ import loadable from "@loadable/component"
 import Fingerprint from "fingerprintjs2"
 import UAParser from "ua-parser-js"
 
-const MainPage = loadable(() => import("/pages/MainPage"))
-const Page404 = loadable(() => import("/pages/Page404"))
-const AuthPage = loadable(() => import("/pages/AuthPage"))
+const MainPage = loadable(() => import("pages/MainPage"))
+const Page404 = loadable(() => import("pages/Page404"))
+const AuthPage = loadable(() => import("pages/AuthPage"))
 
-import { WeekContext, InitialDataContext, FingerprintContext } from "/context";
+import { WeekContext, InitialDataContext, FingerprintContext } from "context";
 
 
 const getWeek = async () => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
     const query = await axios.post(`${ url }/api/mainPage`, {
             query: `{
                  week {

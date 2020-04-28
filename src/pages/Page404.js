@@ -3,7 +3,7 @@ import loadable from "@loadable/component"
 
 const Lottie = loadable(() => import("react-lottie"))
 
-import anim from "/static/404page.json"
+import anim from "static/404page.json"
 
 const Page404 = () => {
     const [defaultOptions, setDefaultOptions] = useState({})

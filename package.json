@@ -4,10 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "razzle start",
-    "build": "npm run build:rz && npm run build:ts",
-    "build:rz": "razzle build",
-    "build:ts": "tsc --project api/tsconfig.json",
-    "start:api": "node dist/server.js",
+    "build": "razzle build",
     "start:prod": "cross-env NODE_ENV=production node build/server.js",
     "api-dev": "ts-node-dev --respawn --transpileOnly --project api/tsconfig.json api/server.ts",
     "test": "razzle test --env=jsdom"
@@ -47,6 +44,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
+    "@babel/preset-typescript": "^7.9.0",
     "@loadable/babel-plugin": "^5.12.0",
     "@loadable/webpack-plugin": "^5.12.0",
     "@types/cookie-parser": "^1.4.2",

@@ -1,7 +1,7 @@
 import React from "react"
 
 import "./select-editor.sass"
-import Dropdown from "/components/dropdown/dropdown"
+import Dropdown from "components/dropdown/dropdown"
 
 export default class SelectEditor extends React.Component {
 

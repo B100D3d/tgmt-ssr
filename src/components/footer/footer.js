@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 
 import "./footer.sass"
-import rggmu from "/static/rggmu.webp"
-import inst from "/static/instagram.svg"
-import vk from "/static/vk.svg"
-import google from "/static/google.svg"
+import rggmu from "static/rggmu.webp"
+import inst from "static/instagram.svg"
+import vk from "static/vk.svg"
+import google from "static/google.svg"
 
 
 const Footer = () => {

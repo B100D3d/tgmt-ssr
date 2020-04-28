@@ -8,6 +8,7 @@ const OpenBrowserPlugin = require("open-browser-webpack-plugin")
 const LoadableBabelPlugin = require('@loadable/babel-plugin')
 const NullishCoalescingBabelPlugin = require("@babel/plugin-proposal-nullish-coalescing-operator")
 const babelPresetRazzle = require('razzle/babel')
+const babelPresetTypescript = require("@babel/preset-typescript")
 
 
 module.exports = {
@@ -24,14 +25,17 @@ module.exports = {
         ///////////// PLUGINS //////////////////////////
         config.plugins.push(new Dotenv())
 
+        if(isServer) {
+            config.plugins.push(new OpenBrowserPlugin({ url: "http://localhost:3000" }))
+        }
+
         if(!isServer) {
             const filename = path.resolve(__dirname, 'build')
             config.plugins.push(
                 new LoadableWebpackPlugin({
                     outputAsset: false,
                     writeToDisk: { filename },
-                }),
-                new OpenBrowserPlugin({ url: "http://localhost:3000" })
+                })
             )
 
             config.output.filename = dev
@@ -56,14 +60,20 @@ module.exports = {
 
         ///////////// ALIAS /////////////////////////////////
         config.resolve.alias = {
-            "/static": path.resolve(__dirname, "src/static"),
-            "/pages": path.resolve(__dirname, "src/pages"),
-            "/components": path.resolve(__dirname, "src/components"),
-            "/context": path.resolve(__dirname, "src/context"),
-            "/hooks": path.resolve(__dirname, "src/hooks"),
-            "/api": path.resolve(__dirname, "src/api")
+            "static": path.resolve(__dirname, "src/static"),
+            "pages": path.resolve(__dirname, "src/pages"),
+            "components": path.resolve(__dirname, "src/components"),
+            "context": path.resolve(__dirname, "src/context"),
+            "hooks": path.resolve(__dirname, "src/hooks"),
+            "api": path.resolve(__dirname, "src/api")
         }
         ///////////////////////////////////////////////
+
+        ////////// TYPESCRIPT MODULE /////////////////
+        config.resolve.extensions.push(".ts")
+        config.module.rules[1].test = /\.(js|jsx|mjs|ts)$/;
+        config.module.rules[1].include.push(path.resolve(__dirname, "api"))
+        //////////////////////////////////////////////////////
 
 
         /////////////// SASS MODULE /////////////////////
@@ -104,7 +114,7 @@ module.exports = {
 
       modifyBabelOptions: () => ({
         babelrc: false,
-        presets: [babelPresetRazzle],
+        presets: [babelPresetRazzle, babelPresetTypescript],
         plugins: [LoadableBabelPlugin, NullishCoalescingBabelPlugin],
       }),
     

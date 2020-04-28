@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Link } from "react-router-dom"
 
 import "./header-menu.sass"
-import { WeekContext } from "../../../context"
+import { WeekContext } from "context"
 
 
 const HeaderMenu = () => {

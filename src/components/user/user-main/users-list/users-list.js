@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
 
 import "./users-list.sass"
-import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "/api"
-import { FingerprintContext, UserContext } from "/context"
+import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "api"
+import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
 import { Link, useLocation } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group";
