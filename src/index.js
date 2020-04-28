@@ -14,7 +14,9 @@ const port = process.env.PORT
 const servUrl = process.env.SERV_URL;
 const localUrl = process.env.LOCAL_URL;
 
-mongoose.connect(servUrl, { 
+const dbUrl = +process.env.PROD ? localUrl : servUrl
+
+mongoose.connect(dbUrl, {
 	autoIndex: false, 					  
 	useNewUrlParser: true, 		
 	useUnifiedTopology: true,				
