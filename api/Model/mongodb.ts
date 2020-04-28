@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 const servUrl = process.env.SERV_URL;
 const localUrl = process.env.LOCAL_URL;
 
-mongoose.connect(servUrl, { autoIndex: false, 
+const dbUrl = +process.env.PROD ? localUrl : servUrl
+
+mongoose.connect(dbUrl, { autoIndex: false,
                             useNewUrlParser: true, 
                             useUnifiedTopology: true,
                             useFindAndModify: false });

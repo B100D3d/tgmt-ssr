@@ -2,7 +2,7 @@ import https from 'https';
 import dotenv from "dotenv"
 import fs from "fs"
 import path from "path"
-import mongoose from "mongoose"
+import db from "../api/Model/mongodb.ts"
 
 const sslDir = "/etc/ssl";
 
@@ -10,22 +10,6 @@ dotenv.config()
 
 let app = require('./server').default;
 const port = process.env.PORT
-
-const servUrl = process.env.SERV_URL;
-const localUrl = process.env.LOCAL_URL;
-
-const dbUrl = +process.env.PROD ? localUrl : servUrl
-
-mongoose.connect(dbUrl, {
-	autoIndex: false, 					  
-	useNewUrlParser: true, 		
-	useUnifiedTopology: true,				
-	useFindAndModify: false 
-});
-
-mongoose.Promise = global.Promise;
-
-const db = mongoose.connection;
 
 const server = +process.env.HTTPS
 	  ? https.createServer({
