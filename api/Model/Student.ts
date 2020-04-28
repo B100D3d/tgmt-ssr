@@ -64,47 +64,46 @@ export const changeStudent = async (args: StudentChangedData, { res }: ExpressPa
         
         const { studentID: id, data: { name, email, groupID } } = args
 
+        if(!name || !groupID) return
+
         const student = await studentModel.findOne({ id }).exec()
         const user = await userModel.findOne({ student: student._id }).exec()
         const group = await groupModel.findOne({ id: groupID }).exec()
-        
-        const studentData: Record<string, any> = removeNullAndUndefinedProps({ name })
-        if(name || group) {
-            const oldGroup = await groupModel.findById(student.group).exec()
-            if(group) {
-                oldGroup.students.pull(student._id)
-                group.students.push(student._id)
-                studentData.group = group._id
-                await oldGroup.save(opts)
-                await group.save(opts)
-            }
-            const newId = generateStudentID(name ?? student.name, group?.id ?? oldGroup.id )
-            studentData.id = newId
+        const oldGroup = await groupModel.findById(student.group).exec()
+
+        if (!(student && user && group)) {
+            res.status(404)
+            return
         }
 
-        await studentModel.findByIdAndUpdate(student._id, studentData, opts)
+        const newId = generateStudentID(name, group.id)
+        const studentData = { id: newId, name, group: group.id }
 
-        const userData: Record<string, string> = removeNullAndUndefinedProps({ name })
+        const userData = { name, email }
+
         if(email) {
-            userData.email = email
-            sendEmailChangedEmail(user.name, user.role, email)
+            sendEmailChangedEmail(name, user.role, email)
         }
-        await userModel.updateOne({ student: student._id }, userData, opts).exec()
+
+        await studentModel.findByIdAndUpdate(student._id, studentData, opts).exec()
+        await userModel.findByIdAndUpdate(user._id, userData, opts).exec()
+
+        oldGroup.students.pull(student._id)
+        group.students.push(student._id)
+        await oldGroup.save(opts)
+        await group.save(opts)
+
         await session.commitTransaction()
 
-        const groupData = group 
-            ? {
+        return { 
+            id: student.id,
+            name,
+            email,
+            group: {
                 id: group.id,
                 name: group.name,
                 year: group.year
             }
-            : undefined
-
-        return { 
-            id: studentData.id ?? id,
-            name,
-            email,
-            group: groupData
         }
     } catch(err) {
         console.log(err)

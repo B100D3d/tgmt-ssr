@@ -34,7 +34,8 @@ export default new GraphQLSchema({
                 type: new GraphQLList(StudentEntity),
                 args: {
                     studentID: {
-                        type: GraphQLString
+                        type: GraphQLString,
+                        defaultValue: undefined
                     }
                 }
             }
@@ -54,16 +55,13 @@ export default new GraphQLSchema({
                             name: "ChangedStudent",
                             fields: () => ({
                                 name: {
-                                    type: GraphQLString,
-                                    defaultValue: undefined
+                                    type: GraphQLString
                                 },
                                 email: {
-                                    type: GraphQLString,
-                                    defaultValue: undefined
+                                    type: GraphQLString
                                 },
                                 groupID: {
-                                    type: GraphQLString,
-                                    defaultValue: undefined
+                                    type: GraphQLString
                                 }
                             })
                         })

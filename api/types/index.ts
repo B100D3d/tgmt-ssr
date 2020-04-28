@@ -50,11 +50,11 @@ export interface StudentChangedData extends StudentID{
     };
 }
 
-export interface TeacherDeletingData {
+export interface TeacherID {
     teacherID: string;
 }
 
-export interface TeacherChangedData extends TeacherDeletingData{
+export interface TeacherChangedData extends TeacherID{
     data: {
         name?: string,
         email?: string

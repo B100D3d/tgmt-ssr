@@ -7,7 +7,7 @@ import {
     changePassword,
 } from "../Model/User";
 import { createAdmin } from "../Model/Admin"
-import { createTeacher, getTeachers, deleteTeacher } from "../Model/Teacher"
+import { createTeacher, getTeachers, deleteTeacher, changeTeacher } from "../Model/Teacher"
 import { createStudent, getStudents, changeStudent, deleteStudent } from "../Model/Student"
 import { getGroups, createGroup, deleteGroup } from "../Model/Group"
 import { getSubjects, createSubject, deleteSubject } from "../Model/Subject"
@@ -56,7 +56,8 @@ export default class Resolver {
     }
 
     public static teachersResolver = {
-        getTeachers
+        getTeachers,
+        changeTeacher
     }
 
     public static subjectsResolver = {

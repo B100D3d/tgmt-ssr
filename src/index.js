@@ -39,7 +39,7 @@ server.listen(port, error => {
     console.log(error);
   }
 
-  console.log('🚀 started');
+  console.log(`🚀 started (${ new Date().toUTCString() })`);
 
   db.on("error", err => {
 	console.log(`Mongodb connection has error: ${err}`)

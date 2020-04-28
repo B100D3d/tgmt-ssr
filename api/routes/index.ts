@@ -18,21 +18,7 @@ export default [
         }
     },
     {
-        path: "/user",
-        exact: true,
-        loadData: async (): Promise<any> => {
-            try {
-                const week = resolver.mainPageResolver.week()
-           
-                return { week }
-            } catch(err) {
-                console.log(`loadData error: ${err}`)
-            }
-           
-        }
-    },
-    {
-        path: "/user/settings",
+        path: "*",
         loadData: async (): Promise<any> => {
             try {
                 const week = resolver.mainPageResolver.week()
@@ -41,7 +27,7 @@ export default [
             } catch(err) {
                 console.log(`loadData error: ${err}`)
             }
-            
+
         }
     }
 ]

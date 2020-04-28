@@ -18,13 +18,6 @@ import path from "path"
 const app = express();
 
 app.set("trust proxy", true)
-app.use(cors({
-    origin: ["https://тгмт.рф", "http://localhost:3000"], 
-    optionsSuccessStatus: 200, 
-    credentials: true,
-    methods: ["GET", "POST"],
-    allowedHeaders: "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Origin"
-}))
 app.use(bodyParser.json())
 app.use(cookieParser())
 !+process.env.PROD && app.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
@@ -48,7 +41,7 @@ app
 		if(match && route.loadData) promise = route.loadData()
 		return match
 	})
-	const data = await promise || {}
+	const data = await promise || { }
 
     const markup = renderToString(
 		<ChunkExtractorManager extractor={ extractor }> 

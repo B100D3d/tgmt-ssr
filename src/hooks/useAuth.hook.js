@@ -6,20 +6,6 @@ import { UserContext, FingerprintContext } from "../context/index"
 
 import Loading from "/components/loading/loading"
 
-const Login = loadable(() => import("/components/login/login"), {
-    fallback: 
-    <div style={ styles }>
-        <Loading width={ 700 } height={ 700 } loading={ true } />
-    </div> 
-})
-const User = loadable(() => import('/components/user/user'), { 
-    fallback: 
-    <div style={ styles }>
-        <Loading width={ 700 } height={ 700 } loading={ true } />
-    </div> 
- }) 
-
-
 const styles = {
     display: "flex",
     justifyContent: "center",
@@ -27,6 +13,19 @@ const styles = {
     width: "100%",
     minHeight: "100vh"
 }
+
+const LoadingWrapper = () => (
+    <div style={ styles }>
+        <Loading width={ 700 } height={ 700 } loading={ true } />
+    </div>
+)
+
+const Login = loadable(() => import("/components/login/login"), {
+    fallback: LoadingWrapper
+})
+const User = loadable(() => import('/components/user/user'), { 
+    fallback: LoadingWrapper
+ })
 
 const auth = async (fingerprint) => {
     const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
@@ -106,11 +105,7 @@ const useAuth = () => {
     }, [fingerprint])
 
     if (loading) {
-        return (
-            <div style={ styles }>
-                <Loading width={ 700 } height={ 700 } loading={ loading } />
-            </div>
-        )
+        return <LoadingWrapper />
     }
     if (error) {
         return (

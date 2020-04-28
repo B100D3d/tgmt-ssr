@@ -5,7 +5,7 @@ import {
     GroupModel,
     UserCreatingData,
     ExpressParams,
-    UserRegData, TeacherDeletingData
+    UserRegData, TeacherID, TeacherChangedData
 } from "../types"
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
@@ -16,15 +16,26 @@ import { sendUserCreatingEmail } from "./Email"
 import subjectModel from "./MongoModels/subjectModel";
 
 
+export const getTeachers = async ({ teacherID }: TeacherID, { res }: ExpressParams): Promise<Array<Teacher>> => {
+
+    const teacher = teacherID ? await teacherModel.findOne({ id: teacherID }).exec() : null
+
+    const teachersDB = teacherID
+                        ? [await userModel
+                                .findOne({ role: "Teacher", name: teacher.name })
+                                .populate("teacher")
+                                .exec()]
+                        : await userModel
+                                .find({ role: "Teacher" })
+                                .populate("teacher")
+                                .exec()
 
 
-
-export const getTeachers = async (): Promise<Array<Teacher>> => {
-
-    const teachersDB = await userModel
-                        .find({role: "Teacher"})
-                        .populate("teacher")
-                        .exec()
+    if (!teachersDB) {
+        console.log("Teachers not found")
+        res.status(404)
+        return
+    }
 
     const teachers = teachersDB
         .sort((a, b) => a.name > b.name ? 1 : -1)
@@ -132,7 +143,7 @@ export const createTeacher = async (args: UserCreatingData, { res }: ExpressPara
     }
 }
 
-export const deleteTeacher = async ({ teacherID }: TeacherDeletingData, { res }: ExpressParams): Promise<Boolean> => {
+export const deleteTeacher = async ({ teacherID }: TeacherID, { res }: ExpressParams): Promise<Boolean> => {
 
     const teacher = await teacherModel.findOne({ id: teacherID }).exec()
     const user = await userModel.findOne({ teacher: teacher._id }).exec()
@@ -152,6 +163,42 @@ export const deleteTeacher = async ({ teacherID }: TeacherDeletingData, { res }:
 
     }catch (e) {
         console.log("Teacher not deleted", e)
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500)
+        return
+    }
+
+}
+
+
+export const changeTeacher = async (args: TeacherChangedData, { res }: ExpressParams): Promise<Teacher> => {
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
+    try {
+        const { teacherID: id, data: { name, email } } = args
+
+        if (!name) return
+
+        const teacher = await teacherModel.findOne({ id }).exec()
+        const user = await userModel.findOne({ teacher: teacher._id }).exec()
+
+        const teacherData: Record<string, string> = { name }
+        const userData = { ...teacherData, email } as Teacher
+
+        teacherData.id = generateTeacherID(name)
+
+        await teacherModel.findByIdAndUpdate(teacher._id, teacherData, opts)
+        await userModel.findByIdAndUpdate(user._id, userData, opts)
+
+        await session.commitTransaction()
+
+        return userData
+
+    } catch (e) {
+        console.log(e)
         await session.abortTransaction()
         session.endSession()
         res.status(500)
