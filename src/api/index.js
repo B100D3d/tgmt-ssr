@@ -151,10 +151,10 @@ export const getStudent = async (fingerprint, studentID) => {
     return (await getStudents(fingerprint, studentID))[0]
 }
 
-export const getTeachers = async (fingerprint) => {
+export const getTeachers = async (fingerprint, teacherID = "") => {
     const res = await axios.post(`${ url }/api/teachers`, {
         query: `{
-            getTeachers {
+            getTeachers(teacherID: "${ teacherID }") {
                 id
                 name
                 email
@@ -163,6 +163,10 @@ export const getTeachers = async (fingerprint) => {
         fingerprint
     }, { withCredentials: true })
     return res.data.data.getTeachers
+}
+
+export const getTeacher = async (fingerprint, teacherID) => {
+    return (await getTeachers(fingerprint, teacherID))[0]
 }
 
 export const createStudent = async (fingerprint, name, email, group) => {
@@ -229,9 +233,29 @@ export const changeStudent = async (fingerprint, studentID, name, email, groupID
                     email: "${ email }",
                     groupID: "${ groupID }"
                 }
-            )
+            ) {
+                id
+            }
         }`,
         fingerprint
     }, { withCredentials: true })
     return res.data.data.changeStudent
+}
+
+export const changeTeacher = async (fingerprint, teacherID, name, email) => {
+    const res = await axios.post(`${ url }/api/teachers`, {
+        query: `mutation{
+            changeTeacher(
+                teacherID: "${ teacherID }",
+                data: {
+                    name: "${ name }",
+                    email: "${ email }"
+                }
+            ) {
+                id
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.changeTeacher
 }

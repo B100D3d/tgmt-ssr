@@ -47,6 +47,8 @@ const UsersList = ({ type }) => {
     }
 
     const handleDelete = (e) => {
+        e.stopPropagation()
+        e.preventDefault()
         const parent = e.target.parentElement
         const id = parent.id
         disableBtn(parent)

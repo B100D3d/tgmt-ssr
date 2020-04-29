@@ -5,7 +5,7 @@ const localUrl = process.env.LOCAL_URL;
 
 const dbUrl = +process.env.PROD ? localUrl : servUrl
 
-mongoose.connect(dbUrl, { autoIndex: false,
+mongoose.connect(servUrl, { autoIndex: false,
                             useNewUrlParser: true, 
                             useUnifiedTopology: true,
                             useFindAndModify: false });

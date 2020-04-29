@@ -77,7 +77,7 @@ export const changeStudent = async (args: StudentChangedData, { res }: ExpressPa
         }
 
         const newId = generateStudentID(name, group.id)
-        const studentData = { id: newId, name, group: group.id }
+        const studentData = { id: newId, name, group: group._id }
 
         const userData = { name, email }
 

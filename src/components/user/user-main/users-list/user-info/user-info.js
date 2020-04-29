@@ -6,7 +6,7 @@ import "./user-info.sass"
 
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
-import {createStudent, createTeacher, getStudent} from "api"
+import { changeTeacher, changeStudent, createStudent, createTeacher, getStudent, getTeacher } from "api"
 
 const UserInfo = ({ type }) => {
     const { user } = useContext(UserContext)
@@ -18,7 +18,7 @@ const UserInfo = ({ type }) => {
     const emailInput = useRef()
     const [name, setName] = useState(entity?.name || "")
     const [email, setEmail] = useState(entity?.email || "")
-    const [selectedGroup, setSelectedGroup] = useState(entity?.group.id || "")
+    const [selectedGroup, setSelectedGroup] = useState(entity?.group?.id || "")
     const groups = user.groups.map((group) => ({ key: group.id, value: group.id, text: group.name }))
 
     useEffect(() => {
@@ -32,13 +32,14 @@ const UserInfo = ({ type }) => {
 
     useEffect(() => {
         if (id && !entity) {
+            const getEntityFunc = type === "Student" ? getStudent : getTeacher
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-            getStudent(fingerprint, id)
+            getEntityFunc(fingerprint, id)
                 .then((s) => {
                     hide()
                     setName(s.name)
                     setEmail(s.email)
-                    setSelectedGroup(s.group.id)
+                    s.group && setSelectedGroup(s.group.id)
                 })
                 .catch((error) => {
                     hide()
@@ -62,19 +63,37 @@ const UserInfo = ({ type }) => {
         if (email && !emailInput.current.checkValidity()) {
             cogoToast.error("Некорректный e-mail.", { position: "top-right" })
         } else {
-            const createFunc = type === "Student" ? createStudent : createTeacher
-            const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-            createFunc(fingerprint, name, email, selectedGroup)
-                .then((entity) => {
-                    hide()
-                    alert(`${ type === "Student" ? "Студент" : "Преподаватель" } ${ entity.name } успешно создан! 
-                    Логин: ${ entity.login }\n Пароль: ${ entity.password }`)
-                })
-                .catch((error) => {
-                    hide()
-                    cogoToast.error("Ошибка.", { position: "top-right" })
-                })
+            id ? changeEntity() : createEntity()
         }
+    }
+
+    const createEntity = () => {
+        const createFunc = type === "Student" ? createStudent : createTeacher
+        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+        createFunc(fingerprint, name, email, selectedGroup)
+            .then((entity) => {
+                hide()
+                alert(`${ type === "Student" ? "Студент" : "Преподаватель" } ${ entity.name } успешно создан! 
+                    Логин: ${ entity.login }\n Пароль: ${ entity.password }`)
+            })
+            .catch((error) => {
+                hide()
+                cogoToast.error("Ошибка.", { position: "top-right" })
+            })
+    }
+
+    const changeEntity = () => {
+        const changeFunc = type === "Student" ? changeStudent : changeTeacher
+        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+        changeFunc(fingerprint, id, name, email, selectedGroup)
+            .then((entity) => {
+                hide()
+                cogoToast.success("Пользователь изменен.", { position: "top-right" })
+            })
+            .catch((error) => {
+                hide()
+                cogoToast.error("Ошибка.", { position: "top-right" })
+            })
     }
 
     return (

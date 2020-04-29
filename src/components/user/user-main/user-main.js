@@ -11,6 +11,7 @@ import UsersList from "./users-list/users-list"
 
 import back from "static/previous.svg"
 import UserInfo from "./users-list/user-info/user-info";
+import GroupInfo from "./group-info/group-info";
 
 const LINKS = [
     "/user/register",
@@ -81,6 +82,13 @@ const UserMain = () => {
                             />
                             <Route exact path="/user/teachers/:id" render={ () =>
                                 <UserInfo type="Teacher" /> }
+                            />
+
+                            <Route exact path="/user/groups" render={ () =>
+                                <Selector type="group" title="Группы" deletable /> }
+                            />
+                            <Route exact path="/user/groups/new" render={ () =>
+                                <GroupInfo /> }
                             />
 
                             <Route exact path="/user" render={ () =>

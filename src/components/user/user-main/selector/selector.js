@@ -18,14 +18,14 @@ const getCSSProperties = (gradient) => {
 }
 
 
-const Selector = ({ type, title }) => {
+const Selector = ({ type, title, deletable }) => {
     const params = useParams()
     const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const years = new Set(user.groups.map(({ year }) => year).sort((a, b) => a - b))
     const [subjects, setSubjects] = useState([])
     const entities = type === "group"
-        ? user.groups.filter((group) => group.year === +params.year)
+        ? user.groups.filter((group) => params.year ? group.year === +params.year : true)
         : type === "year"
         ? Array.from(years)
         : subjects
@@ -40,10 +40,13 @@ const Selector = ({ type, title }) => {
     return (
         <div className={ s.selector }>
             <h1>{ title }</h1>
-            <h2>{ type === "group" ? "Выбор группы"
-                : type === "year" ? "Выбор курса"
-                : "Выбор предмета" }
-            </h2>
+            { !deletable
+                ? <h2>{ type === "group" ? "Выбор группы"
+                    : type === "year" ? "Выбор курса"
+                        : "Выбор предмета" }
+                  </h2>
+                : <Link className={ s.plus } to={ `${ location.pathname }/new` }>+</Link>
+            }
             <div className={ s.items }>
                 { entities.map((e) => 
                     <Item key={ e.id || e } name={ e.name || e }
