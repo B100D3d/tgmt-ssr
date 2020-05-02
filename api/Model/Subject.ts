@@ -3,7 +3,8 @@ import {
     SubjectModel,
     SubjectData,
     ExpressParams,
-    CreatedSubject, SubjectGetData
+    CreatedSubject,
+    GroupID
 } from "../types"
 import mongoose from "mongoose"
 import subjectModel from "./MongoModels/subjectModel"
@@ -13,7 +14,7 @@ import groupModel from "./MongoModels/groupModel";
 
 
 
-export const getSubjects = async ({ groupID }: SubjectGetData, { res }: ExpressParams): Promise<Array<Subject>> => {
+export const getSubjects = async ({ groupID }: GroupID, { res }: ExpressParams): Promise<Array<Subject>> => {
 
     const subjectsDB = groupID
         ? (await groupModel.findOne({ id: groupID }).populate({

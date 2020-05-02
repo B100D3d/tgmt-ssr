@@ -1,9 +1,9 @@
-import { 
-    Group, 
-    GroupModel, 
-    GroupCreatingData, 
-    ExpressParams, 
-    CreatedGroup 
+import {
+    Group,
+    GroupModel,
+    GroupCreatingData,
+    ExpressParams,
+    CreatedGroup, GroupID
 } from "../types"
 import mongoose from "mongoose"
 import groupModel from "./MongoModels/groupModel"
@@ -51,9 +51,15 @@ export const createGroup = async ({ name, year }: GroupCreatingData, { res }: Ex
     }
 }
 
-export const deleteGroup = async ({ name, year }: GroupCreatingData, { res }: ExpressParams): Promise<boolean> => {
+export const deleteGroup = async ({ groupID: id }: GroupID, { res }: ExpressParams): Promise<boolean> => {
     
-    const group = await groupModel.findOne({ name, year }).exec()
+    const group = await groupModel.findOne({ id }).exec()
+
+    if(!group) {
+        console.log("Group not found")
+        res.status(404)
+        return
+    }
 
     const session = await mongoose.startSession()
     session.startTransaction()

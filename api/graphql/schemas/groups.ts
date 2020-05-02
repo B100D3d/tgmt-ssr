@@ -35,11 +35,8 @@ export default new GraphQLSchema({
             deleteGroup: {
                 type: GraphQLBoolean,
                 args: {
-                    name: {
+                    groupID: {
                         type: GraphQLString
-                    },
-                    year: {
-                        type: GraphQLInt
                     }
                 }
             }

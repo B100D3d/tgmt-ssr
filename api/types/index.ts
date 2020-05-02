@@ -66,12 +66,12 @@ export interface GroupCreatingData {
     year: number;
 }
 
-export interface CreatedGroup extends GroupCreatingData {
-    id: string;
+export interface GroupID {
+    groupID: string;
 }
 
-export interface SubjectGetData {
-    groupID: string;
+export interface CreatedGroup extends GroupCreatingData {
+    id: string;
 }
 
 export interface SubjectData {
