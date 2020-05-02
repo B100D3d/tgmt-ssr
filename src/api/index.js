@@ -259,3 +259,32 @@ export const changeTeacher = async (fingerprint, teacherID, name, email) => {
     }, { withCredentials: true })
     return res.data.data.changeTeacher
 }
+
+export const createGroup = async (fingerprint, name, year) => {
+    const res = await axios.post(`${ url }/api/groups`, {
+        query: `mutation{
+            createGroup(
+                name: "${ name }",
+                year: ${ year }
+            ){
+                id
+                name
+                year
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.createGroup
+}
+
+export const deleteGroup = async (fingerprint, groupID) => {
+    const res = await axios.post(`${ url }/api/groups`, {
+        query: `mutation{
+            deleteGroup(
+                groupID: "${ groupID }"
+            )
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.deleteGroup
+}

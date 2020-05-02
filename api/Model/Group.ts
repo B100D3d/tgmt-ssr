@@ -18,7 +18,9 @@ export const getGroups = async (): Promise<Array<Group>> => {
 
     const groupsDB = await groupModel.find().exec()
 
-    const groups = groupsDB.map(
+    const groups = groupsDB
+        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .map(
         ({ id, name, year }: GroupModel) =>
         ({ id, name, year })
     )

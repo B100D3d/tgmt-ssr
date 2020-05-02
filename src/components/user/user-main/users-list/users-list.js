@@ -5,7 +5,7 @@ import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "api"
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
 import { Link, useLocation } from "react-router-dom"
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { CSSTransition, TransitionGroup } from "react-transition-group"
 
 
 const UsersList = ({ type }) => {
@@ -34,7 +34,7 @@ const UsersList = ({ type }) => {
     }, [])
 
     useEffect(() => {
-        handleChange()
+        entities.length && handleChange()
     }, [entities])
 
     const handleChange = () => {
@@ -49,9 +49,9 @@ const UsersList = ({ type }) => {
     const handleDelete = (e) => {
         e.stopPropagation()
         e.preventDefault()
-        const parent = e.target.parentElement
-        const id = parent.id
-        disableBtn(parent)
+        const target = e.target
+        const id = target.parentElement.id
+        disableBtn(target)
         const deleteEntityFunc = type === "Student" ? deleteStudent : deleteTeacher
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
         deleteEntityFunc(fingerprint, id)
@@ -63,7 +63,7 @@ const UsersList = ({ type }) => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
-                enableBtn(parent)
+                enableBtn(target)
             })
     }
 

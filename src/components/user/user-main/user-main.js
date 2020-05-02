@@ -90,6 +90,9 @@ const UserMain = () => {
                             <Route exact path="/user/groups/new" render={ () =>
                                 <GroupInfo /> }
                             />
+                            <Route exact path="/user/groups/:id" render={ () =>
+                                <GroupInfo /> }
+                            />
 
                             <Route exact path="/user" render={ () =>
                                 <Selector type="year" title="Расписание"  /> }

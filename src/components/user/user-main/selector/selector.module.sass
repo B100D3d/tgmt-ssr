@@ -28,6 +28,11 @@
         .name
             font-size: 64px
 
+        .delete
+            transition: all 0.5s ease
+            visibility: visible
+            opacity: 1
+
     .size
         font-size: 64px
         color: transparent
@@ -44,6 +49,38 @@
         &:hover
             .name
                 font-size: 36px
+
+    .delete
+        width: 36px
+        height: 36px
+        position: absolute
+        top: 5px
+        right: 10px
+        display: flex
+        justify-content: center
+        align-items: center
+        background-color: #201E1E
+        border-radius: 10px
+        transition: all 0.5s ease, visibility 0s linear 0.5s
+        opacity: 0
+        outline: none
+        cursor: pointer
+        z-index: 10
+        visibility: hidden
+
+        span
+            font-size: 26px
+            transition: all 0.3s ease-in-out
+            color: white
+            margin: 0
+            width: 100%
+            text-align: center
+
+        &:hover
+            box-shadow: 2px 6px 8px rgba(0, 0, 0, 0.5)
+
+            span
+                color: darkred
 
 .selector
     position: absolute

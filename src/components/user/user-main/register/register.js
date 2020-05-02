@@ -112,8 +112,7 @@ const Register = () => {
     const onGridRowsUpdated = (data) => {
         const day = +data.cellKey
         const updated = data.updated[data.cellKey]
-        const { toRow } = data
-        const fromRow = data.action === "CELL_DRAG" ? data.fromRow + 1 : data.fromRow
+        const { toRow, fromRow } = data
         const rowsCount = toRow - fromRow + 1
         const newRows = [...rows]
         const newChangedCells = [...changedCells]

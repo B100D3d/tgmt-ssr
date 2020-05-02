@@ -135,8 +135,7 @@ const Schedule = () => {
         if(Object.values(data.updated)[0] !== undefined) {
             const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
             const weekday = +data.cellKey
-            const { toRow } = data
-            const fromRow = data.action === "CELL_DRAG" ? data.fromRow + 1 : data.fromRow
+            let { toRow, fromRow } = data
             const rowsCount = toRow - fromRow + 1
             const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday]) || { key: "" }
             const newRows = [...rows]
@@ -144,9 +143,12 @@ const Schedule = () => {
 
             range(rowsCount, fromRow).map((i) => {
                 newRows[i] = {...newRows[i], ...data.updated }
-                newChangedCells.push(
-                    { weekday, classNumber: i + 1, subjectID: subject.key }
-                )
+                const existedChangedCell = newChangedCells.find((c) => c.weekday === weekday && c.classNumber === i + 1)
+                if (existedChangedCell) {
+                    existedChangedCell.subjectID = subject.key
+                } else {
+                    newChangedCells.push({ weekday, classNumber: i + 1, subjectID: subject.key })
+                }
             })
             setRows(newRows)
             setChangedCells(newChangedCells)

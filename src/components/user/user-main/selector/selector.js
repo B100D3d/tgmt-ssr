@@ -4,7 +4,8 @@ import s from "./selector.module.sass"
 import useGradient from "hooks/useGradient.hook"
 import { FingerprintContext, UserContext } from "context"
 import { Link, useParams, useLocation } from "react-router-dom"
-import { getSubjects } from "api"
+import { deleteGroup, getSubjects } from "api"
+import cogoToast from "cogo-toast";
 
 const noDeg = ({ deg, ...rest }) => rest
 
@@ -50,7 +51,7 @@ const Selector = ({ type, title, deletable }) => {
             <div className={ s.items }>
                 { entities.map((e) => 
                     <Item key={ e.id || e } name={ e.name || e }
-                          id={ e.id || e } type={ type } />
+                          id={ e.id || e } type={ type } deletable={ deletable } />
                 )}
             </div>
         </div>
@@ -58,7 +59,9 @@ const Selector = ({ type, title, deletable }) => {
     )
 }
 
-const Item = ({ name, id, type }) => {
+const Item = ({ name, id, type, deletable }) => {
+    const { user, setUser } = useContext(UserContext)
+    const fingerprint = useContext(FingerprintContext)
     const [gradient, setHover] = useGradient()
     const CSSProperties = getCSSProperties(gradient)
     const colors = Object.values(noDeg(gradient))
@@ -83,11 +86,36 @@ const Item = ({ name, id, type }) => {
     const handleMouseOver = () => setHover(true)
     const handleMouseOut = () => setHover(false)
 
+    const handleDelete = (e) => {
+        e.stopPropagation()
+        e.preventDefault()
+        const target = e.target
+        const id = target.parentElement.id
+        disableBtn(target)
+        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+        deleteGroup(fingerprint, id)
+            .then(() => {
+                hide()
+                cogoToast.success("Группа удалена.", { position: "top-right" })
+                setUser({
+                    ...user,
+                    groups: user.groups.filter((g) => g.id !== id)
+                })
+            })
+            .catch((error) => {
+                hide()
+                cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                enableBtn(target)
+            })
+    }
 
     return (
         <Link to={ `${ location.pathname }/${ id }` }>
             <div className={ s.item } id={ s[type] } style={ styles }
                 onMouseOver={ handleMouseOver } onMouseOut={ handleMouseOut }>
+                { deletable && <div className={s.delete} onClick={handleDelete} id={id}>
+                    <span>&#215;</span>
+                </div> }
                 <p className={ s.name }>{ name }</p>
                 <p className={ s.size }>{ name }</p>
             </div>
@@ -96,3 +124,6 @@ const Item = ({ name, id, type }) => {
 }
 
 export default Selector
+
+const disableBtn = (e) => e.style.pointerEvents = "none"
+const enableBtn = (e) => e.style.pointerEvents = "auto"
