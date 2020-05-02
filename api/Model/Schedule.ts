@@ -80,7 +80,7 @@ const deleteUnusedSubjects = async (subjectsId: Array<Schema.Types.ObjectId & Su
 }
 
 const createSchedule = async (
-    existingSchedule: ScheduleModel[], 
+    schedules: ScheduleModel[],
     group: GroupModel,
     subject: SubjectModel,
     weekday: number,
@@ -89,6 +89,10 @@ const createSchedule = async (
 	scheduleLength: number,
 	opts: Record<string, ClientSession>
     ): Promise<void> => {
+
+    const existingSchedule = schedules.filter(
+        ({ weekday: w, classNumber: c }: ScheduleModel) => (w === weekday && c === classNumber)
+    )
 
     const subjectsIdToFind = Array.from(new Set(existingSchedule.map(s => s.subject._id)))
     const defaultData = { subject: subject._id }
@@ -100,6 +104,7 @@ const createSchedule = async (
             group
         })
         existingSchedule.push(schedule)
+        schedules.push()
         group.schedule.addToSet(schedule._id)
         await schedule.save(opts)
     }
@@ -113,18 +118,27 @@ const createSchedule = async (
 }
 
 const deleteSchedule = async (
-	existingSchedule: ScheduleModel[], 
+	schedules: ScheduleModel[],
+	weekday: number,
+	classNumber: number,
 	group: GroupModel, 
 	opts: Record<string, ClientSession>
 	): Promise<void> => {
-    const subjectsIdToFind = Array.from(new Set(existingSchedule.map(s => s.subject._id)))
 
-    for (const schedule of existingSchedule) {
-        group.schedule.pull({ _id: schedule._id })
-        await scheduleModel.deleteOne({ _id: schedule._id }, opts)
+    const existingSchedule = schedules.filter(
+        ({ weekday: w, classNumber: c }: ScheduleModel) => (w === weekday && c === classNumber)
+    )
+
+    if(existingSchedule.length) {
+        const subjectsIdToFind = Array.from(new Set(existingSchedule.map(s => s.subject._id)))
+
+        for (const schedule of existingSchedule) {
+            group.schedule.pull({ _id: schedule._id })
+            await scheduleModel.deleteOne({ _id: schedule._id }, opts)
+        }
+
+        await deleteUnusedSubjects(subjectsIdToFind, group)
     }
-    
-    await deleteUnusedSubjects(subjectsIdToFind, group)
 }
 
 
@@ -165,19 +179,13 @@ export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressPa
 
 			const { subjectID, weekday, classNumber } = item
 	
-			const existingSchedule = schedules.filter(
-				({ weekday: w, classNumber: c }: ScheduleModel) => (w === weekday && c === classNumber)
-			)
-	
 			if(subjectID) {
 				const subject = await subjectModel.findOne({ id: subjectID }).exec()
 				group.subjects.addToSet(subject._id)
 
-				await createSchedule(existingSchedule, group, subject, weekday, classNumber, scheduleData, scheduleLength, opts)
+				await createSchedule(schedules, group, subject, weekday, classNumber, scheduleData, scheduleLength, opts)
 			} else {
-				if(existingSchedule.length) {
-					await deleteSchedule(existingSchedule, group, opts)
-				}
+                await deleteSchedule(schedules, weekday, classNumber, group, opts)
 			}
 		}
 	
