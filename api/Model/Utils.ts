@@ -2,13 +2,7 @@ import { transliterate } from "transliteration"
 
 const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#$%*"
 
-export const range = (size: number, start?: number): Array<number> =>  {
-    
-    if (!start) return range(size, 0)
-    
-    return [...Array(size).keys()].map(k => k + start)
-} 
-
+export const range = (size: number, start = 0): Array<number> => [...Array(size).keys()].map(k => k + start)
 
 export const removeNullAndUndefinedProps = (object: Record<string, any>): Record<string, any> => {
     
