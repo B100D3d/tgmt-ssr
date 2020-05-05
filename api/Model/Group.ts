@@ -3,7 +3,7 @@ import {
     GroupModel,
     GroupCreatingData,
     ExpressParams,
-    CreatedGroup, GroupID
+    CreatedGroup, GroupID, GroupChangingData
 } from "../types"
 import mongoose from "mongoose"
 import groupModel from "./MongoModels/groupModel"
@@ -85,4 +85,28 @@ export const deleteGroup = async ({ groupID: id }: GroupID, { res }: ExpressPara
         return
     }
     
+}
+
+
+export const changeGroup = async ({ groupID, name, year }: GroupChangingData, { res }: ExpressParams): Promise<CreatedGroup> => {
+
+    const group = await groupModel.findOne({ id: groupID }).exec()
+
+    const id = generateGroupID(name)
+    const groupData = { id, name, year }
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
+    try {
+        await group.updateOne(groupData, opts).exec()
+        await session.commitTransaction()
+        return  groupData
+    } catch (e) {
+        console.log(`Group didn't changed: \n ${e}`)
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500)
+        return
+    }
 }

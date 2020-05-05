@@ -4,7 +4,7 @@ import {
     SubjectData,
     ExpressParams,
     CreatedSubject,
-    GroupID
+    SubjectGettingData, SubjectID, SubjectChangingData
 } from "../types"
 import mongoose from "mongoose"
 import subjectModel from "./MongoModels/subjectModel"
@@ -14,13 +14,21 @@ import groupModel from "./MongoModels/groupModel";
 
 
 
-export const getSubjects = async ({ groupID }: GroupID, { res }: ExpressParams): Promise<Array<Subject>> => {
+export const getSubjects = async ({ groupID, subjectID }: SubjectGettingData, { res }: ExpressParams): Promise<Array<Subject>> => {
 
     const subjectsDB = groupID
         ? (await groupModel.findOne({ id: groupID }).populate({
             path: "subjects",
             populate: { path: "teacher" }}).exec()).subjects as SubjectModel[]
+        : subjectID
+        ? [await subjectModel.findOne({ id: subjectID }).populate("teacher").exec()]
         : await subjectModel.find().populate("teacher").exec()
+
+    if(!subjectsDB) {
+        console.log("Subjects not found")
+        res.status(404)
+        return
+    }
 
     const subjects = subjectsDB.map(
         ({ id, name, teacher: { name: teacher }}: SubjectModel) =>
@@ -66,12 +74,16 @@ export const createSubject = async (args: SubjectData, { res }: ExpressParams): 
     }
 }
 
-export const deleteSubject = async (args: SubjectData, { res }: ExpressParams): Promise<boolean> => {
-    const { name, teacher: teacherName } = args 
+export const deleteSubject = async ({ subjectID }: SubjectID, { res }: ExpressParams): Promise<boolean> => {
 
-    const teacher = await teacherModel.findOne({ name: teacherName }).exec()
+    const subject = await subjectModel.findOne({ id: subjectID }).exec()
+    const teacher = await teacherModel.findById(subject.teacher).exec()
 
-    const subject = await subjectModel.findOne({ name, teacher: teacher._id }).exec()
+    if(!(subject && teacher)) {
+        console.log("Not found subject or teacher")
+        res.status(404)
+        return
+    }
 
     const session = await mongoose.startSession()
     session.startTransaction()
@@ -89,4 +101,51 @@ export const deleteSubject = async (args: SubjectData, { res }: ExpressParams): 
         res.status(500)
         return
     }
+}
+
+
+export const changeSubject = async (args: SubjectChangingData, { res }: ExpressParams): Promise<CreatedSubject> => {
+    const { subjectID, name, teacher: teacherName } = args
+
+    const id = generateSubjectID(name, teacherName)
+
+    const teacher = await teacherModel.findOne({ name: teacherName }).exec()
+    const subject = await subjectModel.findOne({ id: subjectID }).exec()
+
+    if(!(teacher && subject)) {
+        console.log("Subject or teacher not found")
+        res.status(404)
+        return
+    }
+
+    const subjectData = { id, name, teacher }
+
+    const session = await mongoose.startSession()
+    session.startTransaction()
+    const opts = { session }
+
+    try {
+        if(!subject.teacher.equals(teacher._id)) {
+            const oldTeacher = await teacherModel.findById(subject.teacher).exec()
+            oldTeacher.subjects.pull(subject._id)
+            teacher.subjects.addToSet(subject._id)
+            await oldTeacher.save(opts)
+            await teacher.save(opts)
+        }
+
+        await subject.updateOne(subjectData).exec()
+        await session.commitTransaction()
+
+        return { id, name, teacher: teacher.name }
+
+
+    } catch (e) {
+        console.log(`Subject not changed: ${e}`)
+        await session.abortTransaction()
+        session.endSession()
+        res.status(500)
+        return
+    }
+
+
 }

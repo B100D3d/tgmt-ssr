@@ -9,8 +9,8 @@ import {
 import { createAdmin } from "../Model/Admin"
 import { createTeacher, getTeachers, deleteTeacher, changeTeacher } from "../Model/Teacher"
 import { createStudent, getStudents, changeStudent, deleteStudent } from "../Model/Student"
-import { getGroups, createGroup, deleteGroup } from "../Model/Group"
-import { getSubjects, createSubject, deleteSubject } from "../Model/Subject"
+import { getGroups, createGroup, deleteGroup, changeGroup } from "../Model/Group"
+import { getSubjects, createSubject, deleteSubject, changeSubject } from "../Model/Subject"
 import { getSchedule, setSchedule } from "../Model/Schedule"
 import { getStudentRecords, getRecords, setRecords } from "../Model/Record"
 
@@ -47,7 +47,8 @@ export default class Resolver {
     public static groupsResolver = {
         createGroup,
         deleteGroup,
-        getGroups
+        getGroups,
+        changeGroup
     }
 
     public static studentsResolver = {
@@ -63,7 +64,8 @@ export default class Resolver {
     public static subjectsResolver = {
         createSubject,
         deleteSubject,
-        getSubjects
+        getSubjects,
+        changeSubject
     }
 
     public static setScheduleResolver = {

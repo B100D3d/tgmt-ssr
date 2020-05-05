@@ -39,6 +39,17 @@ export default new GraphQLSchema({
                         type: GraphQLString
                     }
                 }
+            },
+            changeGroup: {
+                type: Group,
+                args: {
+                    name: {
+                        type: GraphQLString
+                    },
+                    year: {
+                        type: GraphQLInt
+                    }
+                }
             }
         })
     })

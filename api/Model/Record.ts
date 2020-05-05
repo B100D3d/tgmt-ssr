@@ -76,7 +76,7 @@ export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): 
         .sort((a, b) => a.name > b.name ? 1 : -1)
         .map(({ name: entity, records: _records }: StudentModel) => {
             const recordsByMonthAndSubject =
-                _records.find(g => g.month === month && g.subject.equals(subjectDB._id))
+                _records.find(r => r.month === month && r.subject.equals(subjectDB._id))
                 || { records: new Map<string, string>()}
 
             const records = getRecordsArrayFromMap(entity, recordsByMonthAndSubject.records)

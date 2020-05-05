@@ -1,5 +1,6 @@
 import { Schema, Document, Types } from "mongoose";
 import { Request, Response } from "express"
+import exp from "constants";
 
 export interface ExpressParams {
     res: Response;
@@ -66,6 +67,8 @@ export interface GroupCreatingData {
     year: number;
 }
 
+export interface GroupChangingData extends  GroupCreatingData, GroupID {}
+
 export interface GroupID {
     groupID: string;
 }
@@ -78,6 +81,14 @@ export interface SubjectData {
     name: string;
     teacher: string;
 }
+
+export interface SubjectID {
+    subjectID: string;
+}
+
+export interface SubjectChangingData extends SubjectData, SubjectID {}
+
+export interface SubjectGettingData extends SubjectID, GroupID {}
 
 export interface RecordsGetData {
     month: number;

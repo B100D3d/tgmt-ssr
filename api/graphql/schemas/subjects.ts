@@ -18,6 +18,10 @@ export default new GraphQLSchema({
                     groupID: {
                         type: GraphQLString,
                         defaultValue: null
+                    },
+                    subjectID: {
+                        type: GraphQLString,
+                        defaultValue: null
                     }
                 }
             }
@@ -40,6 +44,17 @@ export default new GraphQLSchema({
             deleteSubject: {
                 type: GraphQLBoolean,
                 args: {
+                    subjectID: {
+                        type: GraphQLString
+                    }
+                }
+            },
+            changeSubject: {
+                type: Subject,
+                args: {
+                    subjectID: {
+                        type: GraphQLString
+                    },
                     name: {
                         type: GraphQLString
                     },
