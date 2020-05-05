@@ -43,6 +43,9 @@ export default new GraphQLSchema({
             changeGroup: {
                 type: Group,
                 args: {
+                    groupID: {
+                        type: GraphQLString
+                    },
                     name: {
                         type: GraphQLString
                     },

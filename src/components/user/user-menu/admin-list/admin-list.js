@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom"
 const LINKS = [
     "/user/register",
     "/user/groups",
+    "/user/subjects",
     "/user/students",
     "/user/teachers",
     "/user/settings",
@@ -33,6 +34,7 @@ const AdminList = () => {
             <Link to="/user"><li onClick={ handleClick }>Расписание</li></Link>
             <Link to="/user/register"><li onClick={ handleClick }>Журнал</li></Link>
             <Link to="/user/groups"><li onClick={ handleClick }>Группы</li></Link>
+            <Link to="/user/subjects"><li onClick={ handleClick }>Предметы</li></Link>
             <Link to="/user/students"><li onClick={ handleClick }>Студенты</li></Link>
             <Link to="/user/teachers"><li onClick={ handleClick }>Преподаватели</li></Link>
             <Link to="/user/settings"><li onClick={ handleClick }>Настройки</li></Link>

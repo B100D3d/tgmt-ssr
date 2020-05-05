@@ -79,15 +79,15 @@ const App = (props) => {
         <FingerprintContext.Provider value={ fingerprint }>
             <InitialDataContext.Provider value={ data }>
                 <WeekContext.Provider value={{ date, weekNumber, even }}>
-                        <Switch>
-                            <Route exact path='/' component={ MainPage } />
-                            <Route path='/user' component={ AuthPage } />
-                            <Route path='/documents' component={ Test } />
-                            <Route render={({ staticContext }) => {
-                                if (staticContext) staticContext.statusCode = 404
-                                return <Page404 />
-                            }} />
-                        </Switch>
+                    <Switch>
+                        <Route exact path='/' component={ MainPage } />
+                        <Route path='/user' component={ AuthPage } />
+                        <Route path='/documents' component={ Test } />
+                        <Route render={({ staticContext }) => {
+                            if (staticContext) staticContext.statusCode = 404
+                            return <Page404 />
+                        }} />
+                    </Switch>
                 </WeekContext.Provider>   
             </InitialDataContext.Provider>
         </FingerprintContext.Provider> 

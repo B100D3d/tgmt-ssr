@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react"
 import "./group-info.sass"
 import { FingerprintContext, UserContext } from "context"
 import { useParams } from "react-router-dom"
-import { createGroup } from "api"
+import {changeGroup, createGroup} from "api"
 import cogoToast from "cogo-toast"
 
 
@@ -28,10 +28,10 @@ const GroupInfo = () => {
 
     const handleName = () => setName(nameInput.current.value)
 
-    const handleYear = () => setYear(yearInput.current.value)
+    const handleYear = () => setYear(+yearInput.current.value)
 
     const handleSave = () => {
-        create()
+        id ? change() : create()
     }
 
     const create = () => {
@@ -51,18 +51,22 @@ const GroupInfo = () => {
             })
     }
 
-    // const change = () => {
-    //     const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-    //     changeFunc(fingerprint, id, name, email, selectedGroup)
-    //         .then((entity) => {
-    //             hide()
-    //             cogoToast.success("Пользователь изменен.", { position: "top-right" })
-    //         })
-    //         .catch((error) => {
-    //             hide()
-    //             cogoToast.error("Ошибка.", { position: "top-right" })
-    //         })
-    // }
+    const change = () => {
+        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+        changeGroup(fingerprint, name, year, id)
+            .then((group) => {
+                hide()
+                cogoToast.success("Группа изменена.", { position: "top-right" })
+                setUser({
+                    ...user,
+                    groups: user.groups.map((g) => g.id === id ? group : g).sort((a, b) => a.name > b.name ? 1 : -1)
+                })
+            })
+            .catch((error) => {
+                hide()
+                cogoToast.error("Ошибка.", { position: "top-right" })
+            })
+    }
 
     return (
         <div className="group-info-con">

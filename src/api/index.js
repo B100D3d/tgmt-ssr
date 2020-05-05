@@ -18,7 +18,7 @@ export const getSchedule = async (group, { subgroup, even }) => {
                         }
         }`
     }, { withCredentials: true }) 
-    return res.data.data.getSchedule;
+    return res.data.data.getSchedule
 }
 
 export const getSubjects = async (fingerprint, groupId = null) => {
@@ -33,6 +33,65 @@ export const getSubjects = async (fingerprint, groupId = null) => {
         fingerprint
     }, { withCredentials: true })
     return res.data.data.getSubjects
+}
+
+export const getSubject = async (fingerprint, subjectId) => {
+    const res = await axios.post(`${ url }/api/subjects`, {
+        query: `{
+            getSubjects(subjectID: "${ subjectId }") {
+                id
+                name
+                teacher
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.getSubjects[0]
+}
+
+export const createSubject = async (fingerprint, name, teacher) => {
+    const res = await axios.post(`${ url }/api/subjects`, {
+        query: `mutation {
+            createSubject(
+                name: "${ name }",
+                teacher: "${ teacher }"
+            ){
+                id
+                name
+                teacher
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.createSubject
+}
+
+export const deleteSubject = async (fingerprint, subjectID) => {
+    const res = await axios.post(`${ url }/api/subjects`, {
+        query: `mutation {
+            deleteSubject(subjectID: "${ subjectID }")
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.deleteSubject
+}
+
+export const changeSubject = async (fingerprint, subjectId, name, teacher) => {
+    const res = await axios.post(`${ url }/api/subjects`, {
+        query: `mutation {
+            changeSubject(
+                subjectID: "${ subjectId }",
+                name: "${ name }",
+                teacher: "${ teacher }"
+            ){
+                id
+                name
+                teacher
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.changeSubject
 }
 
 export const sendSchedule = async (fingerprint, group, { even, subgroup }, schedule) => {
@@ -287,4 +346,22 @@ export const deleteGroup = async (fingerprint, groupID) => {
         fingerprint
     }, { withCredentials: true })
     return res.data.data.deleteGroup
+}
+
+export const changeGroup = async (fingerprint, name, year, groupID) => {
+    const res = await axios.post(`${ url }/api/groups`, {
+        query: `mutation{
+            changeGroup(
+                groupID: "${ groupID }",
+                name: "${ name }",
+                year: ${ year }
+            ){
+                id
+                name
+                year
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.changeGroup
 }

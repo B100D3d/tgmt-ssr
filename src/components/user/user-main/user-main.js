@@ -10,8 +10,10 @@ import Register from "./register/register"
 import UsersList from "./users-list/users-list"
 
 import back from "static/previous.svg"
-import UserInfo from "./users-list/user-info/user-info";
-import GroupInfo from "./group-info/group-info";
+import UserInfo from "./users-list/user-info/user-info"
+import GroupInfo from "./group-info/group-info"
+import SubjectList from "./subject-list/subject-list";
+import SubjectInfo from "./subject-list/subject-info/subject-info";
 
 const LINKS = [
     "/user/register",
@@ -84,15 +86,15 @@ const UserMain = () => {
                                 <UserInfo type="Teacher" /> }
                             />
 
+                            <Route exact path="/user/subjects" component={ SubjectList } />
+                            <Route exact path="/user/subjects/new" component={ SubjectInfo } />
+                            <Route exact path="/user/subjects/:id" component={ SubjectInfo } />
+
                             <Route exact path="/user/groups" render={ () =>
                                 <Selector type="group" title="Группы" deletable /> }
                             />
-                            <Route exact path="/user/groups/new" render={ () =>
-                                <GroupInfo /> }
-                            />
-                            <Route exact path="/user/groups/:id" render={ () =>
-                                <GroupInfo /> }
-                            />
+                            <Route exact path="/user/groups/new" component={ GroupInfo } />
+                            <Route exact path="/user/groups/:id" component={ GroupInfo }/>
 
                             <Route exact path="/user" render={ () =>
                                 <Selector type="year" title="Расписание"  /> }

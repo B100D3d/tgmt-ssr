@@ -1,0 +1,135 @@
+.subjects-container
+    position: absolute
+    display: flex
+    flex-direction: column
+    align-items: center
+    width: 100%
+    height: 100%
+    box-sizing: border-box
+    overflow: hidden
+    padding: 10px 40px
+    left: 0
+    top: 0
+
+    h1
+        color: #ffffff
+        font-size: 44px
+
+    .navigation-con
+        width: 100%
+        display: flex
+        justify-content: space-between
+
+        input
+            flex-grow: 1
+            margin-right: 25px
+            background-color: transparent
+            border: none
+            border-bottom: 2px solid #201E1E
+            padding: 5px 10px
+            font-size: 20px
+            outline: none
+            color: white
+            transition: border .5s ease
+
+            &:focus
+                border-bottom: 2px solid #19ccf3
+
+
+        .plus
+            width: 80px
+            height: 50px
+            display: flex
+            justify-content: center
+            align-items: center
+            border-radius: 10px
+            cursor: pointer
+            background-color: #19CCF3
+            color: white
+            padding: 0
+            font-size: 34px
+            transition: all .3s ease-in-out
+
+            &:hover
+                box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.5)
+                font-size: 44px
+
+    .subjects-list
+        width: 100%
+        list-style: none
+        color: white
+        padding: 0
+        overflow-y: scroll
+
+        li
+            background-color: #201E1E
+            border-radius: 10px
+            font-size: 26px
+            cursor: pointer
+            margin-bottom: 15px
+            margin-right: 5px
+
+            &.fade-enter
+                opacity: 0
+
+            &.fade-exit
+                opacity: 1
+
+            &.fade-enter-active
+                opacity: 1
+                transition: opacity 500ms ease-in-out
+
+            &.fade-exit-active
+                opacity: 0
+                transition: opacity 500ms ease-in-out
+
+            a
+                width: 100%
+                height: 100%
+                display: flex
+                justify-content: space-between
+                padding: 15px 10px
+
+                .right
+                    display: flex
+                    justify-content: space-between
+
+                    span
+                        margin-right: 50px
+                        color: grey
+
+                    .delete
+                        width: 36px
+                        height: 100%
+                        display: flex
+                        justify-content: center
+                        align-items: center
+                        background-color: rgba(255, 0, 0, 0.60)
+                        border-radius: 10px
+                        transition: all 0.5s ease, visibility 0s linear 0.5s
+                        opacity: 0
+                        outline: none
+                        cursor: pointer
+                        z-index: 10
+                        visibility: hidden
+
+                        span
+                            font-size: 16px
+                            transition: all 0.3s ease-in-out
+                            color: white
+                            margin: 0
+                            width: 100%
+                            text-align: center
+
+                        &:hover
+                            box-shadow: 2px 6px 8px rgba(0, 0, 0, 0.5)
+
+                            span
+                                font-size: 26px
+
+                &:hover
+                    .right
+                        .delete
+                            transition: all 0.5s ease
+                            visibility: visible
+                            opacity: 1
