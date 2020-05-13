@@ -4,6 +4,7 @@ import path from "path"
 import getLoginHtml from "./EmailTemplates/Login"
 import getUserCreatingHtml from "./EmailTemplates/UserCreating"
 import getPassChangedHtml from "./EmailTemplates/PassChanged"
+import getLoginChangedHtml from "./EmailTemplates/LoginChanged"
 import getEmailChangedHtml from "./EmailTemplates/EmailChanged"
 import { UserRegData } from "../types"
 import { getDate, getTime } from "./Date"
@@ -75,7 +76,7 @@ export const sendLoginEmail = async (name: string, email: string, role: string, 
     ${req.headers["user-agent"]}`
 
     const device = getUAInfo(req.headers["user-agent"])
-    const time = `${getDate()}, ${getTime()}`
+    const time = `${ getDate() }, ${ getTime() }`
 
     const html = getLoginHtml(device, req.ip, time, name, ROLES[role])
     const mailOptions = {
@@ -130,6 +131,35 @@ export const sendPassChangedEmail = async (name: string, role: string, email: st
         console.log(err)
     }
     
+}
+
+export const sendLoginChangedEmail = async (name: string, role: string, email: string, login: string): Promise<void> => {
+    const text = `У аккаунта "${name}" был изменён логин.\nНовый логин: ${login}`
+
+    const html = getLoginChangedHtml(name, ROLES[role], login)
+
+    const mailOptions = {
+        from: "info.tuapsegmt@gmail.com",
+        to: email,
+        subject: "Изменение логина",
+        text,
+        html,
+        attachments: [
+            {
+                filename: "logo_back.webp",
+                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                cid: "logo"
+            }
+        ]
+    }
+
+    try{
+        const info = await transporter.sendMail(mailOptions)
+        //console.log(info)
+    } catch (err) {
+        console.log(err)
+    }
+
 }
 
 export const sendEmailChangedEmail = async (name: string, role: string, email: string): Promise<void> => {

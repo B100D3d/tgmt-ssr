@@ -1,11 +1,6 @@
 import getWeek from "../Model/Date";
 import { getResources } from "../Model/Resources";
-import {
-    auth,
-    login,
-    setEmail,
-    changePassword,
-} from "../Model/User";
+import { auth, login, changeUserInfo } from "../Model/User";
 import { createAdmin } from "../Model/Admin"
 import { createTeacher, getTeachers, deleteTeacher, changeTeacher } from "../Model/Teacher"
 import { createStudent, getStudents, changeStudent, deleteStudent } from "../Model/Student"
@@ -39,9 +34,8 @@ export default class Resolver {
         auth
     }
 
-    public static setUserInfoResolver = {
-        setEmail,
-        changePassword
+    public static changeUserInfoResolver = {
+        changeUserInfo
     }
 
     public static groupsResolver = {

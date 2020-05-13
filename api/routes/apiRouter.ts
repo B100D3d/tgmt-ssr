@@ -6,6 +6,7 @@ import checkToken from "../middleware/checkToken"
 import checkAdmin from "../middleware/checkAdmin"
 import checkAdminOrTeacher from "../middleware/checkTeacherOrAdmin"
 import checkFingerprint from "../middleware/checkFingerprint"
+import {clearFingerprints} from "../Model/User";
 
 const apiRouter = Router()
 
@@ -59,10 +60,15 @@ apiRouter.use("/logout", (req, res) => {
     }
 })
 
-apiRouter.use("/setUserInfo", checkToken, checkFingerprint, (req, res) => graphqlHTTP({
+apiRouter.use("clearFingerprints", checkToken, checkFingerprint, async (req, res) => {
+    const result = await clearFingerprints({ req, res })
+    res.clearCookie("token").status(result ? 200 : 500).send()
+})
+
+apiRouter.use("/changeUserInfo", checkToken, checkFingerprint, (req, res) => graphqlHTTP({
     graphiql: isDev,
-    rootValue: resolver.setUserInfoResolver,
-    schema: schema.userInfoSetting,
+    rootValue: resolver.changeUserInfoResolver,
+    schema: schema.userInfoSettings,
     context: {req, res}
 }
 )(req, res))

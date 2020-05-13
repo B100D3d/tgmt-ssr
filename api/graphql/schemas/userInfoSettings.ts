@@ -18,29 +18,20 @@ export default new GraphQLSchema({
     mutation: new GraphQLObjectType({
         name: "SetUserInfoMutation",
         fields: () => ({
-            setEmail: {
-                type: new GraphQLObjectType({
-                    name: "Email",
-                    fields: () => ({
-                        email: {
-                            type: GraphQLString
-                        }
-                    })
-                }),
-                args: {
-                    email: {
-                        type: GraphQLString
-                    }
-                }
-            },
-            changePassword: {
+            changeUserInfo: {
                 type: GraphQLBoolean,
                 args: {
-                    oldPassword: {
+                    password: {
                         type: new GraphQLNonNull(GraphQLString)
                     },
+                    email: {
+                        type: GraphQLString
+                    },
+                    login: {
+                        type: GraphQLString
+                    },
                     newPassword: {
-                        type: new GraphQLNonNull(GraphQLString)
+                        type: GraphQLString
                     }
                 }
             }

@@ -1,4 +1,4 @@
-import { Schema, Document, Types } from "mongoose";
+import {Schema, Document, Types, ClientSession} from "mongoose";
 import { Request, Response } from "express"
 import exp from "constants";
 
@@ -138,6 +138,8 @@ export interface UserModel extends User, Document {
     generateJWT(): string;
 }
 
+export interface UserInfo extends Login, Email, ChangingPassword { }
+
 export interface StudentModel extends Document {
     id: string;
     name: string;
@@ -249,12 +251,17 @@ export interface Login {
     login: string;
 }
 
-export interface LoginInfo extends Login {
+export interface Password {
     password: string;
 }
 
-export interface PasswordsInfo {
-    oldPassword: string;
+export interface Email {
+    email: string;
+}
+
+export interface LoginInfo extends Login, Password { }
+
+export interface ChangingPassword extends Password{
     newPassword: string;
 }
 
@@ -268,8 +275,4 @@ export interface Res {
     img: string;
     text: string;
     url: string;
-}
-
-export interface Email {
-    email: string;
 }

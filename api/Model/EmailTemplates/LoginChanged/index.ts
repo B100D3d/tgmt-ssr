@@ -1,11 +1,11 @@
-export default (name: string, role: string, login: string, password: string): string => `
+export default (name: string, role: string, login: string): string => `
     <!DOCTYPE html>
     <html lang="ru">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="style.css">
-        <title>Создание пользователя</title>
+        <title>Изменение логина</title>
         <style>
         * {
             color: white;
@@ -124,6 +124,7 @@ export default (name: string, role: string, login: string, password: string): st
               font-size: 12px;
             }
           }
+          
         </style>
     </head>
     <body>
@@ -136,14 +137,11 @@ export default (name: string, role: string, login: string, password: string): st
                         <p>Туапсинского Гидрометеорологического Техникума</p>
                     </div>
                 </div>
-                <h1>Пользователь был создан</h1>
+                <h1>Изменение логина</h1>
                 <p>${name} (${role})</p>
                 <ul>
                     <li>
-                        <p>Логин: ${login}</p>
-                    </li>
-                    <li>
-                        <p>Пароль: ${password}</p>
+                        <p>Новый логин: ${login}</p>
                     </li>
                 </ul>
             </div>
@@ -151,4 +149,3 @@ export default (name: string, role: string, login: string, password: string): st
     </body>
     </html>
 `
-
