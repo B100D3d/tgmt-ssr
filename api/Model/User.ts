@@ -19,9 +19,6 @@ import { getTeacherData } from "./Teacher"
 
 const DEFAULT_OPTIONS = { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }
 
-
-const isAdminOrTeacher = (user: UserModel): boolean => user.role === "Admin" || user.role === "Teacher"
-
 const getUserData = (user: UserModel): Promise<Admin | Teacher | Student> => {
     const USER_DATA_FUNC: {[key: string]: Function} = {
         "Admin": getAdminData,
@@ -72,21 +69,19 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
             return
         }
 
-        if(isAdminOrTeacher(user)){
-            const isFingerprintValid = user.isFingerprintValid(fingerprint)
+        const isFingerprintValid = user.isFingerprintValid(fingerprint)
 
-            if (!isFingerprintValid) {
-                user.fingerprints.push(fingerprint)
-                if(user.fingerprints.length === 4) {
-                    user.fingerprints.shift()
-                }
-
-                await user.save(opts)
-                await session.commitTransaction()
-
-                user.email && sendLoginEmail(user.name, user.email, user.role, req)
-
+        if (!isFingerprintValid) {
+            user.fingerprints.push(fingerprint)
+            if(user.fingerprints.length === 4) {
+                user.fingerprints.shift()
             }
+
+            await user.save(opts)
+            await session.commitTransaction()
+
+            user.email && sendLoginEmail(user.name, user.email, user.role, req)
+
         }
         
 
