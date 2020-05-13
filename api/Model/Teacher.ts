@@ -48,7 +48,7 @@ export const getTeachers = async ({ teacherID }: TeacherID, { res }: ExpressPara
 }
 
 export const getTeacherData = async (user: UserModel): Promise<Teacher> => {
-    const { name, role, email } = user
+    const { login, name, role, email } = user
 
     const userPopulate = await user.populate({
         path: "teacher",
@@ -80,6 +80,7 @@ export const getTeacherData = async (user: UserModel): Promise<Teacher> => {
     )
 
     const teacher: Teacher = {
+        login,
         name,
         email,
         role,

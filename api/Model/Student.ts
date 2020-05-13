@@ -227,7 +227,7 @@ export const deleteStudent = async ({ studentID }: StudentID, { res }: ExpressPa
 
 
 export const getStudentData = async (user: UserModel): Promise<Student> => {
-    const { name, role, email } = user
+    const { login, name, role, email } = user
 
     const studentDB = await user.populate({
         path: "student",
@@ -260,6 +260,7 @@ export const getStudentData = async (user: UserModel): Promise<Student> => {
 
     const student: Student = 
     {
+        login,
         name,
         email,
         role,

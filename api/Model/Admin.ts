@@ -14,11 +14,12 @@ import { sendUserCreatingEmail } from "./Email";
 
 
 export const getAdminData = async (user: UserModel): Promise<Admin> => {
-    const { name, role, email } = user
+    const { login, name, role, email } = user
 
     const groups = await getGroups()
 
     const admin: Admin = {
+        login,
         name,
         role,
         email,

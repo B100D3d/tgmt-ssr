@@ -11,6 +11,9 @@ import Schedule from "./schedule";
 export default new GraphQLObjectType({
     name: "Student",
     fields: () => ({
+        login: {
+            type: GraphQLString
+        },
         name: {
             type: GraphQLString
         },

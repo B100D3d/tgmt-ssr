@@ -192,6 +192,7 @@ export interface ScheduleModel extends Document {
 }
 
 export interface Admin {
+    login?: string;
     name: string;
     role: string;
     email: string;
@@ -199,6 +200,7 @@ export interface Admin {
 }
 
 export interface Teacher {
+    login?: string;
     id?: string;
     name: string;
     email: string;
@@ -208,6 +210,7 @@ export interface Teacher {
 }
 
 export interface Student {
+    login?: string;
     id?: string;
     name: string;
     role?: string;

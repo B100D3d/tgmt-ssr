@@ -10,6 +10,9 @@ import Group from "./group"
 export default new GraphQLObjectType({
     name: "Admin",
     fields: () => ({
+        login: {
+            type: GraphQLString
+        },
         name: {
             type: GraphQLString
         },
