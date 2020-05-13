@@ -60,7 +60,7 @@ apiRouter.use("/logout", (req, res) => {
     }
 })
 
-apiRouter.use("clearFingerprints", checkToken, checkFingerprint, async (req, res) => {
+apiRouter.use("/clearFingerprints", checkToken, checkFingerprint, async (req, res) => {
     const result = await clearFingerprints({ req, res })
     res.clearCookie("token").status(result ? 200 : 500).send()
 })

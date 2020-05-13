@@ -365,3 +365,22 @@ export const changeGroup = async (fingerprint, name, year, groupID) => {
     }, { withCredentials: true })
     return res.data.data.changeGroup
 }
+
+export const changeUserInfo = async (fingerprint, password, email, login, newPassword) => {
+    const res = await axios.post(`${ url }/api/changeUserInfo`, {
+        query: `mutation{
+            changeUserInfo(
+                password: "${ password }",
+                email: "${ email }",
+                login: "${ login }",
+                newPassword: "${ newPassword }"
+            )
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.changeUserInfo
+}
+
+export const clearFingerprint = async (fingerprint) => {
+    await axios.post(`${ url }/api/clearFingerprints`, { fingerprint }, { withCredentials: true })
+}

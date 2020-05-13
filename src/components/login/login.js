@@ -27,6 +27,7 @@ const login = async (login, password, fingerprint) => {
         query: `{
             login(login: "${ login }", password: "${ password }") {
                 ...on Admin {
+                    login
                     name
                     role
                     email
@@ -37,6 +38,7 @@ const login = async (login, password, fingerprint) => {
                     }
                 }
                 ...on Teacher {
+                    login
                     name
                     role
                     email
@@ -54,6 +56,7 @@ const login = async (login, password, fingerprint) => {
                     }
                 }
                 ...on Student {
+                    login
                     name
                     role
                     email

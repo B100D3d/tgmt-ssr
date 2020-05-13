@@ -33,6 +33,7 @@ const auth = async (fingerprint) => {
         query: `{
             auth {
                 ...on Admin {
+                    login
                     name
                     role
                     email
@@ -43,6 +44,7 @@ const auth = async (fingerprint) => {
                     }
                 }
                 ...on Teacher {
+                    login
                     name
                     role
                     email
@@ -60,6 +62,7 @@ const auth = async (fingerprint) => {
                     }
                 }
                 ...on Student {
+                    login
                     name
                     role
                     email

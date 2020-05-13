@@ -33,7 +33,7 @@ const getRole = (user) => {
 const UserMenu = () => {
 
     const handleClick = async () => {
-        const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3002"
+        const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
         await axios.post(`${ url }/api/logout`, {}, { withCredentials: true })
         history.push('/')
     }

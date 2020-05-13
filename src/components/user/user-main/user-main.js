@@ -14,6 +14,7 @@ import UserInfo from "./users-list/user-info/user-info"
 import GroupInfo from "./group-info/group-info"
 import SubjectList from "./subject-list/subject-list";
 import SubjectInfo from "./subject-list/subject-info/subject-info";
+import Settings from "./settings/settings";
 
 const LINKS = [
     "/user/register",
@@ -50,7 +51,7 @@ const UserMain = () => {
                         <Switch location={ location }>
                             <Route exact path="/user" component={ Schedule } />
                             <Route path="/user/register" component={ Register } />
-                            <Route path="/user/settings" component={ Schedule } />
+                            <Route exact path="/user/settings" component={ Settings }/>
                         </Switch>
                     : role === "Admin" ?
                         <Switch location={ location }>
@@ -96,6 +97,8 @@ const UserMain = () => {
                             <Route exact path="/user/groups/new" component={ GroupInfo } />
                             <Route exact path="/user/groups/:id" component={ GroupInfo }/>
 
+                            <Route exact path="/user/settings" component={ Settings }/>
+
                             <Route exact path="/user" render={ () =>
                                 <Selector type="year" title="Расписание"  /> }
                             />
@@ -107,6 +110,8 @@ const UserMain = () => {
                     : 
                         <Switch location={ location }>
                             <Route exact path="/user" component={ Schedule } />
+                            <Route path="/user/register" component={ Register } />
+                            <Route exact path="/user/settings" component={ Settings }/>
                         </Switch> }
                 </CSSTransition>
             </TransitionGroup>
