@@ -99,7 +99,7 @@ const SubjectInfo = () => {
             <div className="input-con">
                 <input placeholder="Название предмета" onChange={ handleName } ref={ nameInput } value={ name } />
                 <Dropdown placeholder="Преподаватель" options={ teachers } defaultValue={ selectedTeacher }
-                                               onChange={ handleTeacher }
+                                               onChange={ handleTeacher } search
                 />
             </div>
             <button className="save-button" onClick={ handleSave }>Сохранить</button>

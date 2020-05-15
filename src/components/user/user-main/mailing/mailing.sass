@@ -1,0 +1,98 @@
+.mailing-container
+    position: absolute
+    left: 0
+    top: 0
+    display: flex
+    flex-direction: column
+    align-items: center
+    justify-content: flex-start
+    width: 100%
+    height: 100%
+    padding: 10px 20px
+    overflow: hidden
+    box-sizing: border-box
+
+    h1
+        color: #ffffff
+        font-size: 44px
+
+    .mailing
+        width: 100%
+        overflow-y: scroll
+        padding-right: 10px
+
+        > div
+            width: 100%
+            display: flex
+            flex-direction: column
+            align-items: flex-start
+
+        .type
+            .ui
+                width: 25%
+
+                .text
+                    text-align: center
+                    font-size: 22px
+                    cursor: pointer
+
+                .menu
+                    width: 100%
+
+                    .item span
+                        text-align: center
+                        font-size: 22px
+
+        .recipients
+            width: 0
+            height: 0
+
+        .textarea, .recipients
+            transition: opacity 0.5s ease, visibility 0s linear 0.5s
+            opacity: 0
+            visibility: hidden
+
+            &.visible
+                width: 100%
+                height: auto
+                transition: opacity .5s ease, visibility .5s ease
+                visibility: visible
+                opacity: 1
+
+        h3
+            color: white
+            border-bottom: 2px solid #19ccf3
+            display: inline-block
+            font-size: 24px
+            font-weight: normal
+
+        textarea
+            width: 100%
+            font-size: 20px
+            background-color: #201E1E
+            color: white
+            border: none
+            border-radius: 10px
+            padding: 10px
+
+        .send-btn
+            width: 90%
+            color: white
+            background-color: #19CCF3
+            border: none
+            border-radius: 10px
+            font-size: 24px
+            margin-bottom: 20px
+            transition: all 0.5s ease, visibility 0s linear 0.5s
+            opacity: 0
+            cursor: pointer
+            visibility: hidden
+
+            &.visible
+                transition: all 0.5s ease
+                visibility: visible
+                opacity: 1
+
+            &:hover
+                transform: scale(1.03)
+                box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.5)

@@ -12,9 +12,10 @@ import UsersList from "./users-list/users-list"
 import back from "static/previous.svg"
 import UserInfo from "./users-list/user-info/user-info"
 import GroupInfo from "./group-info/group-info"
-import SubjectList from "./subject-list/subject-list";
-import SubjectInfo from "./subject-list/subject-info/subject-info";
-import Settings from "./settings/settings";
+import SubjectList from "./subject-list/subject-list"
+import SubjectInfo from "./subject-list/subject-info/subject-info"
+import Settings from "./settings/settings"
+import Mailing from "./mailing/mailing"
 
 const LINKS = [
     "/user/register",
@@ -98,6 +99,8 @@ const UserMain = () => {
                             <Route exact path="/user/groups/:id" component={ GroupInfo }/>
 
                             <Route exact path="/user/settings" component={ Settings }/>
+
+                            <Route exact path="/user/mailing" component={ Mailing } />
 
                             <Route exact path="/user" render={ () =>
                                 <Selector type="year" title="Расписание"  /> }

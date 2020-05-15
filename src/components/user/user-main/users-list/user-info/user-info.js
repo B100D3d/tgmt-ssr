@@ -103,7 +103,8 @@ const UserInfo = ({ type }) => {
                 <input placeholder="ФИО" onChange={ handleName } ref={ nameInput } value={ name } />
                 <input type="email" placeholder="EMAIL" onChange={ handleEmail } ref={ emailInput } value={ email } />
                 { type === "Student" && (!id || selectedGroup) && <Dropdown placeholder="Группа"
-                        options={ groups } defaultValue={ selectedGroup } onChange={ handleGroup } /> }
+                        options={ groups } defaultValue={ selectedGroup }
+                        onChange={ handleGroup } search /> }
             </div>
             <button className="save-button" onClick={ handleSave }>Сохранить</button>
         </div>

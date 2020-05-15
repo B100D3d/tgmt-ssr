@@ -23,6 +23,7 @@ export default class SelectEditor extends React.Component {
                 <Dropdown placeholder={ this.props.value }
                           options={ [{ key: "", value: "", text: "" }, ...this.props.options] }
                           onChange={ this.handleChange }
+                          search
                           defaultValue={ this.props.value }
                 />
             </div>

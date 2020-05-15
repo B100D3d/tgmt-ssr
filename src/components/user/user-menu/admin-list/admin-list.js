@@ -37,6 +37,7 @@ const AdminList = () => {
             <Link to="/user/subjects"><li onClick={ handleClick }>Предметы</li></Link>
             <Link to="/user/students"><li onClick={ handleClick }>Студенты</li></Link>
             <Link to="/user/teachers"><li onClick={ handleClick }>Преподаватели</li></Link>
+            <Link to="/user/mailing"><li onClick={ handleClick }>Рассылка</li></Link>
             <Link to="/user/settings"><li onClick={ handleClick }>Настройки</li></Link>
         </>
     )

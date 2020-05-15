@@ -1,4 +1,4 @@
-.ui:not(.multiple):not(.label)
+.ui:not(.label)
     position: relative
     width: 100%
     height: 100%
@@ -10,45 +10,151 @@
     border-radius: 5px
     box-sizing: border-box
 
+    &:not(.multiple)
+        &.active
+            box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15)
+            border-bottom-left-radius: 0
+            border-bottom-right-radius: 0
+            z-index: 10
+
+        > input.search
+            position: absolute
+            height: 100%
+            width: 100%
+            padding: 2px 8px
+            cursor: text
+            color: white
+            z-index: 2
+            background: transparent
+            text-align: left
+            border: none
+            top: 0
+            left: 0
+            font-size: 16px
+            outline: none
+            box-sizing: border-box
+
+        &:focus
+            + .text
+                color: white
+
+        > .text
+            width: 100%
+            height: 100%
+            cursor: text
+            position: relative
+            vertical-align: middle
+            line-height: 30px
+            font-size: 16px
+            color: rgba(115, 115, 115, .87)
+            z-index: 3
+            overflow: hidden
+            white-space: nowrap
+
+            &.filtered
+                visibility: hidden
+
+        > i.icon
+            display: none
+
+        .menu
+            max-height: 300px
+            overflow: auto
+            position: absolute
+            left: 0
+            top: 100%
+            border-radius: 0 0 5px 5px
+            outline: 0
+            box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15)
+            transition: opacity .1s ease
+            cursor: auto
+            display: none
+            padding: 0 0
+            background-color: #201E1E
+            z-index: 11
+
+            &.visible
+                display: block
+
+            .item
+                cursor: pointer
+                word-wrap: normal
+                padding: 5px 5px
+                min-height: 32px
+
+                &:hover
+                    background: rgba(255, 255, 255, 0.1)
+
+                &.selected
+                    font-weight: bold
+
+                span
+                    display: block
+                    white-space: nowrap
+                    font-size: 16px
+                    text-align: left
+
+
+
+
+//MULTIPLE
+.ui.dropdown.multiple
+    position: relative
+    display: flex
+    flex-wrap: wrap
+    align-content: flex-start
+    min-height: 39px
+    cursor: text
+    outline: none
+    background: #201E1E
+    padding: 5px
+    color: white
+    width: 100%
+    border-radius: 5px
+    font-size: 16px
+    box-sizing: border-box
+
+    .sizer
+        display: none
+
     &.active
-        box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15)
         border-bottom-left-radius: 0
         border-bottom-right-radius: 0
         z-index: 10
 
     > input.search
-        position: absolute
-        height: 100%
-        width: 100%
-        padding: 2px 8px
+        position: static
         cursor: text
+        max-width: 100%
+        margin-bottom: 5px
+        margin-left: 5px
         color: white
         z-index: 2
         background: transparent
-        text-align: left
         border: none
         top: 0
-        left: 0
         font-size: 16px
+        left: 0
+        padding: 5px 0
         outline: none
         box-sizing: border-box
 
-    &:focus
-        + .text
-            color: white
+        &:focus
+            + .text
+                color: white
 
     > .text
-        width: 100%
-        height: 100%
+        max-width: 100%
         cursor: text
-        position: relative
-        vertical-align: middle
-        line-height: 30px
-        font-size: 16px
-        color: rgba(115, 115, 115, .87)
+        position: absolute
+        height: 100%
+        padding: 8.5px 10px
+        top: 0
+        left: 0
+        color: rgba(115,115,115,.87)
         z-index: 3
         overflow: hidden
-        white-space: nowrap
+        box-sizing: border-box
 
         &.filtered
             visibility: hidden
@@ -56,7 +162,26 @@
     > i.icon
         display: none
 
+
+    > .label
+        margin-left: 5px
+        margin-bottom: 5px
+        user-select: none
+        white-space: normal
+        font-size: 16px
+        padding: 5px
+        border-radius: 5px
+        background: rgba(255, 255, 255, 0.1)
+
+        i.delete
+            cursor: pointer
+            font-style: normal
+            margin-left: 5px
+            &::before
+                content: "❌"
+
     .menu
+        min-width: 100%
         max-height: 300px
         overflow: auto
         position: absolute
@@ -64,12 +189,12 @@
         top: 100%
         border-radius: 0 0 5px 5px
         outline: 0
-        box-shadow: 0 2px 3px 0 rgba(34, 36, 38, .15)
+        box-shadow: 0 2px 3px 0 rgba(34,36,38,.15)
         transition: opacity .1s ease
         cursor: auto
         display: none
         padding: 0 0
-        background-color: #201E1E
+        background: #201E1E
         z-index: 11
 
         &.visible
@@ -79,16 +204,10 @@
             cursor: pointer
             word-wrap: normal
             padding: 5px 5px
-            min-height: 32px
 
             &:hover
                 background: rgba(255, 255, 255, 0.1)
 
-            &.selected
-                font-weight: bold
-
             span
                 display: block
                 white-space: nowrap
-                font-size: 16px
-                text-align: left
