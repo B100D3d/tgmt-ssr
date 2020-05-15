@@ -58,55 +58,12 @@ module.exports = {
         }
         ///////////////////////////////////////////////
 
-        ///////////// ALIAS /////////////////////////////////
-        config.resolve.alias = {
-            "static": path.resolve(__dirname, "src/static"),
-            "pages": path.resolve(__dirname, "src/pages"),
-            "components": path.resolve(__dirname, "src/components"),
-            "context": path.resolve(__dirname, "src/context"),
-            "hooks": path.resolve(__dirname, "src/hooks"),
-            "api": path.resolve(__dirname, "src/api")
-        }
-        ///////////////////////////////////////////////
 
         ////////// TYPESCRIPT MODULE /////////////////
         config.resolve.extensions.push(".ts")
         config.module.rules[1].test = /\.(js|jsx|mjs|ts)$/;
         config.module.rules[1].include.push(path.resolve(__dirname, "api"))
         //////////////////////////////////////////////////////
-
-
-        /////////////// SASS MODULE /////////////////////
-        const sassModuleRegex = /\.module\.(scss|sass)$/;
-        config.module.rules[6].exclude = sassModuleRegex; // exclude module regex from razzle/scss
-        const rzUseLength = config.module.rules[6].use.length
-        config.module.rules[6].use[rzUseLength-1].options.sourceMap = false // disable sourceMap for razzle/scss (sass-loader)
-
-        /* get razzle/scss config with "modules" options sets to true */ 
-        const sassModulesRuleUse = config.module.rules[6].use.map((item) => {
-            if(typeof item === "string") return item
-            const options = { ...item.options }
-            if(options && options.hasOwnProperty("modules")) options.modules = true
-            return { loader: item.loader, options }
-        })
-
-        /* for web cssLoader is second loader, for node it's first */
-        const cssLoaderIndex = +!isServer
-        sassModulesRuleUse[cssLoaderIndex].options.localIdentName = 
-            dev
-                ? "[name]-[hash:base64:8]"
-                : "[hash:base64:5]"
-
-
-        config.module.rules = [
-            ...config.module.rules,
-            {
-                test: sassModuleRegex,
-                use: sassModulesRuleUse
-            }
-        ]
-        
-        //////////////////////////////////////////////////
         
     
         return config;
