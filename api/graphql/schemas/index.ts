@@ -10,6 +10,7 @@ import subjects from "./subjects"
 import teachers from "./teachers"
 import schedules from "./schedules"
 import records from "./records"
+import mailing from "./mailing"
 
 
 export {
@@ -24,5 +25,6 @@ export {
     subjects,
     teachers,
     schedules,
-    records
+    records,
+    mailing
 }

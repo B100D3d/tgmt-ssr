@@ -7,15 +7,14 @@ import {
     ScheduleModel,
     StudentChangedData,
     StudentID,
-    UserName
+    StudentsGetData
 } from "../types"
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
 import {
     generatePassword,
     generateLogin,
-    generateStudentID,
-    removeNullAndUndefinedProps
+    generateStudentID
 } from "./Utils"
 import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
@@ -25,15 +24,34 @@ import recordsModel from "./MongoModels/recordsModel";
 
 
 
-export const getStudents = async ({ studentID }: StudentID, { res }: ExpressParams): Promise<Array<Student>> => {
+export const getStudents = async ({ studentID, studentsID, groupsID }: StudentsGetData, { res }: ExpressParams): Promise<Array<Student>> => {
 
-    const student = studentID ? await studentModel.findOne({ id: studentID }) : null
+    const student = studentID
+        ? await studentModel.findOne({ id: studentID }).exec()
+        : null
+    const studentsNames = studentsID
+        ? (await studentModel.find({ id: { $in: studentsID } }).exec()).map(s => s.name)
+        : groupsID
+        ? (await groupModel
+                .find({ id: { $in: groupsID } })
+                .populate("students")
+                .exec())
+                .reduce((names, group) => {
+                    names = [ ...names, ...group.students.map(s => s.name) ]
+                    return names
+                }, Array<string>())
+        : null
 
-    const studentsDB = studentID
+    const studentsDB = student
                         ? [await userModel
                             .findOne({ role: "Student", name: student.name })
                             .populate({ path: "student", populate: { path: "group" }})
                             .exec()]
+                        : studentsNames
+                        ? await userModel
+                            .find({ role: "Student", name: { $in: studentsNames } })
+                            .populate({ path: "student", populate: { path: "group" }})
+                            .exec()
                         : await userModel
                             .find({ role: "Student" })
                             .populate({ path: "student", populate: { path: "group" }})

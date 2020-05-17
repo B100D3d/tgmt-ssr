@@ -6,6 +6,7 @@ import getUserCreatingHtml from "./EmailTemplates/UserCreating"
 import getPassChangedHtml from "./EmailTemplates/PassChanged"
 import getLoginChangedHtml from "./EmailTemplates/LoginChanged"
 import getEmailChangedHtml from "./EmailTemplates/EmailChanged"
+import getMailingHtml from "./EmailTemplates/Mailing"
 import { UserRegData } from "../types"
 import { getDate, getTime } from "./Date"
 
@@ -55,7 +56,7 @@ export const sendUserCreatingEmail = async (userData: UserRegData): Promise<void
         attachments: [
             {
                 filename: "logo_back.webp",
-                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                path: path.resolve(__dirname, "../static/email/logo_back.webp"),
                 cid: "logo"
             }
         ]
@@ -88,7 +89,7 @@ export const sendLoginEmail = async (name: string, email: string, role: string, 
         attachments: [
             {
                 filename: "logo_back.webp",
-                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                path: path.resolve(__dirname, "../static/email/logo_back.webp"),
                 cid: "logo"
             }
         ]
@@ -118,7 +119,7 @@ export const sendPassChangedEmail = async (name: string, role: string, email: st
         attachments: [
             {
                 filename: "logo_back.webp",
-                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                path: path.resolve(__dirname, "../static/email/logo_back.webp"),
                 cid: "logo"
             }
         ]
@@ -147,7 +148,7 @@ export const sendLoginChangedEmail = async (name: string, role: string, email: s
         attachments: [
             {
                 filename: "logo_back.webp",
-                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                path: path.resolve(__dirname, "../static/email/logo_back.webp"),
                 cid: "logo"
             }
         ]
@@ -176,7 +177,35 @@ export const sendEmailChangedEmail = async (name: string, role: string, email: s
         attachments: [
             {
                 filename: "logo_back.webp",
-                path: path.resolve(__dirname, "../../static/email/logo_back.webp"),
+                path: path.resolve(__dirname, "../static/email/logo_back.webp"),
+                cid: "logo"
+            }
+        ]
+    }
+
+    try{
+        const info = await transporter.sendMail(mailOptions)
+        //console.log(info)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+export const sendMailing = async (message: string, emails: Array<string>): Promise<void> => {
+
+    const html = getMailingHtml(message)
+
+    const mailOptions = {
+        from: "info.tuapsegmt@gmail.com",
+        to: emails,
+        subject: "Рассылка",
+        text: message,
+        html,
+        attachments: [
+            {
+                filename: "logo_back.webp",
+                path: path.resolve(__dirname, "../static/email/logo_back.webp"),
                 cid: "logo"
             }
         ]

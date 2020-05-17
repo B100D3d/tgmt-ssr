@@ -9,7 +9,7 @@ import {
     UserInfo,
     Login,
     Email,
-    LoginInfo
+    LoginInfo, User
 } from "../types"
 import mongoose from "mongoose"
 import { sendLoginEmail, sendPassChangedEmail, sendEmailChangedEmail, sendLoginChangedEmail } from "./Email"
@@ -98,6 +98,19 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
         res.status(500)
         return
     }
+}
+
+export const getUsers = async ({ res }: ExpressParams): Promise<Array<User>> => {
+
+    const users = await userModel.find().exec()
+
+    if(!users) {
+        console.log("Users not found")
+        res.status(404)
+        return
+    }
+
+    return users
 }
 
 const changeEmail = (user: UserModel, { email }: Email): void => {

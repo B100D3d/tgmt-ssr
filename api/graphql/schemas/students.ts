@@ -36,6 +36,14 @@ export default new GraphQLSchema({
                     studentID: {
                         type: GraphQLString,
                         defaultValue: undefined
+                    },
+                    studentsID: {
+                        type: new GraphQLList(GraphQLString),
+                        defaultValue: undefined
+                    },
+                    groupsID: {
+                        type: new GraphQLList(GraphQLString),
+                        defaultValue: undefined
                     }
                 }
             }

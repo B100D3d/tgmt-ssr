@@ -40,7 +40,12 @@ export interface StudentCreatingData extends UserCreatingData {
 }
 
 export interface StudentID {
-    studentID: string;
+    studentID?: string;
+}
+
+export interface StudentsGetData extends StudentID {
+    studentsID?: Array<string>;
+    groupsID?: Array<string>;
 }
 
 export interface StudentChangedData extends StudentID{
@@ -52,7 +57,11 @@ export interface StudentChangedData extends StudentID{
 }
 
 export interface TeacherID {
-    teacherID: string;
+    teacherID?: string;
+}
+
+export interface TeachersGetData extends TeacherID {
+    teachersID?: Array<string>;
 }
 
 export interface TeacherChangedData extends TeacherID{
@@ -70,7 +79,7 @@ export interface GroupCreatingData {
 export interface GroupChangingData extends  GroupCreatingData, GroupID {}
 
 export interface GroupID {
-    groupID: string;
+    groupID?: string;
 }
 
 export interface CreatedGroup extends GroupCreatingData {
@@ -120,12 +129,11 @@ export interface CreatedSubject extends SubjectData {
     id: string;
 }
 
-export interface User {
+export interface User extends Email {
     login: string;
     hash?: string;
     name: string;
     role: string;
-    email: string;
     fingerprints: Array<string>;
     student?: Schema.Types.ObjectId & StudentModel;
     teacher?: Schema.Types.ObjectId & TeacherModel;
@@ -199,22 +207,20 @@ export interface Admin {
     groups: Group[];
 }
 
-export interface Teacher {
+export interface Teacher extends Email {
     login?: string;
     id?: string;
     name: string;
-    email: string;
     role?: string;
     subjects?: Subject[];
     groups?: Group[];
 }
 
-export interface Student {
+export interface Student extends Email {
     login?: string;
     id?: string;
     name: string;
     role?: string;
-    email: string;
     group: Group;
     schedule?: Array<Schedule>;
 }
@@ -248,6 +254,13 @@ export interface Records {
 export interface Record {
     day: number;
     record?: string;
+}
+
+export type MailingType = "All" | "Groups" | "Students" | "Teachers"
+export interface Mailing {
+    type: MailingType;
+    entities: Array<string>;
+    message: string;
 }
 
 export interface Login {

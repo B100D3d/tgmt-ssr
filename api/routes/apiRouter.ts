@@ -137,4 +137,12 @@ apiRouter.use("/studentRecords", checkToken, (req, res) => graphqlHTTP({
 }
 )(req, res))
 
+apiRouter.use("/mailing", checkToken, checkAdmin, checkFingerprint, (req, res) => graphqlHTTP({
+        graphiql: isDev,
+        rootValue: resolver.mailingResolver,
+        schema: schema.mailing,
+        context: {req, res}
+}
+)(req, res))
+
 export default apiRouter

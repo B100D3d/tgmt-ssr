@@ -5,7 +5,7 @@ import {
     GroupModel,
     UserCreatingData,
     ExpressParams,
-    UserRegData, TeacherID, TeacherChangedData
+    UserRegData, TeacherID, TeacherChangedData, TeachersGetData
 } from "../types"
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
@@ -16,15 +16,23 @@ import { sendUserCreatingEmail } from "./Email"
 import subjectModel from "./MongoModels/subjectModel";
 
 
-export const getTeachers = async ({ teacherID }: TeacherID, { res }: ExpressParams): Promise<Array<Teacher>> => {
+export const getTeachers = async ({ teacherID, teachersID }: TeachersGetData, { res }: ExpressParams): Promise<Array<Teacher>> => {
 
-    const teacher = teacherID ? await teacherModel.findOne({ id: teacherID }).exec() : null
+    const teacher = teacherID
+        ? await teacherModel.findOne({ id: teacherID }).exec()
+        : null
+    const teachersNames = teachersID
+        ? (await teacherModel.find({ id: { $in: teachersID } }).exec()).map(t => t.name)
+        : null
 
     const teachersDB = teacherID
                         ? [await userModel
                                 .findOne({ role: "Teacher", name: teacher.name })
                                 .populate("teacher")
                                 .exec()]
+                        : teachersID
+                        ? await userModel
+                            .find({ role: "Teacher", name: { $in: teachersNames } })
                         : await userModel
                                 .find({ role: "Teacher" })
                                 .populate("teacher")

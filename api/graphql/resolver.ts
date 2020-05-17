@@ -8,6 +8,7 @@ import { getGroups, createGroup, deleteGroup, changeGroup } from "../Model/Group
 import { getSubjects, createSubject, deleteSubject, changeSubject } from "../Model/Subject"
 import { getSchedule, setSchedule } from "../Model/Schedule"
 import { getStudentRecords, getRecords, setRecords } from "../Model/Record"
+import { mailing } from "../Model/Mailing";
 
 export default class Resolver {
     public static mainPageResolver = {
@@ -77,5 +78,9 @@ export default class Resolver {
     public static recordsResolver = {
         getRecords,
         setRecords
+    }
+
+    public static mailingResolver = {
+        mailing
     }
 }
