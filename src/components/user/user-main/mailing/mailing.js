@@ -1,33 +1,75 @@
-import React, {useContext, useEffect, useState} from "react"
+import React, { useContext, useEffect, useState } from "react"
 
 import "./mailing.sass"
-import MyDropdown from "../../../dropdown/dropdown"
-import {UserContext} from "../../../../context";
+import MyDropdown from "components/dropdown/dropdown"
+import { FingerprintContext, UserContext } from "context"
+import { CSSTransition } from "react-transition-group"
+import {getStudents, getTeachers, mailing} from "api"
+import cogoToast from "cogo-toast"
 
 const TYPE_OPTIONS = [
-    { key: "all", value: "all", text: "Все" },
-    { key: "group", value: "group", text: "Группы" },
-    { key: "students", value: "students", text: "Студенты" },
-    { key: "teachers", value: "teachers", text: "Училки" }
+    { key: "All", value: "All", text: "Все" },
+    { key: "Groups", value: "Groups", text: "Группы" },
+    { key: "Students", value: "Students", text: "Студенты" },
+    { key: "Teachers", value: "Teachers", text: "Преподаватели" }
 ]
 
 
 const Mailing = () => {
     const { user } = useContext(UserContext)
+    const fingerprint = useContext(FingerprintContext)
     const [type, setType] = useState()
     const [entities, setEntities] = useState([])
+    const [message, setMessage] = useState()
+    const [selectedEntities, setSelectedEntities] = useState([])
 
     useEffect(() => {
-        console.log(type, entities.length || type === "all")
-        setVisibility(type && type !== "all", ".recipients")
-        setVisibility(entities.length || type === "all", ".textarea")
-        type === "group"
-            ? setEntities(user.groups.map((g) => ({ key: g.id, value: g.id, text: g.name })))
-            : setEntities([])
+        getEntities()
+            .then((e) => {
+                setEntities(e)
+                setSelectedEntities([])
+                setMessage("")
+            })
+            .catch((error) => {
+                cogoToast.error("Ошибка.", { position: "top-right" })
+            })
     }, [type])
 
+    useEffect(() => {
+        !selectedEntities.length && setMessage("")
+    }, [selectedEntities])
+
+    const getEntities = async () => {
+        const entities = type === "Students"
+            ? await getStudents(fingerprint)
+            : type === "Teachers"
+            ? await getTeachers(fingerprint)
+            : type === "Groups"
+            ? user.groups
+            : []
+        return entities.map((e) => ({ key: e.id, value: e.id, text: e.name }))
+    }
+
+    const handleMessage = (e) => {
+        setMessage(e.target.value)
+    }
+
+    const handleEntities = (_, data) => setSelectedEntities(data.value)
 
     const handleType = (_, data) => setType(data.value)
+
+    const handleSend = () => {
+        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+        mailing(fingerprint, type, selectedEntities, message)
+            .then(() => {
+                hide()
+                cogoToast.success("Успешно отправлено.", { position: "top-right" })
+            })
+            .catch(() => {
+                hide()
+                cogoToast.error("Ошибка.", { position: "top-right" })
+            })
+    }
 
     return (
         <div className="mailing-container">
@@ -37,26 +79,31 @@ const Mailing = () => {
                     <h3>Выберите тип получателя</h3>
                     <MyDropdown options={ TYPE_OPTIONS } placeholder="Выберите тип" onChange={ handleType } />
                 </div>
-                <div className="recipients">
-                    <h3>Выберите получателей</h3>
-                    <MyDropdown options={ entities } placeholder="Выберите получателей"
-                                multiple search />
-                </div>
-                <div className="textarea">
-                    <h3>Введите текст ёпта</h3>
-                    <textarea cols="" rows="10" placeholder="Введите текст рассылки" />
-                </div>
-                <button className="send-btn">Отправитб</button>
+                <CSSTransition
+                    in={ type && type !== "All" } timeout={ 500 } classNames="fade" unmountOnExit
+                >
+                    <div className="recipients">
+                        <h3>Выберите получателей</h3>
+                        <MyDropdown options={ entities } placeholder="Выберите получателей"
+                                    multiple search onChange={ handleEntities } />
+                    </div>
+                </CSSTransition>
+                <CSSTransition
+                    in={ selectedEntities.length || type === "All" } timeout={ 500 } classNames="fade" unmountOnExit
+                >
+                    <div className="textarea">
+                        <h3>Введите текст</h3>
+                        <textarea cols="" rows="10" placeholder="Введите текст рассылки" onChange={ handleMessage } />
+                    </div>
+                </CSSTransition>
+                <CSSTransition
+                    in={ !!message } timeout={ 500 } classNames="fade" unmountOnExit
+                >
+                    <button className="send-btn" onClick={ handleSend }>Отправить</button>
+                </CSSTransition>
             </div>
         </div>
     )
 }
 
 export default Mailing
-
-const setVisibility = (isVisible, selector) => {
-    console.log(document.querySelector(selector))
-    isVisible
-        ? document.querySelector(selector).classList.add("visible")
-        : document.querySelector(selector).classList.remove("visible")
-}

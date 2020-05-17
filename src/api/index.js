@@ -384,3 +384,24 @@ export const changeUserInfo = async (fingerprint, password, email, login, newPas
 export const clearFingerprint = async (fingerprint) => {
     await axios.post(`${ url }/api/clearFingerprints`, { fingerprint }, { withCredentials: true })
 }
+
+export const mailing = async (fingerprint, type, entities, message) => {
+    console.log(`{
+            mailing(
+                type: "${ type }",
+                entities: [${ entities.map((e) => `"${ e }"`) }],
+                message: "${ message }" 
+            )
+        }`)
+    const res = await axios.post(`${ url }/api/mailing`, {
+        query: `{
+            mailing(
+                type: "${ type }",
+                entities: [${ entities.map((e) => `"${ e }"`) }],
+                message: "${ message }" 
+            )
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return res.data.data.mailing
+}

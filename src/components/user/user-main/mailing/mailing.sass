@@ -20,6 +20,10 @@
         width: 100%
         overflow-y: scroll
         padding-right: 10px
+        display: flex
+        flex-direction: column
+        align-items: center
+        flex-grow: 1
 
         > div
             width: 100%
@@ -43,21 +47,19 @@
                         text-align: center
                         font-size: 22px
 
-        .recipients
-            width: 0
-            height: 0
-
-        .textarea, .recipients
-            transition: opacity 0.5s ease, visibility 0s linear 0.5s
+        .fade-enter
             opacity: 0
-            visibility: hidden
 
-            &.visible
-                width: 100%
-                height: auto
-                transition: opacity .5s ease, visibility .5s ease
-                visibility: visible
-                opacity: 1
+        .fade-enter-active
+            opacity: 1
+            transition: opacity 500ms ease
+
+        .fade-exit
+            opacity: 1
+
+        .fade-exit-active
+            opacity: 0
+            transition: opacity 500ms ease
 
         h3
             color: white
@@ -82,16 +84,8 @@
             border: none
             border-radius: 10px
             font-size: 24px
-            margin-bottom: 20px
-            transition: all 0.5s ease, visibility 0s linear 0.5s
-            opacity: 0
-            cursor: pointer
-            visibility: hidden
-
-            &.visible
-                transition: all 0.5s ease
-                visibility: visible
-                opacity: 1
+            transition: all 0.5s ease
+            margin: 20px auto
 
             &:hover
                 transform: scale(1.03)
