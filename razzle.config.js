@@ -21,7 +21,6 @@ module.exports = {
         const isServer = target !== 'web';
         config.devtool = false
 
-
         ///////////// PLUGINS //////////////////////////
         config.plugins.push(new Dotenv())
 
@@ -54,7 +53,7 @@ module.exports = {
 
             if(!dev) {
                 config.optimization.minimizer[1].options.cssProcessorOptions = {} // disable css source map
-            } 
+            }
         }
         ///////////////////////////////////////////////
 
@@ -64,8 +63,8 @@ module.exports = {
         config.module.rules[1].test = /\.(js|jsx|mjs|ts)$/;
         config.module.rules[1].include.push(path.resolve(__dirname, "api"))
         //////////////////////////////////////////////////////
-        
-    
+
+
         return config;
       },
 
@@ -74,5 +73,5 @@ module.exports = {
         presets: [babelPresetRazzle, babelPresetTypescript],
         plugins: [LoadableBabelPlugin, NullishCoalescingBabelPlugin],
       }),
-    
+
 };
