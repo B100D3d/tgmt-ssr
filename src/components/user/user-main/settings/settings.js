@@ -34,7 +34,7 @@ const Settings = () => {
 
     const handleLogin = () => setLogin(loginRef.current.value)
     const handleEmail = () => setEmail(emailRef.current.value)
-    const handleNewPasswod = () => setNewPassword(newPasswordRef.current.value)
+    const handleNewPassword = () => setNewPassword(newPasswordRef.current.value)
     const handlePassword = () => setPassword(passwordRef.current.value)
 
     const handleSave = () => {
@@ -71,16 +71,16 @@ const Settings = () => {
                 <button className="exit" onClick={ handleExit }>Выйти со всех устройств</button>
             </div>
             <div className="settings">
-                <input className="login" placeholder="Логин" autoComplete="false"
-                       required ref={ loginRef } onChange={ handleLogin } value={ login } />
-                <input className="email" type="email" placeholder="Email" autoComplete="false"
-                       required ref={ emailRef } onChange={ handleEmail } value={ email } />
-                <input className="new-password" placeholder="Новый пароль" autoComplete="false"
-                       ref={ newPasswordRef } onChange={ handleNewPasswod } />
+                <input className="login" type="text" placeholder="Логин" autoComplete="off"
+                       required ref={ loginRef } onChange={ handleLogin } value={ login } data-lpignore="true" />
+                <input className="email" type="email" placeholder="Email" autoComplete="off"
+                       required ref={ emailRef } onChange={ handleEmail } value={ email } data-lpignore="true" />
+                <input className="new-password" placeholder="Новый пароль" autoComplete="new-password"
+                       ref={ newPasswordRef } onChange={ handleNewPassword } data-lpignore="true" />
             </div>
             <div className="submit">
-                <input type="password" placeholder="Подтвердите паролем" autoComplete="false"
-                       required ref={ passwordRef } onChange={ handlePassword } />
+                <input type="password" placeholder="Подтвердите паролем" autoComplete="new-password"
+                       required ref={ passwordRef } onChange={ handlePassword } data-lpignore="true" />
                 <button className="save-button" onClick={ handleSave } >Сохранить</button>
             </div>
         </div>
