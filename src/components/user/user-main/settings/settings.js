@@ -66,7 +66,7 @@ const Settings = () => {
             <div className="settings-header">
                 <h1>
                     { user.name }
-                    <span>{ user.group?.name }</span>
+                    { user.role === "Student" && <span>{user.group?.name}</span> }
                 </h1>
                 <button className="exit" onClick={ handleExit }>Выйти со всех устройств</button>
             </div>

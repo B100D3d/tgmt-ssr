@@ -32,12 +32,12 @@ const getDaysCount = (m) => {
 }
 
 const getColumns = (month, role) => {
-    const isAdmin = role === "Admin"
+    const isEditable = role === "Admin" || role === "Teacher"
     const isStudent = role === "Student"
     return range(getDaysCount(month) + 1, 0).map((i) => {
         if (i === 0) return { key: "entity", name: isStudent ? "Предмет" : "Студент",
             resizable: true, width: 150 }
-        return { key: `${ i }`, name: i, editable: isAdmin, resizable: true, width: 50 }
+        return { key: `${ i }`, name: i, editable: isEditable, resizable: true, width: 50 }
     })
 }
 
@@ -50,7 +50,6 @@ const Register = () => {
     const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
 
-    const isAdmin = user.role === "Admin"
     const isStudent = user.role === "Student"
     const groupId = user.group?.id || params.group
     const subjectId = params.subject
@@ -103,11 +102,6 @@ const Register = () => {
     }, [])
 
     useEffect(() => setSaveBtnVisibility(changedCells.length), [changedCells])
-
-    useEffect(() => {
-        console.log(changedCells)
-    }, [changedCells])
-
 
     const onGridRowsUpdated = (data) => {
         const day = +data.cellKey

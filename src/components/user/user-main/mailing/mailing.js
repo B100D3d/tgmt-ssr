@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, {useContext, useEffect, useMemo, useState} from "react"
 
 import "./mailing.sass"
 import MyDropdown from "components/dropdown/dropdown"
 import { FingerprintContext, UserContext } from "context"
 import { CSSTransition } from "react-transition-group"
-import {getStudents, getTeachers, mailing} from "api"
+import { getStudents, getTeachers, mailing } from "api"
 import cogoToast from "cogo-toast"
+import Checkbox from "./checkbox/checkbox"
 
 const TYPE_OPTIONS = [
     { key: "All", value: "All", text: "Все" },
@@ -22,6 +23,10 @@ const Mailing = () => {
     const [entities, setEntities] = useState([])
     const [message, setMessage] = useState()
     const [selectedEntities, setSelectedEntities] = useState([])
+    const [disabledRecipients, setDisabledRecipients] = useState(false)
+    const recipientsPlaceholder = useMemo(() => disabledRecipients
+        ? "Все получатели выбраны" : "Выберите получателей", [disabledRecipients])
+
 
     useEffect(() => {
         getEntities()
@@ -71,6 +76,17 @@ const Mailing = () => {
             })
     }
 
+    const handleAll = (e) => {
+        const checked = e.target.checked
+        if (checked) {
+            setDisabledRecipients(true)
+            setSelectedEntities([...entities])
+        } else {
+            setDisabledRecipients(false)
+            setSelectedEntities([])
+        }
+    }
+
     return (
         <div className="mailing-container">
             <h1>Рассылка</h1>
@@ -80,16 +96,19 @@ const Mailing = () => {
                     <MyDropdown options={ TYPE_OPTIONS } placeholder="Выберите тип" onChange={ handleType } />
                 </div>
                 <CSSTransition
-                    in={ type && type !== "All" } timeout={ 500 } classNames="fade" unmountOnExit
+                    in={ !!(type && type !== "All") } timeout={ 500 } classNames="fade" unmountOnExit
                 >
                     <div className="recipients">
                         <h3>Выберите получателей</h3>
-                        <MyDropdown options={ entities } placeholder="Выберите получателей"
-                                    multiple search onChange={ handleEntities } />
+                        <div className="input-wrapper">
+                            <MyDropdown options={ entities } placeholder={ recipientsPlaceholder }
+                                        multiple search onChange={ handleEntities } disabled={ disabledRecipients } />
+                            <Checkbox onClick={ handleAll } />
+                        </div>
                     </div>
                 </CSSTransition>
                 <CSSTransition
-                    in={ selectedEntities.length || type === "All" } timeout={ 500 } classNames="fade" unmountOnExit
+                    in={ !!(selectedEntities.length || type === "All") } timeout={ 500 } classNames="fade" unmountOnExit
                 >
                     <div className="textarea">
                         <h3>Введите текст</h3>

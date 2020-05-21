@@ -22,6 +22,7 @@ const LINKS = [
     "/user/groups",
     "/user/students",
     "/user/teachers",
+    "/user/mailing",
     "/user/settings",
     "/user"
 ]
@@ -112,9 +113,28 @@ const UserMain = () => {
                         </Switch>
                     : 
                         <Switch location={ location }>
-                            <Route exact path="/user" component={ Schedule } />
-                            <Route path="/user/register" component={ Register } />
+                            <Route exact path="/user/register" render={ () =>
+                                <Selector type="year" title="Журнал"  /> }
+                            />
+                            <Route exact path="/user/register/:year" render={ () =>
+                                <Selector type="group" title="Журнал"  /> }
+                            />
+                            <Route exact path="/user/register/:year/:group" render={ () =>
+                                <Selector type="subject" title="Журнал"  /> }
+                            />
+                            <Route exact path="/user/register/:year/:group/:subject"
+                                   component={ Register }
+                            />
+
                             <Route exact path="/user/settings" component={ Settings }/>
+
+                            <Route exact path="/user" render={ () =>
+                                <Selector type="year" title="Расписание"  /> }
+                            />
+                            <Route exact path="/user/:year" render={ () =>
+                                <Selector type="group" title="Расписание" /> }
+                            />
+                            <Route exact path="/user/:year/:group" component={ Schedule } />
                         </Switch> }
                 </CSSTransition>
             </TransitionGroup>

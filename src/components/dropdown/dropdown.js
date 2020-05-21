@@ -4,7 +4,7 @@ import { Dropdown } from "semantic-ui-react"
 import "./dropdown.sass"
 
 
-const MyDropdown = ({ options, onChange, defaultValue, placeholder, search, multiple }) => (
+const MyDropdown = ({ options, onChange, defaultValue, placeholder, search, multiple, disabled }) => (
     <Dropdown
         placeholder={ placeholder }
         options={ options }
@@ -13,6 +13,7 @@ const MyDropdown = ({ options, onChange, defaultValue, placeholder, search, mult
         multiple={ multiple }
         onChange={ onChange }
         defaultValue={ defaultValue }
+        disabled={ disabled }
     />
 )
 

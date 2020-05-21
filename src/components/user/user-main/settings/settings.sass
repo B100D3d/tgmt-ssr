@@ -114,3 +114,23 @@
             &:hover
                 transform: scale(1.03)
                 box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.5)
+
+
+@media (max-width: 695px)
+    .settings-container
+        padding: 10px
+        .settings-header
+            flex-direction: column
+            h1
+                align-self: center
+                font-size: 34px
+                text-align: center
+        .settings
+            flex-direction: column
+            input
+                width: 100%
+                &.new-password
+                    margin: 0
+        .submit
+            input
+                width: 100%

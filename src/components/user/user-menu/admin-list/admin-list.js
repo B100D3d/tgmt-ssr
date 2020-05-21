@@ -8,6 +8,7 @@ const LINKS = [
     "/user/subjects",
     "/user/students",
     "/user/teachers",
+    "/user/mailing",
     "/user/settings",
     "/user"
 ]

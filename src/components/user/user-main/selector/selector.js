@@ -32,9 +32,18 @@ const Selector = ({ type, title, deletable }) => {
         : subjects
 
     useEffect(() => {
-        type === "subject" && getSubjects(fingerprint, params.group)
-                .then(setSubjects)
-                .catch(console.log)
+        if (type === "subject") {
+            if (user.role === "Admin") {
+                getSubjects(fingerprint, params.group)
+                    .then(setSubjects)
+                    .catch(console.log)
+            }
+            if (user.role === "Teacher") {
+                const group = user.groups.find((g) => g.id === params.group)
+                const subjectsId = group.subjects.map((s) => s.id)
+                setSubjects(user.subjects.filter((s) => subjectsId.includes(s.id)))
+            }
+        }
     }, [])
 
 

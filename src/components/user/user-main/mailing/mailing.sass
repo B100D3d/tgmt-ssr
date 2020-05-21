@@ -31,9 +31,22 @@
             flex-direction: column
             align-items: flex-start
 
+        .recipients
+            z-index: 100
+            .input-wrapper
+                width: 100%
+                display: flex
+                align-items: flex-end
+                justify-content: space-between
+
+                .ui.multiple
+                    width: calc(100% - 50px)
+
+
         .type
             .ui
                 width: 25%
+                z-index: 101
 
                 .text
                     text-align: center
@@ -86,7 +99,19 @@
             font-size: 24px
             transition: all 0.5s ease
             margin: 20px auto
+            cursor: pointer
 
             &:hover
                 transform: scale(1.03)
                 box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.5)
+
+
+@media (max-width: 695px)
+    .mailing-container
+        padding: 10px
+        h1
+            font-size: 34px
+            margin-top: 45px
+        .mailing
+            .type .ui
+                width: 65%
