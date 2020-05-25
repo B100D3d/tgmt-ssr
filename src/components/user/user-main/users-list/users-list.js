@@ -4,17 +4,19 @@ import "./users-list.sass"
 import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "api"
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useHistory } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group"
+import logout from "helpers/logout";
 
 
 const UsersList = ({ type }) => {
     const [entities, setEntities] = useState([])
     const [filteringEntities, setFilteringEntities] = useState([])
     const fingerprint = useContext(FingerprintContext)
-    const { user, setUser } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const search = useRef()
     const location = useLocation()
+    const history = useHistory()
 
     useEffect(() => {
         const getEntitiesFunc = type === "Student" ? getStudents : getTeachers
@@ -30,6 +32,9 @@ const UsersList = ({ type }) => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }, [])
 
@@ -64,6 +69,9 @@ const UsersList = ({ type }) => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 enableBtn(target)
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useMemo, useState} from "react"
-
+import { useHistory } from "react-router-dom"
 import "./mailing.sass"
 import MyDropdown from "components/dropdown/dropdown"
 import { FingerprintContext, UserContext } from "context"
@@ -7,6 +7,8 @@ import { CSSTransition } from "react-transition-group"
 import { getStudents, getTeachers, mailing } from "api"
 import cogoToast from "cogo-toast"
 import Checkbox from "./checkbox/checkbox"
+import logout from "helpers/logout"
+
 
 const TYPE_OPTIONS = [
     { key: "All", value: "All", text: "Все" },
@@ -17,7 +19,8 @@ const TYPE_OPTIONS = [
 
 
 const Mailing = () => {
-    const { user } = useContext(UserContext)
+    const history = useHistory()
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const [type, setType] = useState()
     const [entities, setEntities] = useState([])
@@ -45,14 +48,20 @@ const Mailing = () => {
     }, [selectedEntities])
 
     const getEntities = async () => {
-        const entities = type === "Students"
-            ? await getStudents(fingerprint)
-            : type === "Teachers"
-            ? await getTeachers(fingerprint)
-            : type === "Groups"
-            ? user.groups
-            : []
-        return entities.map((e) => ({ key: e.id, value: e.id, text: e.name }))
+        try {
+            const entities = type === "Students"
+                ? await getStudents(fingerprint)
+                : type === "Teachers"
+                ? await getTeachers(fingerprint)
+                : type === "Groups"
+                ? user.groups
+                : []
+            return entities.map((e) => ({ key: e.id, value: e.id, text: e.name }))
+        } catch (error) {
+            if (error.response.status === 401 || error.response.status === 403) {
+                logout(history, setUser, setError)
+            }
+        }
     }
 
     const handleMessage = (e) => {
@@ -73,6 +82,9 @@ const Mailing = () => {
             .catch(() => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

@@ -6,7 +6,7 @@ import checkToken from "../middleware/checkToken"
 import checkAdmin from "../middleware/checkAdmin"
 import checkAdminOrTeacher from "../middleware/checkTeacherOrAdmin"
 import checkFingerprint from "../middleware/checkFingerprint"
-import {clearFingerprints} from "../Model/User";
+import { clearFingerprints } from "../Model/User"
 
 const apiRouter = Router()
 

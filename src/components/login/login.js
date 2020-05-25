@@ -1,8 +1,8 @@
 import React, { useRef, useContext } from "react"
 import { Link } from "react-router-dom"
-import axios from "axios"
 import loadable from "@loadable/component"
 import cogoToast from "cogo-toast"
+import { login } from "api"
 
 import { UserContext, FingerprintContext } from "context"
 
@@ -20,69 +20,6 @@ const styles = {
     backgroundRepeat: "no-repeat",
     backgroundSize: "auto 100%"
 }
-
-const login = async (login, password, fingerprint) => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
-    const query = await axios.post(`${ url }/api/login`, {
-        query: `{
-            login(login: "${ login }", password: "${ password }") {
-                ...on Admin {
-                    login
-                    name
-                    role
-                    email
-                    groups {
-                        id
-                        name
-                        year
-                    }
-                }
-                ...on Teacher {
-                    login
-                    name
-                    role
-                    email
-                    groups {
-                        id
-                        name
-                        year
-                        subjects {
-                            id
-                        }
-                    }
-                    subjects {
-                        id
-                        name
-                    }
-                }
-                ...on Student {
-                    login
-                    name
-                    role
-                    email
-                    group {
-                        id
-                        name
-                        year
-                    }
-                    schedule {
-                        subject {
-                            id
-                            name
-                            teacher
-                        }
-                        weekday
-                        classNumber
-                    }
-                }
-            }
-        }`,
-        fingerprint
-    }, { withCredentials: true })
-    return query.data.data.login
-}
-
-
 
 
 const Login = () => {

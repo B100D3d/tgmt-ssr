@@ -2,6 +2,58 @@ import axios from "axios"
 
 const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
 
+const userData = `
+    ...on Admin {
+        login
+        name
+        role
+        email
+        groups {
+            id
+            name
+            year
+        }
+    }
+    ...on Teacher {
+        login
+        name
+        role
+        email
+        groups {
+            id
+            name
+            year
+            subjects {
+                id
+            }
+        }
+        subjects {
+            id
+            name
+        }
+    }
+    ...on Student {
+        login
+        name
+        role
+        email
+        group {
+            id
+            name
+            year
+        }
+        schedule {
+            subject {
+                id
+                name
+                teacher
+            }
+            weekday
+            classNumber
+        }
+    }
+`
+
 export const getSchedule = async (group, { subgroup, even }) => {
     const res = await axios.post(`${ url }/api/getSchedule`, {
         query: `{
@@ -405,3 +457,58 @@ export const mailing = async (fingerprint, type, entities, message) => {
     }, { withCredentials: true })
     return res.data.data.mailing
 }
+
+export const getWeek = async () => {
+    const query = await axios.post(`${ url }/api/mainPage`, {
+        query: `{
+                 week {
+                        date
+                        weekNum
+                        even
+                    }
+                }`
+    }, { withCredentials: true })
+    return query.data.data.week
+}
+
+export const getResources = async () => {
+    const query = await axios.post(`${ url }/api/mainPage`, {
+        query: `{
+            resources {
+                img
+                text
+                url
+            }
+        }`
+    }, { withCredentials: true })
+    return query.data.data.resources
+}
+
+export const login = async (login, password, fingerprint) => {
+    const query = await axios.post(`${ url }/api/login`, {
+        query: `{
+            login(login: "${ login }", password: "${ password }") {
+                ${ userData }
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return query.data.data.login
+}
+
+export const auth = async (fingerprint) => {
+    const query = await axios.post(`${ url }/api/auth`, {
+        query: `{
+            auth {
+                ${ userData }
+            }
+        }`,
+        fingerprint
+    }, { withCredentials: true })
+    return query.data.data.auth
+}
+
+export const logout = async () => {
+    await axios.post(`${ url }/api/logout`, {}, { withCredentials: true })
+}
+

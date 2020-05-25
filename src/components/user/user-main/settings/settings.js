@@ -4,11 +4,12 @@ import "./settings.sass"
 import { FingerprintContext, UserContext } from "context"
 import {changeUserInfo, clearFingerprint} from "../../../../api";
 import cogoToast from "cogo-toast";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom"
+import logout from "helpers/logout"
 
 
 const Settings = () => {
-    const { user, setUser } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const [login, setLogin] = useState(user.login)
     const [email, setEmail] = useState(user.email)
@@ -48,6 +49,9 @@ const Settings = () => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 
@@ -58,6 +62,9 @@ const Settings = () => {
             })
             .catch((error) => {
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

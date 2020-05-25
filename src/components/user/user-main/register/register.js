@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import loadable from "@loadable/component"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 
@@ -9,6 +9,7 @@ import useWindowSize from "hooks/useWindowSize.hook"
 import { getRecords, getStudentRecords, sendRecords } from "api"
 import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
+import logout from "helpers/logout"
 
 
 
@@ -45,9 +46,10 @@ const getColumns = (month, role) => {
 const Register = () => {
 
     const params = useParams()
+    const history = useHistory()
 
     const [isOpen] = useContext(UserMenuOpenContext)
-    const { user } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
 
     const isStudent = user.role === "Student"
@@ -78,7 +80,10 @@ const Register = () => {
                 })
                 .catch((error) => {
                     hide()
-                    cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                    cogoToast.error("Ошибка.", { position: "top-right" })
+                    if (error.response.status === 401 || error.response.status === 403) {
+                        logout(history, setUser, setError)
+                    }
                 })
         }, 500)
     }
@@ -144,7 +149,10 @@ const Register = () => {
             .catch(error => {
                 document.querySelector(".save-button").disabled = false
                 hide()
-                cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

@@ -1,17 +1,17 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import loadable from "@loadable/component"
 
-import "./schedule.sass"
 import { getSchedule, getSubjects, sendSchedule } from "api"
-
 import { UserMenuOpenContext, UserContext, FingerprintContext } from "context"
 import useWindowSize from "hooks/useWindowSize.hook"
 import Switch from "./switch/switch"
 const ReactDataGrid = loadable(() => import("react-data-grid"))
 import SelectEditor from "./select-editor"
 import cogoToast from "cogo-toast"
+import logout from "helpers/logout"
 
+import "./schedule.sass"
 
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",
@@ -44,13 +44,13 @@ const getRows = (schedule) => {
 const Schedule = () => {
 
     const params = useParams()
+    const history = useHistory()
 
     const [isOpen] = useContext(UserMenuOpenContext)
-    const { user } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
 
     const isAdmin = user.role === "Admin"
-    const isStudent = user.role === "Student"
     const group = user.group?.id || params.group
 
     const [rows, setRows] = useState(DEFAULT_ROWS.map(r => ({ ...r })))
@@ -78,20 +78,29 @@ const Schedule = () => {
                 })
                 .catch((error) => {
                     hide()
-                    cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                    cogoToast.error("Ошибка.", { position: "top-right" })
+                    if(error.response.status === 401 || error.response.status === 403) {
+                        logout(history, setUser, setError)
+                    }
                 })
         }, 500)
     }
 
     useEffect(() => {
         if (isAdmin) {
-            getSubjects(fingerprint).then((subjects) => {
-                setSubjectTypes(subjects.map((subject) => ({
-                    key: subject.id,
-                    value: `${ subject.name } (${ subject.teacher })`,
-                    text: `${ subject.name } (${ subject.teacher })`
-                })))
-            })
+            getSubjects(fingerprint)
+                .then((subjects) => {
+                    setSubjectTypes(subjects.map((subject) => ({
+                        key: subject.id,
+                        value: `${ subject.name } (${ subject.teacher })`,
+                        text: `${ subject.name } (${ subject.teacher })`
+                    })))
+                })
+                .catch((error) => {
+                    if(error.response.status === 401 || error.response.status === 403) {
+                        logout(history, setUser, setError)
+                    }
+                })
         }
     }, [isAdmin])
 
@@ -171,6 +180,9 @@ const Schedule = () => {
                 document.querySelector(".save-button").disabled = false
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

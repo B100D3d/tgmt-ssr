@@ -1,27 +1,12 @@
 import React, { useEffect, useState, useRef, useContext } from "react"
-import axios from "axios"
 import loadable from "@loadable/component"
-
+import { getResources } from "api"
 const OpenButton = loadable(() => import("components/open-button/open-button"))
 
 import { InitialDataContext } from "context"
 
 import "./resources.sass"
 
-
-const getResources = async () => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
-    const query = await axios.post(`${url}/api/mainPage`, {
-        query: `{
-            resources {
-                img
-                text
-                url
-            }
-        }`
-    })
-    return query.data.data.resources
-}
 
 const Resources = () => {
 

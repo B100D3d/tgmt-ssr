@@ -1,17 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
+import { useParams, useHistory } from "react-router-dom"
+import Dropdown from "components/dropdown/dropdown"
+import logout from "helpers/logout"
+import cogoToast from "cogo-toast"
+
+import { FingerprintContext, UserContext } from "context"
+import { changeSubject, createSubject, getSubject, getTeachers } from "api"
 
 import "./subject-info.sass"
-import { FingerprintContext, UserContext } from "context"
-import { useParams } from "react-router-dom"
-import { changeSubject, createSubject, getSubject, getTeachers } from "api"
-import cogoToast from "cogo-toast"
-import Dropdown from "components/dropdown/dropdown"
 
 
 const SubjectInfo = () => {
-    const { user } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const params = useParams()
+    const history = useHistory()
     const id = params.id
     const subject = user.subjects?.find((e) => e.id === id)
     const nameInput = useRef()
@@ -35,11 +38,14 @@ const SubjectInfo = () => {
                 .then((s) => {
                     hide()
                     setName(s.name)
-                    setSelectedTecher(s.teacher)
+                    setSelectedTeacher(s.teacher)
                 })
                 .catch((error) => {
                     hide()
                     cogoToast.error("Ошибка.", { position: "top-right" })
+                    if (error.response.status === 401 || error.response.status === 403) {
+                        logout(history, setUser, setError)
+                    }
                 })
         }
     }, [])
@@ -50,7 +56,9 @@ const SubjectInfo = () => {
                 setTeachers(ts.map((t) => ({ key: t.id, value: t.name, text: t.name })))
             })
             .catch((error) => {
-                console.log(error)
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }, [])
 
@@ -77,6 +85,9 @@ const SubjectInfo = () => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 
@@ -90,6 +101,9 @@ const SubjectInfo = () => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

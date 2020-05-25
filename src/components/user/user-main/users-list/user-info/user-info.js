@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 
 import Dropdown from "components/dropdown/dropdown"
 import "./user-info.sass"
@@ -7,11 +7,13 @@ import "./user-info.sass"
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
 import { changeTeacher, changeStudent, createStudent, createTeacher, getStudent, getTeacher } from "api"
+import logout from "helpers/logout"
 
 const UserInfo = ({ type }) => {
-    const { user } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const params = useParams()
+    const history = useHistory()
     const id = params.id
     const entity = user.entities?.find((e) => e.id === id)
     const nameInput = useRef()
@@ -44,6 +46,9 @@ const UserInfo = ({ type }) => {
                 .catch((error) => {
                     hide()
                     cogoToast.error("Ошибка.", { position: "top-right" })
+                    if (error.response.status === 401 || error.response.status === 403) {
+                        logout(history, setUser, setError)
+                    }
                 })
         }
     }, [])
@@ -79,6 +84,9 @@ const UserInfo = ({ type }) => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 
@@ -93,6 +101,9 @@ const UserInfo = ({ type }) => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

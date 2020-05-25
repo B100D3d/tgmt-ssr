@@ -2,12 +2,12 @@ import React from "react"
 import Helmet from "react-helmet"
 import loadable from "@loadable/component"
 
-const Header = loadable(() => import("components/header/header"))
-const MobileHeader = loadable(() => import("components/mobile-header/mobile-header"))
-const Resources = loadable(() => import("components/resources/resources"))
-const Footer = loadable(() => import("components/footer/footer"))
-const About = loadable(() => import("components/about/about"))
-const News = loadable(() => import("components/news/news"))
+const Header = loadable(() => import(/* webpackChunkName: "Header" */"components/header/header"))
+const MobileHeader = loadable(() => import(/* webpackChunkName: "MobileHeader" */"components/mobile-header/mobile-header"))
+const Resources = loadable(() => import(/* webpackChunkName: "Resources" */"components/resources/resources"))
+const Footer = loadable(() => import(/* webpackChunkName: "Footer" */"components/footer/footer"))
+const About = loadable(() => import(/* webpackChunkName: "About" */"components/about/about"))
+const News = loadable(() => import(/* webpackChunkName: "News" */"components/news/news"))
 
 
 const MainPage = () => {

@@ -2,15 +2,17 @@ import React, { useContext, useEffect, useRef, useState } from "react"
 
 import "./group-info.sass"
 import { FingerprintContext, UserContext } from "context"
-import { useParams } from "react-router-dom"
+import { useParams, useHistory } from "react-router-dom"
 import {changeGroup, createGroup} from "api"
 import cogoToast from "cogo-toast"
+import logout from "helpers/logout";
 
 
 const GroupInfo = () => {
-    const { user, setUser } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const params = useParams()
+    const history = useHistory()
     const id = params.id
     const nameInput = useRef()
     const yearInput = useRef()
@@ -48,6 +50,9 @@ const GroupInfo = () => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 
@@ -65,6 +70,9 @@ const GroupInfo = () => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

@@ -3,9 +3,10 @@ import React, { useContext, useEffect, useState } from "react"
 import s from "./selector.module.sass"
 import useGradient from "hooks/useGradient.hook"
 import { FingerprintContext, UserContext } from "context"
-import { Link, useParams, useLocation } from "react-router-dom"
+import { Link, useParams, useLocation, useHistory } from "react-router-dom"
 import { deleteGroup, getSubjects } from "api"
-import cogoToast from "cogo-toast";
+import cogoToast from "cogo-toast"
+import logout from "helpers/logout"
 
 const noDeg = ({ deg, ...rest }) => rest
 
@@ -20,8 +21,9 @@ const getCSSProperties = (gradient) => {
 
 
 const Selector = ({ type, title, deletable }) => {
+    const history = useHistory()
     const params = useParams()
-    const { user } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const years = new Set(user.groups.map(({ year }) => year).sort((a, b) => a - b))
     const [subjects, setSubjects] = useState([])
@@ -36,7 +38,11 @@ const Selector = ({ type, title, deletable }) => {
             if (user.role === "Admin") {
                 getSubjects(fingerprint, params.group)
                     .then(setSubjects)
-                    .catch(console.log)
+                    .catch((error) => {
+                        if(error.response.status === 401 || error.response.status === 403) {
+                            logout(history, setUser, setError)
+                        }
+                    })
             }
             if (user.role === "Teacher") {
                 const group = user.groups.find((g) => g.id === params.group)
@@ -69,13 +75,14 @@ const Selector = ({ type, title, deletable }) => {
 }
 
 const Item = ({ name, id, type, deletable }) => {
-    const { user, setUser } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const [gradient, setHover] = useGradient()
     const CSSProperties = getCSSProperties(gradient)
     const colors = Object.values(noDeg(gradient))
     const colorKeys = Object.keys(noDeg(gradient))
     const location = useLocation()
+    const history = useHistory()
     
     const styles = {
         ...CSSProperties,
@@ -115,6 +122,9 @@ const Item = ({ name, id, type, deletable }) => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 enableBtn(target)
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 

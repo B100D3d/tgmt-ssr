@@ -19,7 +19,7 @@ const checkFingerprint = async (req: Request, res: Response, next: NextFunction)
     if (!user.isFingerprintValid(fingerprint)) {
         return res.clearCookie("token").status(403).json({
             error: {
-                msg: "Fingerprint is not valid"
+                msg: "Fingerprint invalid"
             }
         });
     }

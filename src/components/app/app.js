@@ -1,38 +1,22 @@
-import React, { useState, useEffect } from "react"
-import { Route, Switch } from "react-router-dom"
-import axios from "axios"
+import React, {useEffect, useState} from "react"
+import {Route, Switch} from "react-router-dom"
 import loadable from "@loadable/component"
 import Fingerprint from "fingerprintjs2"
 import UAParser from "ua-parser-js"
+import {FingerprintContext, InitialDataContext, WeekContext} from "context"
+import {getWeek} from "api"
 
 const MainPage = loadable(() => import("pages/MainPage"))
 const Page404 = loadable(() => import("pages/Page404"))
 const AuthPage = loadable(() => import("pages/AuthPage"))
 
-import { WeekContext, InitialDataContext, FingerprintContext } from "context";
-
-
-const getWeek = async () => {
-    const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
-    const query = await axios.post(`${ url }/api/mainPage`, {
-            query: `{
-                 week {
-                        date
-                        weekNum
-                        even
-                    }
-                }`
-            })
-    return query.data.data.week
-}
 
 const getFingerPrint = async () => {
     const components = await Fingerprint.getPromise({
         preprocessor: (key, value) => {
             if (key === "userAgent") {
                 const parser = new UAParser(value)
-                const UAMinusVersion = `${ parser.getOS().name } ${ parser.getBrowser().name }`
-                return UAMinusVersion
+                return `${ parser.getOS().name } ${ parser.getBrowser().name }`
             } 
             return value
         }

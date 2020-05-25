@@ -1,20 +1,22 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 import "./subject-list.sass"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useHistory } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group"
-import {FingerprintContext, UserContext} from "context"
+import { FingerprintContext, UserContext } from "context"
 import { deleteSubject, getSubjects } from "api"
 import cogoToast from "cogo-toast"
+import logout from "helpers/logout"
 
 
 const SubjectList = () => {
     const [subjects, setSubjects] = useState([])
     const [filteringSubjects, setFilteringSubjects] = useState([])
     const fingerprint = useContext(FingerprintContext)
-    const { user, setUser } = useContext(UserContext)
+    const { user, setUser, setError } = useContext(UserContext)
     const search = useRef()
     const location = useLocation()
+    const history = useHistory()
 
     useEffect(() => {
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
@@ -32,6 +34,9 @@ const SubjectList = () => {
             .catch((error) => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }, [])
 
@@ -65,6 +70,9 @@ const SubjectList = () => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 enableBtn(target)
+                if (error.response.status === 401 || error.response.status === 403) {
+                    logout(history, setUser, setError)
+                }
             })
     }
 
