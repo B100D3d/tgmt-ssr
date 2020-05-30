@@ -35,7 +35,7 @@ const Mailing = () => {
         getEntities()
             .then((e) => {
                 setEntities(e)
-                setSelectedEntities([])
+                setSelectedEntities(disabledRecipients ? e : [])
                 setMessage("")
             })
             .catch((error) => {
@@ -64,9 +64,7 @@ const Mailing = () => {
         }
     }
 
-    const handleMessage = (e) => {
-        setMessage(e.target.value)
-    }
+    const handleMessage = (e) => setMessage(e.target.value)
 
     const handleEntities = (_, data) => setSelectedEntities(data.value)
 
