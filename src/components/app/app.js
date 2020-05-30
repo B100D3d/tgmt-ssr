@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from "react"
-import {Route, Switch} from "react-router-dom"
+import React, { useEffect, useState } from "react"
+import { Route, Switch } from "react-router-dom"
 import loadable from "@loadable/component"
 import Fingerprint from "fingerprintjs2"
 import UAParser from "ua-parser-js"
-import {FingerprintContext, InitialDataContext, WeekContext} from "context"
-import {getWeek} from "api"
+import { FingerprintContext, InitialDataContext, WeekContext } from "context"
+import { getWeek } from "api"
 
 const MainPage = loadable(() => import("pages/MainPage"))
 const Page404 = loadable(() => import("pages/Page404"))
@@ -29,21 +29,11 @@ const getFingerPrint = async () => {
 const App = (props) => {
     const data = props.data || {}
 
-    const { week } = data
-    const [date, setDate] = useState(week?.date || '')
-    const [weekNumber, setWeekNumber] = useState(week?.weekNum || '')
-    const [even, setEven] = useState((week?.even && `${week?.even} неделя`) || '')
+    const [week, setWeek] = useState(data.week)
     const [fingerprint, setFingerprint] = useState()
 
     useEffect(() => {
-        if(!(date && weekNumber && even)) {
-            getWeek().then(week => {
-                setDate(week.date)
-                setWeekNumber(week.weekNum)
-                setEven(`${ week.even } неделя`)
-            })
-        }
-        
+        !week && getWeek().then(setWeek)
     },[])
 
     useEffect(() => {
@@ -62,7 +52,7 @@ const App = (props) => {
     return (
         <FingerprintContext.Provider value={ fingerprint }>
             <InitialDataContext.Provider value={ data }>
-                <WeekContext.Provider value={{ date, weekNumber, even }}>
+                <WeekContext.Provider value={ week || {} }>
                     <Switch>
                         <Route exact path='/' component={ MainPage } />
                         <Route path='/user' component={ AuthPage } />

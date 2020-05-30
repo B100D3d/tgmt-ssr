@@ -80,10 +80,10 @@ const BurgerMenu = () => {
                         <div className="week-and-login-container">
                             <div>
                                 <p className="week-date">
-                                    { date }
+                                    { date || "" }
                                 </p>
                                 <p className="week-number">
-                                    { weekNumber } { even } 
+                                    { weekNumber || "" } { even ? "четная неделя" : "нечетная неделя" }
                                 </p>
                             </div>
                             <Link to="/user" onClick={ handleClick }>

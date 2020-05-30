@@ -283,8 +283,8 @@ export interface ChangingPassword extends Password{
 
 export interface Week {
     date: string;
-    even: string;
-    weekNum: number;
+    even: boolean;
+    weekNumber: number;
 }
 
 export interface Res {

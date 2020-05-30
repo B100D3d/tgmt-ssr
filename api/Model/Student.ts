@@ -19,7 +19,7 @@ import {
 import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
 import { sendUserCreatingEmail, sendEmailChangedEmail } from "./Email"
-import { getWeekNum } from "./Date"
+import { getWeekNumber } from "./Date"
 import recordsModel from "./MongoModels/recordsModel";
 
 
@@ -264,7 +264,7 @@ export const getStudentData = async (user: UserModel): Promise<Student> => {
     }).execPopulate()
 
     const schedule = studentDB.student.group.schedule
-    .filter(({ subgroup, even }: ScheduleModel) => (subgroup === 1 && even === !(getWeekNum() % 2)))
+    .filter(({ subgroup, even }: ScheduleModel) => (subgroup === 1 && even === !(getWeekNumber() % 2)))
     .map(
         ({ subject: { id, name, teacher }, classNumber, weekday }: ScheduleModel) => 
         ({ subject: { id, name, teacher: teacher.name }, classNumber, weekday })

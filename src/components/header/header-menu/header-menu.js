@@ -13,9 +13,9 @@ const HeaderMenu = () => {
         <div className="header-menu">
             <div className="container">
                 <p className="week">
-                    { date }
+                    { date || "" }
                     <br />
-                    { weekNumber } { even } 
+                    { weekNumber || "" } { even ? "четная неделя" : "нечетная неделя" }
                 </p>
                 <ul className="menu">
                     <li>

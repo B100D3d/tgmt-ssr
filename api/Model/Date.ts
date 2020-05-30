@@ -22,7 +22,7 @@ export const getDate = (): string => {
     return `${ date.getDate() } ${ months[date.getMonth()] } ${ date.getFullYear() }`
 };
 
-export const getWeekNum = (): number => {
+export const getWeekNumber = (): number => {
         const currentDate = new Date()
         currentDate.setHours(0, 0, 0, 0)
         const yearOfStart = (currentDate.getMonth() >= 8)
@@ -35,10 +35,10 @@ export const getWeekNum = (): number => {
         return Math.ceil((pastDaysOfSchoolYear + firstDayOfSchoolYear.getDay() - 1) / 7)
 };
 
-export const isEven = (): string => (getWeekNum() % 2) ? "нечетная" : "четная"
+export const isEven = (): boolean => !(getWeekNumber() % 2)
 
 export default (): Week => ({
     date: getDate(),
     even: isEven(),
-    weekNum: getWeekNum()
+    weekNumber: getWeekNumber()
 })

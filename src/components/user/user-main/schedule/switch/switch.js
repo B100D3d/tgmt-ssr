@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, useContext, useMemo } from "react"
 
 import "./switch.sass"
+import { WeekContext } from "context"
 
 
-const COLOR_NAME = `--color-`
+const COLOR_NAME = `--switch-color-`
 const COLORS = ["#B326FF", "#5F26FF", "#4106c9", "#29B6F6"]
-const DEFAULT_SWITCH_STATE = { even: true, subgroup: 1 }
 
 const getNewState = (value, title) => {
     if (title === "Неделя") {
@@ -17,7 +17,7 @@ const getNewState = (value, title) => {
     }
 }
 
-const generateId = (len = 2) => {
+const generateId = (len = 5) => {
     const alfs = "abcdefghijklmnopqrstuvwxyz1234567890"
     let id = ""
     for (let i = 0; i < len; i++) {
@@ -26,11 +26,15 @@ const generateId = (len = 2) => {
     return id
 }
 
-const Switch = ({ val0, val1, title, isAdmin, state, onClick }) => {
-    const [colors, setColors] = useState(COLORS.slice(0, 2))
+const Switch = ({ firstName, secondName, title, isAdmin, onClick }) => {
+    const { even } = useContext(WeekContext)
+    const [switchState, setSwitch] = useState({ even, subgroup: 1 })
+    const initColors = !even && title === "Неделя" ? COLORS.slice(1, 3) : COLORS.slice(0, 2)
+    const [colors, setColors] = useState(initColors)
     const checkbox = useRef()
-    const id = useRef(generateId())
-    const adminClass = isAdmin ? "admin" :""
+    const id = useMemo(generateId, [])
+
+    const adminClass = isAdmin ? "admin" : ""
 
     useEffect(() => {
         [0, 1].map(i => {
@@ -44,34 +48,40 @@ const Switch = ({ val0, val1, title, isAdmin, state, onClick }) => {
                     inherits: false
                 })
             } catch(err) {}
-            
         })
     }, [])
 
     useEffect(() => {
-        checkbox.current.setAttribute("data-val0", val0)
-        checkbox.current.setAttribute("data-val1", val1)
+        checkbox.current.setAttribute("data-val0", firstName)
+        checkbox.current.setAttribute("data-val1", secondName)
+    }, [])
 
+    useEffect(() => {
+        isAdmin && onClick(switchState)
     }, [])
 
     const handleClick = () => {
-        const el = document.querySelector(`input[name = "check${ id.current }"]:checked`)
+        const el = document.querySelector(`input[name = "check${ id }"]:checked`)
         const value = +el.value
-        const newState = getNewState(value, title)
-        const [switchState, setSwitch] = state
-        setSwitch({ ...DEFAULT_SWITCH_STATE, ...switchState, ...newState })
+
         setColors([COLORS[value], COLORS[value+1]])
+
+        const newState = { ...switchState, ...getNewState(value, title) }
+        setSwitch(newState)
+        onClick(newState)
     }
 
     return (
         <div className={`switch ${ adminClass }`} >
-            <input type="radio" name={`check${ id.current }`} value="0" onClick={ handleClick } defaultChecked />
-            <input type="radio" name={`check${ id.current }`} value="1" onClick={ handleClick } />
-            <input type="radio" name={`check${ id.current }`} id="third-pos" value="2" onClick={ handleClick } />
+            <input type="radio" name={`check${ id }`} value="0" onClick={ handleClick }
+                   defaultChecked={ even || title === "Подгруппа" } />
+            <input type="radio" name={`check${ id }`} value="1" onClick={ handleClick }
+                   defaultChecked={ !even && title === "Неделя" }/>
+            <input type="radio" name={`check${ id }`} id="third-pos" value="2" onClick={ handleClick } />
             <div className="checkbox-area">
                 <div className="checkbox-circle" ref={ checkbox } style={{
-                    "--color-0": colors[0],
-                    "--color-1": colors[1]
+                    "--switch-color-0": colors[0],
+                    "--switch-color-1": colors[1]
                 }} />
             </div>
             <span className="switch-title">{ title }</span>

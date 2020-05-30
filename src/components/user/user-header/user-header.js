@@ -55,9 +55,9 @@ const UserHeader = () => {
                 </Link>
             </div>
             <p className="week">
-                { date }
+                { date || "" }
                 <br />
-                { weekNumber } { even } 
+                { weekNumber || "" } { even ? "четная неделя" : "нечетная неделя" }
             </p>
         </header>
     )

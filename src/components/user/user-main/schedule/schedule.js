@@ -56,7 +56,6 @@ const Schedule = () => {
     const [rows, setRows] = useState(DEFAULT_ROWS.map(r => ({ ...r })))
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
-    const [switchState, setSwitch] = useState({})
     const [schedule, setSchedule] = useState(user.schedule)
     const switchTimeout = useRef()
 
@@ -64,12 +63,11 @@ const Schedule = () => {
 
     const [subjectTypes, setSubjectTypes] = useState()
 
-    const handleSchedule = () => {
+    const handleSchedule = (switchState) => {
         clearTimeout(switchTimeout.current)
         switchTimeout.current = setTimeout(() => {
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-            const opts = { even: true, subgroup: 1, ...switchState }
-            getSchedule(group, opts)
+            getSchedule(group, switchState)
                 .then((s) => {
                     hide()
                     cogoToast.success("Данные успешно загружены.", { position: "top-right" })
@@ -104,23 +102,14 @@ const Schedule = () => {
         }
     }, [isAdmin])
 
-    useEffect(() => {
-        schedule && setRows(getRows(schedule))
-    }, [schedule])
+    useEffect(() => schedule && setRows(getRows(schedule)), [schedule])
 
     useEffect(() => {
         subjectTypes && setColumns(columns.map((c, i) => i === 0 ? c
             : ({ ...c, editor: <SelectEditor options={ subjectTypes }/> })))
     }, [subjectTypes])
 
-    useEffect(() => {
-        if(user.schedule && !Object.keys(switchState).length) return
-        handleSchedule()
-    }, [switchState])
-
-    useEffect(() => {
-        resize(isOpen, windowSize, setWidth)
-    }, [isOpen, windowSize])
+    useEffect(() => resize(isOpen, windowSize, setWidth), [isOpen, windowSize])
 
     useEffect(() => {
         new Promise(r => setTimeout(r, 500)).then(() => {
@@ -192,10 +181,10 @@ const Schedule = () => {
             <h1>Расписание</h1>
             <div className="buttons-container">
                 <div className="switch-container">
-                    <Switch val0="Чет" val1="Неч" title="Неделя" isAdmin={ isAdmin }
-                         state={ [switchState, setSwitch] } />
-                    <Switch val0="&nbsp;&nbsp;1" val1="&nbsp;&nbsp;2" title="Подгруппа" isAdmin={ isAdmin }
-                         state={ [switchState, setSwitch] } />
+                    <Switch firstName="Чет" secondName="Неч" title="Неделя" isAdmin={ isAdmin }
+                         onClick={ handleSchedule } />
+                    <Switch firstName="&nbsp;&nbsp;1" secondName="&nbsp;&nbsp;2" title="Подгруппа"
+                            isAdmin={ isAdmin } onClick={ handleSchedule } />
                 </div>
                 <button className="save-button" onClick={ handleSave }>Сохранить</button>
             </div>

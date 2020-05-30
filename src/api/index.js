@@ -463,7 +463,7 @@ export const getWeek = async () => {
         query: `{
                  week {
                         date
-                        weekNum
+                        weekNumber
                         even
                     }
                 }`

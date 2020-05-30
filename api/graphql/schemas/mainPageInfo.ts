@@ -9,8 +9,8 @@ type Query {
 
 type Week {
     date: String,
-    weekNum: Int,
-    even: String
+    weekNumber: Int,
+    even: Boolean
 }
 
 type Resource {
