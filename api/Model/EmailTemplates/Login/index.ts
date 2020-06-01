@@ -20,7 +20,7 @@ export default (device: string, ip: string, time: string, name: string, role: st
           padding: 20px 0;
         }
         .root .content {
-          width: 70%;
+          width: 90%;
           background-color: #2c2a2a;
           border-radius: 20px;
           padding: 20px;
@@ -43,7 +43,7 @@ export default (device: string, ip: string, time: string, name: string, role: st
           width: 100%;
         }
         .root .content .header .title {
-          width: 70%;
+          width: 80%;
           padding-left: 20%;
           box-sizing: border-box;
           text-align: right;
