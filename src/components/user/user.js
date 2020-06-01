@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import loadable from "@loadable/component"
 
-const UserHeader = loadable(() => import("./user-header/user-header"))
-const UserMenu = loadable(() => import("./user-menu/user-menu"))
-const UserMain = loadable(() => import("./user-main/user-main"))
+const UserHeader = loadable(() => import(/* webpackChunkName: "UserHeader" */"./user-header/user-header"))
+const UserMenu = loadable(() => import(/* webpackChunkName: "UserMenu" */"./user-menu/user-menu"))
+const UserMain = loadable(() => import(/* webpackChunkName: "UserMain" */"./user-main/user-main"))
 
 import { UserMenuOpenContext } from "context"
 

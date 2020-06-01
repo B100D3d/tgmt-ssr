@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useMemo, useState} from "react"
 import { useHistory } from "react-router-dom"
 import "./mailing.sass"
-import MyDropdown from "components/dropdown/dropdown"
+import loadable from "@loadable/component"
 import { FingerprintContext, UserContext } from "context"
 import { CSSTransition } from "react-transition-group"
 import { getStudents, getTeachers, mailing } from "api"
@@ -9,6 +9,7 @@ import cogoToast from "cogo-toast"
 import Checkbox from "./checkbox/checkbox"
 import logout from "helpers/logout"
 
+const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 
 const TYPE_OPTIONS = [
     { key: "All", value: "All", text: "Все" },
@@ -103,7 +104,7 @@ const Mailing = () => {
             <div className="mailing">
                 <div className="type">
                     <h3>Выберите тип получателя</h3>
-                    <MyDropdown options={ TYPE_OPTIONS } placeholder="Выберите тип" onChange={ handleType } />
+                    <Dropdown options={ TYPE_OPTIONS } placeholder="Выберите тип" onChange={ handleType } />
                 </div>
                 <CSSTransition
                     in={ !!(type && type !== "All") } timeout={ 500 } classNames="fade" unmountOnExit
@@ -111,8 +112,8 @@ const Mailing = () => {
                     <div className="recipients">
                         <h3>Выберите получателей</h3>
                         <div className="input-wrapper">
-                            <MyDropdown options={ entities } placeholder={ recipientsPlaceholder }
-                                        multiple search onChange={ handleEntities } disabled={ disabledRecipients } />
+                            <Dropdown options={ entities } placeholder={ recipientsPlaceholder }
+                                      multiple search onChange={ handleEntities } disabled={ disabledRecipients } />
                             <Checkbox onClick={ handleAll } />
                         </div>
                     </div>

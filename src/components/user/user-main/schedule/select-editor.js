@@ -1,7 +1,8 @@
 import React from "react"
-
+import loadable from "@loadable/component"
 import "./select-editor.sass"
-import Dropdown from "components/dropdown/dropdown"
+
+const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 
 export default class SelectEditor extends React.Component {
 

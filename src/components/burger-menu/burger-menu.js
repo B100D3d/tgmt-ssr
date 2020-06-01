@@ -6,7 +6,7 @@ import loadable from "@loadable/component"
 import { WeekContext } from "context"
 
 import Search from "components/search/search"
-const RainbowButton = loadable(() => import("components/rainbow-button/rainbow-button"))
+const RainbowButton = loadable(() => import(/* webpackChunkName: "RainbowButton" */"components/rainbow-button/rainbow-button"))
 
 import "./burger-menu.sass"
 

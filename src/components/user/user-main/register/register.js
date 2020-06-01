@@ -1,7 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from "react"
 import { useParams, useHistory } from "react-router-dom"
-import loadable from "@loadable/component"
-const ReactDataGrid = loadable(() => import("react-data-grid"))
 
 import "./register.sass"
 import { FingerprintContext, UserContext, UserMenuOpenContext } from "context"
@@ -11,7 +9,7 @@ import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
 import logout from "helpers/logout"
 
-
+import ReactDataGrid from "react-data-grid"
 
 const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
 

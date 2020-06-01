@@ -1,8 +1,7 @@
 import React from "react"
-import Lottie from "react-lottie"
-
 import anim from "./loading.json"
 
+import Lottie from "react-lottie"
 
 const Loading = ({ width, height, loading }) => {
 

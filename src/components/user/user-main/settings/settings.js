@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useRef, useState} from "react"
 
 import "./settings.sass"
 import { FingerprintContext, UserContext } from "context"
-import {changeUserInfo, clearFingerprint} from "../../../../api";
+import { changeUserInfo, clearFingerprint } from "api"
 import cogoToast from "cogo-toast";
 import { useHistory } from "react-router-dom"
 import logout from "helpers/logout"

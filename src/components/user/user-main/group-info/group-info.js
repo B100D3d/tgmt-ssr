@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from "react"
 import "./group-info.sass"
 import { FingerprintContext, UserContext } from "context"
 import { useParams, useHistory } from "react-router-dom"
-import {changeGroup, createGroup} from "api"
+import { changeGroup, createGroup } from "api"
 import cogoToast from "cogo-toast"
 import logout from "helpers/logout";
 

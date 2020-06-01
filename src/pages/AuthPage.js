@@ -1,10 +1,10 @@
 import React from "react"
 import Helmet from "react-helmet"
-
-import useAuth from "hooks/useAuth.hook"
-import Loading from "components/loading/loading"
 import loadable from "@loadable/component"
+import useAuth from "hooks/useAuth.hook"
 import { UserContext } from "context"
+
+const Loading = loadable(() => import(/* webpackChunkName: "Loading" */"components/loading/loading"))
 
 const styles = {
     display: "flex",

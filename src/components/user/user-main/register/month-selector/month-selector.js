@@ -1,7 +1,7 @@
 import React, {useEffect, useReducer} from "react"
 
 import "./month-selector.sass"
-import { CSSTransition, TransitionGroup } from "react-transition-group";
+import { CSSTransition, TransitionGroup } from "react-transition-group"
 
 
 const MONTHS = {

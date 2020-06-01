@@ -1,4 +1,4 @@
-import React, {useRef, useContext, useEffect} from "react"
+import React, { useRef, useContext, useEffect } from "react"
 import { Link } from "react-router-dom"
 import loadable from "@loadable/component"
 import cogoToast from "cogo-toast"
@@ -6,7 +6,7 @@ import { login } from "api"
 
 import { UserContext, FingerprintContext } from "context"
 
-const RainbowButton = loadable(() => import("components/rainbow-button/rainbow-button"))
+const RainbowButton = loadable(() => import(/* webpackChunkName: "RainbowButton" */"components/rainbow-button/rainbow-button"))
 
 import back from "static/previous.svg"
 

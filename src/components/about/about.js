@@ -1,7 +1,5 @@
 import React, { useRef } from "react"
-import loadable from "@loadable/component"
-
-const OpenButton = loadable(() => import("components/open-button/open-button"))
+import OpenButton from "components/open-button/open-button"
 
 import s from "./about.module.sass"
 import tgmt from "static/tgmt.webp"

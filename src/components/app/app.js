@@ -6,9 +6,9 @@ import UAParser from "ua-parser-js"
 import { FingerprintContext, InitialDataContext, WeekContext } from "context"
 import { getWeek } from "api"
 
-const MainPage = loadable(() => import("pages/MainPage"))
-const Page404 = loadable(() => import("pages/Page404"))
-const AuthPage = loadable(() => import("pages/AuthPage"))
+const MainPage = loadable(() => import(/* webpackChunkName: "MainPage" */"pages/MainPage"))
+const Page404 = loadable(() => import(/* webpackChunkName: "Page404" */"pages/Page404"))
+const AuthPage = loadable(() => import(/* webpackChunkName: "AuthPage" */"pages/AuthPage"))
 
 
 const getFingerPrint = async () => {

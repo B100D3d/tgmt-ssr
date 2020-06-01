@@ -1,17 +1,18 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
 import { useParams, useHistory } from "react-router-dom"
 import loadable from "@loadable/component"
-
+import ReactDataGrid from "react-data-grid"
 import { getSchedule, getSubjects, sendSchedule } from "api"
 import { UserMenuOpenContext, UserContext, FingerprintContext } from "context"
 import useWindowSize from "hooks/useWindowSize.hook"
 import Switch from "./switch/switch"
-const ReactDataGrid = loadable(() => import("react-data-grid"))
-import SelectEditor from "./select-editor"
+
 import cogoToast from "cogo-toast"
 import logout from "helpers/logout"
 
 import "./schedule.sass"
+
+const SelectEditor = loadable(() => import(/* webpackChunkName: "SelectEditor" */"./select-editor"))
 
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",

@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react"
-import loadable from "@loadable/component"
 import { getResources } from "api"
-const OpenButton = loadable(() => import("components/open-button/open-button"))
+import OpenButton from "components/open-button/open-button"
 
 import { InitialDataContext } from "context"
 

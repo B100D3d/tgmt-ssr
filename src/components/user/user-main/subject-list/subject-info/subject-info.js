@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { useParams, useHistory } from "react-router-dom"
-import Dropdown from "components/dropdown/dropdown"
+import loadable from "@loadable/component"
 import logout from "helpers/logout"
 import cogoToast from "cogo-toast"
-
 import { FingerprintContext, UserContext } from "context"
 import { changeSubject, createSubject, getSubject, getTeachers } from "api"
 
 import "./subject-info.sass"
 
+const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 
 const SubjectInfo = () => {
     const { user, setUser, setError } = useContext(UserContext)

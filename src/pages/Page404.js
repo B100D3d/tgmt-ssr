@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react"
-import loadable from "@loadable/component"
-
-const Lottie = loadable(() => import(/* webpackChunkName: "Lottie" */"react-lottie"))
+import Lottie from "react-lottie"
 
 import anim from "static/404page.json"
 
