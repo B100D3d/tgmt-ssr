@@ -1,4 +1,4 @@
-import React, { useRef, useContext } from "react"
+import React, {useRef, useContext, useEffect} from "react"
 import { Link } from "react-router-dom"
 import loadable from "@loadable/component"
 import cogoToast from "cogo-toast"
@@ -8,18 +8,9 @@ import { UserContext, FingerprintContext } from "context"
 
 const RainbowButton = loadable(() => import("components/rainbow-button/rainbow-button"))
 
-import bublik from "static/bublik.webp"
 import back from "static/previous.svg"
 
 import "./login.sass"
-
-const styles = {
-    background: `url(${ bublik })`,
-    backgroundColor: "#000000",
-    backgroundPosition: "top center",
-    backgroundRepeat: "no-repeat",
-    backgroundSize: "auto 100%"
-}
 
 
 const Login = () => {
@@ -29,6 +20,16 @@ const Login = () => {
 
     const loginInput = useRef()
     const passwordInput = useRef()
+    const background = useRef()
+
+    useEffect(() => {
+        const moveBg = e => {
+            background.current.style.setProperty("--x", `${(-e.clientX / 10) - 200}px`)
+            background.current.style.setProperty("--y", `${-e.clientY / 10}px`)
+        }
+        background.current.addEventListener("mousemove", moveBg)
+        return () => background.current.removeEventListener("mousemove", moveBg)
+    }, [])
 
     const handleClick = () => {
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
@@ -55,7 +56,7 @@ const Login = () => {
     }
 
     return (
-        <div className="auth-back" style={ styles }>
+        <div className="auth-back" ref={ background }>
             <div className="auth">
                 <Link to="/">
                     <img src={ back } alt="back" />
