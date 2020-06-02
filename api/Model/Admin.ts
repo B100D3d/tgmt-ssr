@@ -56,7 +56,7 @@ export const createAdmin = async (args: AdminCreatingData, { res }: ExpressParam
         await admin.save(opts)
         await session.commitTransaction()
 
-        const userRegData: UserRegData = {...args, role }
+        const userRegData: UserRegData = {...args, role, login, password }
 
         if (email) {
             sendUserCreatingEmail(userRegData)
