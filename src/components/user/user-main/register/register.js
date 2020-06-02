@@ -35,7 +35,7 @@ const getColumns = (month, role) => {
     const isStudent = role === "Student"
     return range(getDaysCount(month) + 1, 0).map((i) => {
         if (i === 0) return { key: "entity", name: isStudent ? "Предмет" : "Студент",
-            resizable: true, width: 150 }
+            resizable: true, width: 150, frozen: true }
         return { key: `${ i }`, name: i, editable: isEditable, resizable: true, width: 50 }
     })
 }
