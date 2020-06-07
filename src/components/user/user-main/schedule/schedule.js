@@ -1,6 +1,6 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
 import { useParams, useHistory } from "react-router-dom"
-import loadable from "@loadable/component"
+import SelectEditor from "./select-editor"
 import ReactDataGrid from "react-data-grid"
 import { getSchedule, getSubjects, sendSchedule } from "api"
 import { UserMenuOpenContext, UserContext, FingerprintContext } from "context"
@@ -12,7 +12,7 @@ import logout from "helpers/logout"
 
 import "./schedule.sass"
 
-const SelectEditor = loadable(() => import(/* webpackChunkName: "SelectEditor" */"./select-editor"))
+
 
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",
@@ -140,7 +140,7 @@ const Schedule = () => {
             const newRows = [...rows]
             const newChangedCells = [...changedCells]
 
-            range(rowsCount, fromRow).map((i) => {
+            range(rowsCount, fromRow).forEach((i) => {
                 newRows[i] = {...newRows[i], ...data.updated }
                 const existedChangedCell = newChangedCells.find((c) => c.weekday === weekday && c.classNumber === i + 1)
                 if (existedChangedCell) {

@@ -13,16 +13,15 @@ import ReactDataGrid from "react-data-grid"
 
 const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
 
-const getRows = (records) => {
-    return records.reduce((acc, curr) => {
+const getRows = (records) => records.reduce((acc, curr) => {
         const recordsObj = curr.records.reduce((acc, curr) => {
             acc[curr.day] = curr.record
             return acc
         }, {})
         acc.push({ entity: curr.entity, ...recordsObj })
         return acc
-    }, [])
-}
+}, [])
+
 
 const getDaysCount = (m) => {
     const year = new Date().getFullYear()
@@ -75,6 +74,7 @@ const Register = () => {
                     cogoToast.success("Данные успешно загружены.", { position: "top-right" })
                     setMonth(month)
                     setRecords(r)
+                    setChangedCells([])
                 })
                 .catch((error) => {
                     hide()
@@ -114,19 +114,22 @@ const Register = () => {
         const newRows = [...rows]
         const newChangedCells = [...changedCells]
 
-        range(rowsCount, fromRow).map((i) => {
-            const student = rows[i].entity
-            newRows[i] = { ...newRows[i], ...data.updated }
-            const cell =  newChangedCells.find((c) => c.student === student)
-            if (cell) {
-                const record = cell.records.find((r) => r.day === day)
-                if (record) {
-                    record.record = updated
+        range(rowsCount, fromRow).forEach((i) => {
+            const currCellValue = newRows[i][data.cellKey] ?? ""
+            if(currCellValue !== updated) {
+                const student = rows[i].entity
+                newRows[i] = { ...newRows[i], ...data.updated }
+                const cell =  newChangedCells.find((c) => c.student === student)
+                if (cell) {
+                    const record = cell.records.find((r) => r.day === day)
+                    if (record) {
+                        record.record = updated
+                    } else {
+                        cell.records.push({ day, record: updated })
+                    }
                 } else {
-                    cell.records.push({ day, record: updated })
+                    newChangedCells.push({ student, records: [{ day, record: updated }] })
                 }
-            } else {
-                newChangedCells.push({ student, records: [{ day, record: updated }] })
             }
         })
         setRows(newRows)

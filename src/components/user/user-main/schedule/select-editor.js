@@ -16,11 +16,11 @@ export default class SelectEditor extends React.Component {
 
     getValue = () => ({ [this.props.column.key]: this.state.selected })
 
-    getInputNode = () => document.querySelector(".dropdown-con")
+    getInputNode = () => this.select.current
 
     render() {
         return (
-            <div className="dropdown-con" tabIndex="-1">
+            <div ref={ this.select } className="dropdown-con" tabIndex="-1">
                 <Dropdown placeholder={ this.props.value }
                           options={ [{ key: "", value: "", text: "" }, ...this.props.options] }
                           onChange={ this.handleChange }
