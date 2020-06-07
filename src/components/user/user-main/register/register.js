@@ -57,13 +57,13 @@ const Register = () => {
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
     const [records, setRecords] = useState()
-    const [month, setMonth] = useState(new Date().getMonth())
+    const [month, setMonth] = useState()
     const [columns, setColumns] = useState([])
     const monthTimeout = useRef()
 
     const windowSize = useWindowSize()
 
-    const handleRecords = (month) => {
+    const handleRecords = () => {
         clearTimeout(monthTimeout.current)
         monthTimeout.current = setTimeout(() => {
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
@@ -72,7 +72,6 @@ const Register = () => {
                 .then((r) => {
                     hide()
                     cogoToast.success("Данные успешно загружены.", { position: "top-right" })
-                    setMonth(month)
                     setRecords(r)
                     setChangedCells([])
                 })
@@ -87,7 +86,11 @@ const Register = () => {
     }
 
     useEffect(() => {
-        setColumns(getColumns(month, user.role))
+        month && handleRecords()
+    }, [month])
+
+    useEffect(() => {
+        month && setColumns(getColumns(month, user.role))
     }, [month])
 
     useEffect(() => {
@@ -162,7 +165,7 @@ const Register = () => {
         <div className="register-container">
             <h1>Журнал</h1>
             <div className="buttons-container">
-                <MonthSelector onChange={ handleRecords } />
+                <MonthSelector onChange={ setMonth } />
                 <button className="save-button" onClick={ handleSave }>Сохранить</button>
             </div>
             <div className="register">

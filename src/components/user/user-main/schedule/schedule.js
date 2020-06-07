@@ -58,13 +58,14 @@ const Schedule = () => {
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
     const [schedule, setSchedule] = useState(user.schedule)
+    const [switchState, setSwitch] = useState()
     const switchTimeout = useRef()
 
     const windowSize = useWindowSize()
 
     const [subjectTypes, setSubjectTypes] = useState()
 
-    const handleSchedule = (switchState) => {
+    const handleSchedule = () => {
         clearTimeout(switchTimeout.current)
         switchTimeout.current = setTimeout(() => {
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
@@ -84,6 +85,10 @@ const Schedule = () => {
                 })
         }, 500)
     }
+
+    useEffect(() => {
+        switchState && handleSchedule()
+    }, [switchState])
 
     useEffect(() => {
         if (isAdmin) {
@@ -157,8 +162,7 @@ const Schedule = () => {
     const handleSave = () => {
         document.querySelector(".save-button").disabled = true
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-        const opts = { even: true, subgroup: 1, ...switchState }
-        sendSchedule(fingerprint, group, opts, changedCells)
+        sendSchedule(fingerprint, group, switchState, changedCells)
             .then((s) => {
                 document.querySelector(".save-button").disabled = false
                 hide()
@@ -183,9 +187,9 @@ const Schedule = () => {
             <div className="buttons-container">
                 <div className="switch-container">
                     <Switch firstName="Чет" secondName="Неч" title="Неделя" isAdmin={ isAdmin }
-                         onClick={ handleSchedule } />
+                         onChange={ setSwitch } />
                     <Switch firstName="&nbsp;&nbsp;1" secondName="&nbsp;&nbsp;2" title="Подгруппа"
-                            isAdmin={ isAdmin } onClick={ handleSchedule } />
+                            isAdmin={ isAdmin } onChange={ setSwitch } />
                 </div>
                 <button className="save-button" onClick={ handleSave }>Сохранить</button>
             </div>

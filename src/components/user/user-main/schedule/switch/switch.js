@@ -26,7 +26,7 @@ const generateId = (len = 5) => {
     return id
 }
 
-const Switch = ({ firstName, secondName, title, isAdmin, onClick }) => {
+const Switch = ({ firstName, secondName, title, isAdmin, onChange }) => {
     const { even } = useContext(WeekContext)
     const [switchState, setSwitch] = useState({ even, subgroup: 1 })
     const initColors = !even && title === "Неделя" ? COLORS.slice(1, 3) : COLORS.slice(0, 2)
@@ -57,7 +57,7 @@ const Switch = ({ firstName, secondName, title, isAdmin, onClick }) => {
     }, [])
 
     useEffect(() => {
-        isAdmin && onClick(switchState)
+        isAdmin && onChange(switchState)
     }, [])
 
     const handleClick = () => {
@@ -68,7 +68,7 @@ const Switch = ({ firstName, secondName, title, isAdmin, onClick }) => {
 
         const newState = { ...switchState, ...getNewState(value, title) }
         setSwitch(newState)
-        onClick(newState)
+        onChange(newState)
     }
 
     return (

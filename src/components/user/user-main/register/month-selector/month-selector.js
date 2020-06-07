@@ -35,7 +35,7 @@ const MonthSelector = ({ onChange }) => {
 
     useEffect(() => {
         onChange(month)
-    },[month])
+    }, [month])
 
     return (
         <div className="month-selector">
