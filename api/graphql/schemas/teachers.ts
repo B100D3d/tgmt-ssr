@@ -2,7 +2,7 @@ import {
     GraphQLSchema,
     GraphQLObjectType,
     GraphQLString,
-    GraphQLList, GraphQLInputObjectType
+    GraphQLList, GraphQLInputObjectType, GraphQLNonNull, GraphQLInt
 } from "graphql"
 
 const TeacherEntity = new GraphQLObjectType({
@@ -20,7 +20,7 @@ const TeacherEntity = new GraphQLObjectType({
     })
 })
 
-export default new GraphQLSchema({
+export const teachers = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "TeachersQuery",
         fields: () => ({
@@ -42,17 +42,17 @@ export default new GraphQLSchema({
                 type: TeacherEntity,
                 args: {
                     teacherID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     data: {
                         type: new GraphQLInputObjectType({
                             name: "ChangedTeacher",
                             fields: () => ({
                                 name: {
-                                    type: GraphQLString
+                                    type: new GraphQLNonNull(GraphQLString)
                                 },
                                 email: {
-                                    type: GraphQLString
+                                    type: new GraphQLNonNull(GraphQLString)
                                 }
                             })
                         })

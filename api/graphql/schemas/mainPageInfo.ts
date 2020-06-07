@@ -1,6 +1,6 @@
 import { buildSchema } from "graphql"
 
-export default buildSchema(`
+export const mainPageInfo =  buildSchema(`
 
 type Query {
     week: Week,

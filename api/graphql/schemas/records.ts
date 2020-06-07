@@ -4,12 +4,12 @@ import {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
-    GraphQLInputObjectType
+    GraphQLInputObjectType, GraphQLNonNull
 } from "graphql"
 
 import Record from "./types/record"
 
-export default new GraphQLSchema({
+export const records = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "RecordsQuery",
         fields: () => ({
@@ -17,7 +17,7 @@ export default new GraphQLSchema({
                 type: new GraphQLList(Record),
                 args: {
                     month: {
-                        type: GraphQLInt
+                        type: new GraphQLNonNull(GraphQLInt)
                     }
                 }
             },
@@ -25,13 +25,13 @@ export default new GraphQLSchema({
                 type: new GraphQLList(Record),
                 args: {
                     month: {
-                        type: GraphQLInt
+                        type: new GraphQLNonNull(GraphQLInt)
                     },
                     groupID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     subjectID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     }
                 }
             }
@@ -44,30 +44,30 @@ export default new GraphQLSchema({
                 type: new GraphQLList(Record),
                 args: {
                     month: {
-                        type: GraphQLInt
+                        type: new GraphQLNonNull(GraphQLInt)
                     },
                     subjectID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     groupID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     records: {
                         type: new GraphQLList(new GraphQLInputObjectType({
                             name: "InputRecords",
                             fields: () => ({
                                 student: {
-                                    type: GraphQLString
+                                    type: new GraphQLNonNull(GraphQLString)
                                 },
                                 records: {
                                     type: new GraphQLList(new GraphQLInputObjectType({
                                         name: "InputStudentRecords",
                                         fields: () => ({
                                             day: {
-                                                type: GraphQLInt
+                                                type: new GraphQLNonNull(GraphQLInt)
                                             },
                                             record: {
-                                                type: GraphQLString
+                                                type: new GraphQLNonNull(GraphQLString)
                                             }
                                         })
                                     }))

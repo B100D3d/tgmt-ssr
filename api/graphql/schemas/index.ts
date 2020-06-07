@@ -1,30 +1,13 @@
-import mainPageInfo from "./mainPageInfo"
-import userCreating from "./userCreating"
-import userDeleting from "./userDeleting"
-import userInfoSettings from "./userInfoSettings"
-import login from "./login"
-import auth from "./auth"
-import groups from "./groups"
-import students from "./students"
-import subjects from "./subjects"
-import teachers from "./teachers"
-import schedules from "./schedules"
-import records from "./records"
-import mailing from "./mailing"
-
-
-export {
-    mainPageInfo,
-    userCreating,
-    userDeleting,
-    userInfoSettings,
-    login,
-    auth,
-    groups,
-    students,
-    subjects,
-    teachers,
-    schedules,
-    records,
-    mailing
-}
+export { mainPageInfo } from "./mainPageInfo"
+export { userCreating } from "./userCreating"
+export { userDeleting } from "./userDeleting"
+export { userInfoSettings } from "./userInfoSettings"
+export { login } from "./login"
+export { auth } from "./auth"
+export { groups } from "./groups"
+export { students } from "./students"
+export { subjects } from "./subjects"
+export { teachers } from "./teachers"
+export { schedules } from "./schedules"
+export { records } from "./records"
+export { mailing } from "./mailing"

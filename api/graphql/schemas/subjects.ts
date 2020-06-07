@@ -3,12 +3,12 @@ import {
     GraphQLObjectType,
     GraphQLString,
     GraphQLList,
-    GraphQLBoolean
+    GraphQLBoolean, GraphQLNonNull, GraphQLInt
 } from "graphql"
 
 import Subject from "./types/subject"
 
-export default new GraphQLSchema({
+export const subjects = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "GroupQuery",
         fields: () => ({
@@ -34,10 +34,10 @@ export default new GraphQLSchema({
                 type: Subject,
                 args: {
                     name: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     teacher: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     }
                 }
             },
@@ -45,7 +45,7 @@ export default new GraphQLSchema({
                 type: GraphQLBoolean,
                 args: {
                     subjectID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     }
                 }
             },
@@ -53,13 +53,13 @@ export default new GraphQLSchema({
                 type: Subject,
                 args: {
                     subjectID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     name: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     teacher: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     }
                 }
             }

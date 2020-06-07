@@ -6,7 +6,7 @@ import {
     GraphQLNonNull
 } from "graphql"
 
-export default new GraphQLSchema({
+export const userInfoSettings =  new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "SetUserInfoQuery",
         fields: () => ({

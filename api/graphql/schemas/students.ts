@@ -3,7 +3,7 @@ import {
     GraphQLObjectType,
     GraphQLString,
     GraphQLList,
-    GraphQLInputObjectType
+    GraphQLInputObjectType, GraphQLNonNull, GraphQLInt
 } from "graphql"
 
 import Group from "./types/group"
@@ -26,7 +26,7 @@ const StudentEntity = new GraphQLObjectType({
     })
 })
 
-export default new GraphQLSchema({
+export const students = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "StudentsQuery",
         fields: () => ({
@@ -56,20 +56,20 @@ export default new GraphQLSchema({
                 type: StudentEntity,
                 args: {
                     studentID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     data: {
                         type: new GraphQLInputObjectType({
                             name: "ChangedStudent",
                             fields: () => ({
                                 name: {
-                                    type: GraphQLString
+                                    type: new GraphQLNonNull(GraphQLString)
                                 },
                                 email: {
-                                    type: GraphQLString
+                                    type: new GraphQLNonNull(GraphQLString)
                                 },
                                 groupID: {
-                                    type: GraphQLString
+                                    type: new GraphQLNonNull(GraphQLString)
                                 }
                             })
                         })

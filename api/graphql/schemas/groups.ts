@@ -4,12 +4,12 @@ import {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
-    GraphQLBoolean
+    GraphQLBoolean, GraphQLNonNull
 } from "graphql"
 
 import Group from "./types/group"
 
-export default new GraphQLSchema({
+export const groups = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "GroupQuery",
         fields: () => ({
@@ -25,10 +25,10 @@ export default new GraphQLSchema({
                 type: Group,
                 args: {
                     name: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     year: {
-                        type: GraphQLInt
+                        type: new GraphQLNonNull(GraphQLInt)
                     }
                 }
             },
@@ -36,7 +36,7 @@ export default new GraphQLSchema({
                 type: GraphQLBoolean,
                 args: {
                     groupID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     }
                 }
             },
@@ -44,13 +44,13 @@ export default new GraphQLSchema({
                 type: Group,
                 args: {
                     groupID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     name: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     year: {
-                        type: GraphQLInt
+                        type: new GraphQLNonNull(GraphQLInt)
                     }
                 }
             }

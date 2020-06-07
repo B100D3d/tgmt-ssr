@@ -1,11 +1,11 @@
 import {
     GraphQLSchema,
     GraphQLObjectType,
-    GraphQLString
+    GraphQLString, GraphQLNonNull, GraphQLInt
 } from "graphql"
 import User from "./types/user"
 
-export default new GraphQLSchema({
+export const login = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "GetUserQuery",
         fields: () => ({
@@ -13,10 +13,10 @@ export default new GraphQLSchema({
                 type: User,
                 args: {
                     login: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     password: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     }
                 }
             }

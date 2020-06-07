@@ -1,8 +1,8 @@
 import { buildSchema } from "graphql"
 
-export default buildSchema(`
+export const mailing = buildSchema(`
 
     type Query {
-        mailing(type: String, entities: [String], message: String): Boolean
+        mailing(type: String!, entities: [String], message: String!): Boolean
     }
 `)

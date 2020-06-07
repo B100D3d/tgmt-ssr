@@ -5,12 +5,12 @@ import {
     GraphQLInt,
     GraphQLList,
     GraphQLInputObjectType,
-    GraphQLBoolean
+    GraphQLBoolean, GraphQLNonNull
 } from "graphql"
 
 import Schedule from "./types/schedule"
 
-export default new GraphQLSchema({
+export const schedules = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "SchedulesQuery",
         fields: () => ({
@@ -18,7 +18,7 @@ export default new GraphQLSchema({
                 type: new GraphQLList(Schedule),
                 args: {
                     groupID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     even: {
                         type: GraphQLBoolean,
@@ -39,7 +39,7 @@ export default new GraphQLSchema({
                 type: new GraphQLList(Schedule),
                 args: {
                     groupID: {
-                        type: GraphQLString
+                        type: new GraphQLNonNull(GraphQLString)
                     },
                     even: {
                         type: GraphQLBoolean,
@@ -58,10 +58,10 @@ export default new GraphQLSchema({
                                     type: GraphQLString
                                 },
                                 weekday: {
-                                    type: GraphQLInt
+                                    type: new GraphQLNonNull(GraphQLInt)
                                 },
                                 classNumber: {
-                                    type: GraphQLInt 
+                                    type: new GraphQLNonNull(GraphQLInt)
                                 }
                             })
                         }))
