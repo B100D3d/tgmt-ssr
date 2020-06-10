@@ -11,6 +11,7 @@ import { generateGroupID } from "./Utils"
 import studentModel from "./MongoModels/studentModel"
 import scheduleModel from "./MongoModels/scheduleModel"
 import userModel from "./MongoModels/userModel";
+import recordsModel from "./MongoModels/recordsModel"
 
 
 
@@ -72,6 +73,7 @@ export const deleteGroup = async ({ groupID: id }: GroupID, { res }: ExpressPara
         for (const student of students) {
             await userModel.deleteOne({ student: student._id }, opts).exec()
             await studentModel.deleteOne({ _id: student._id }, opts).exec()
+            await recordsModel.deleteMany({ student: student._id }, opts).exec()
         }
         await scheduleModel.deleteMany({ group: group._id }, opts).exec()
         await groupModel.deleteOne({ _id: group._id }, opts).exec()
