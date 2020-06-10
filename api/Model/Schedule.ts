@@ -104,13 +104,12 @@ const createSchedule = async (
             group
         })
         existingSchedule.push(schedule)
-        schedules.push()
         group.schedule.addToSet(schedule._id)
         await schedule.save(opts)
     }
 
-    for (const [i, val] of existingSchedule.entries()) {
-        await scheduleModel.updateOne({ _id: val._id }, { ...defaultData, ...scheduleData[i] }, opts).exec()
+    for (const [i, schedule] of existingSchedule.entries()) {
+        await scheduleModel.updateOne({ _id: schedule._id }, { ...defaultData, ...scheduleData[i] }, opts).exec()
     }
 
     await deleteUnusedSubjects(subjectsIdToFind, group)

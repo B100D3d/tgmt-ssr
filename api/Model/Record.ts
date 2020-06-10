@@ -14,20 +14,12 @@ import recordModel from "./MongoModels/recordsModel"
 import subjectModel from "./MongoModels/subjectModel"
 import groupModel from "./MongoModels/groupModel"
 
-const getRecordsArrayFromMap = (entity: string, _records: Map<string, string>): Records => {
+const getRecordsArrayFromMap = (records: Map<string, string>): Array<Record> => 
+    Array.from(records.keys()).map((day: string) => ({
+        day: +day,
+        record: records.get(day)
+    }))
 
-    const records: Array<Record> = []
-    for (const day of _records.keys()) {
-        const record = {
-            day: +day,
-            record: _records.get(day)
-        }
-
-        records.push(record)
-    }
-
-    return { entity, records }
-}
 
 export const getStudentRecords = async ({ month }: RecordsGetData, { req }: ExpressParams): Promise<Array<Records>> => {
 
@@ -47,7 +39,10 @@ export const getStudentRecords = async ({ month }: RecordsGetData, { req }: Expr
             student.records.find(record => record.month === month && record.subject.name === subject)
             || { records: new Map<string, string>() }
                                 
-        const records = getRecordsArrayFromMap(subject, recordsByMonthAndSubject.records)
+        const records = { 
+            entity: subject, 
+            records: getRecordsArrayFromMap(recordsByMonthAndSubject.records) 
+        }
 
         return records
     })
@@ -79,7 +74,10 @@ export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): 
                 _records.find(r => r.month === month && r.subject.equals(subjectDB._id))
                 || { records: new Map<string, string>()}
 
-            const records = getRecordsArrayFromMap(entity, recordsByMonthAndSubject.records)
+            const records = { 
+                entity, 
+                records: getRecordsArrayFromMap(recordsByMonthAndSubject.records) 
+            }
 
             return records
         })
