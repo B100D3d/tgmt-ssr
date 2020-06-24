@@ -8,7 +8,19 @@
 
         .menu
             background-color: #201E1E !important
+            max-height: 200px
+
+            &.right
+                right: 0
+                left: auto
 
             .item
                 &:hover
                     background: rgba(255, 255, 255, 0.1) !important
+
+.react-grid-Canvas.right
+    .dropdown-con
+        .ui:not(.multiple):not(.label)
+            .menu
+                right: 0
+                left: auto

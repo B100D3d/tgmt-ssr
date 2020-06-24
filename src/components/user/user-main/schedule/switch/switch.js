@@ -26,9 +26,9 @@ const generateId = (len = 5) => {
     return id
 }
 
-const Switch = ({ firstName, secondName, title, isAdmin, onChange }) => {
+const Switch = ({ firstName, secondName, title, initValue, isAdmin, onChange }) => {
     const { even } = useContext(WeekContext)
-    const [switchState, setSwitch] = useState({ even, subgroup: 1 })
+    const [switchState, setSwitch] = useState(initValue)
     const initColors = !even && title === "Неделя" ? COLORS.slice(1, 3) : COLORS.slice(0, 2)
     const [colors, setColors] = useState(initColors)
     const checkbox = useRef()

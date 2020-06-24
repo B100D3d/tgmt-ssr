@@ -3,7 +3,7 @@ import { useParams, useHistory } from "react-router-dom"
 import SelectEditor from "./select-editor"
 import ReactDataGrid from "react-data-grid"
 import { getSchedule, getSubjects, sendSchedule } from "api"
-import { UserMenuOpenContext, UserContext, FingerprintContext } from "context"
+import {UserMenuOpenContext, UserContext, FingerprintContext, WeekContext} from "context"
 import useWindowSize from "hooks/useWindowSize.hook"
 import Switch from "./switch/switch"
 
@@ -50,6 +50,7 @@ const Schedule = () => {
     const [isOpen] = useContext(UserMenuOpenContext)
     const { user, setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
+    const { even } = useContext(WeekContext)
 
     const isAdmin = user.role === "Admin"
     const group = user.group?.id || params.group
@@ -58,7 +59,7 @@ const Schedule = () => {
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
     const [schedule, setSchedule] = useState(user.schedule)
-    const [switchState, setSwitch] = useState()
+    const [switchState, setSwitch] = useState({})
     const switchTimeout = useRef()
 
     const windowSize = useWindowSize()
@@ -87,7 +88,7 @@ const Schedule = () => {
     }
 
     useEffect(() => {
-        switchState && handleSchedule()
+        (Object.keys(switchState).length === 2) && handleSchedule()
     }, [switchState])
 
     useEffect(() => {
@@ -131,7 +132,7 @@ const Schedule = () => {
         { key: "2", name: "Вторник", editable: isAdmin, resizable: true },
         { key: "3", name: "Среда", editable: isAdmin, resizable: true },
         { key: "4", name: "Четверг", editable: isAdmin, resizable: true },
-        { key: "5", name: "Пятиница", editable: isAdmin, resizable: true },
+        { key: "5", name: "Пятница", editable: isAdmin, resizable: true },
         { key: "6", name: "Суббота", editable: isAdmin, resizable: true }
     ])
 
@@ -180,6 +181,7 @@ const Schedule = () => {
             })
     }
 
+    const handleSwitch = state => setSwitch(prevState => ({ ...prevState, ...state }))
 
     return (
         <div className="schedule-container">
@@ -187,9 +189,9 @@ const Schedule = () => {
             <div className="buttons-container">
                 <div className="switch-container">
                     <Switch firstName="Чет" secondName="Неч" title="Неделя" isAdmin={ isAdmin }
-                         onChange={ setSwitch } />
+                         onChange={ handleSwitch } initValue={{ even }} />
                     <Switch firstName="&nbsp;&nbsp;1" secondName="&nbsp;&nbsp;2" title="Подгруппа"
-                            isAdmin={ isAdmin } onChange={ setSwitch } />
+                            isAdmin={ isAdmin } onChange={ handleSwitch } initValue={{ subgroup: 1 }} />
                 </div>
                 <button className="save-button" onClick={ handleSave }>Сохранить</button>
             </div>
@@ -201,6 +203,9 @@ const Schedule = () => {
                     minWidth={ width }
                     enableCellSelect={ true }
                     onGridRowsUpdated={ onGridRowsUpdated }
+                    cellRangeSelection={{
+                        onStart: args => setSelectEditorPosition(args.cursorCell.idx > 4)
+                    }}
                 />
             </div>
         </div>
@@ -220,6 +225,12 @@ const setSaveBtnVisibility = (isVisible) => {
     isVisible
         ? document.querySelector(".save-button").classList.add("visible")
         : document.querySelector(".save-button").classList.remove("visible")
+}
+
+const setSelectEditorPosition = right => {
+    right
+        ? document.querySelector(".react-grid-Canvas").classList.add("right")
+        : document.querySelector(".react-grid-Canvas").classList.remove("right")
 }
 
 export default Schedule
