@@ -22,8 +22,8 @@ app
 	.disable('x-powered-by')
 	.use(bodyParser.json())
 	.use(cookieParser())
-	.use("/img/*", express.static(path.join(__dirname, "../static")))
 	.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
+	.use("/img/*", express.static(path.join(__dirname, "../static/img")))
 	.use(api)
 	.get('/*', async (req, res) => {
 		console.log("Request to page")
