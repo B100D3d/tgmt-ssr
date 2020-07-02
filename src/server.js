@@ -16,7 +16,7 @@ import cookieParser from "cookie-parser"
 import path from "path"
 
 const app = express();
-console.log(path.join(__dirname, "../build"))
+console.log(path.join(__dirname, "../build/public"))
 app
 	.disable('x-powered-by')
 	.use(bodyParser.json())
