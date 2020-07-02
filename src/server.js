@@ -21,7 +21,7 @@ app
 	.disable('x-powered-by')
 	.use(bodyParser.json())
 	.use(cookieParser())
-	.use(express.static(path.join(__dirname, "../build")))
+	.use(express.static(path.join(__dirname, "../build/public")))
 	.use(api)
 	.get('/*', async (req, res) => {
 		console.log("Request to page")
