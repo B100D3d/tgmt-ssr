@@ -33,6 +33,7 @@ module.exports = {
                 new LoadableWebpackPlugin({
                     outputAsset: false,
                     writeToDisk: { filename },
+                    path: "/build"
                 })
             )
 
