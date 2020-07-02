@@ -28,12 +28,12 @@ module.exports = {
         }
 
         if(!isServer) {
-            const filename = "/app/build"
+            const filename = "build"
             config.plugins.push(
                 new LoadableWebpackPlugin({
                     outputAsset: false,
                     writeToDisk: { filename },
-                    path: "/app/build"
+                    path: "/app"
                 })
             )
 
