@@ -10,12 +10,12 @@ const server = app
 
 let currentApp = app;
 
-server.listen(port, error => {
+server.listen(port, '0.0.0.0', error => {
   if (error) {
     console.log(error);
   }
 
-  console.log(`🚀 started at port ${ port } | (${ new Date().toLocaleString() })`);
+  console.log(`🚀 started on port ${ port } | (${ new Date().toLocaleString() })`);
 
   db.on("error", err => {
 	console.log(`Mongodb connection has error: ${err}`)
