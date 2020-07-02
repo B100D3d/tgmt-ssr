@@ -32,7 +32,7 @@ app
 		const staticContext = {}
 
 		const extractor = new ChunkExtractor({
-			statsFile: "./build/loadable-stats.json",
+			statsFile: path.resolve('build/loadable-stats.json'),
 			entrypoints: ['client'],
 		})
 
