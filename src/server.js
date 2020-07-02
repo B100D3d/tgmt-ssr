@@ -16,16 +16,17 @@ import cookieParser from "cookie-parser"
 import path from "path"
 
 const app = express();
-console.log(process.env.RAZZLE_PUBLIC_DIR)
-console.log(path.resolve('build/loadable-stats.json'))
 app
 	.disable('x-powered-by')
 	.use(bodyParser.json())
 	.use(cookieParser())
 	.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
+	.use(express.static(path.join(__dirname, "../static")))
 	.use(api)
 	.get('/*', async (req, res) => {
 		console.log("Request to page")
+		console.log(process.env.RAZZLE_PUBLIC_DIR)
+		console.log(path.resolve('build/loadable-stats.json'))
 		const ua = req.headers["user-agent"] || ""
 
 		const staticContext = {}
@@ -59,7 +60,6 @@ app
 
 		res.status(status).send(html)
 	})
-	.use("/img", express.static(path.join(__dirname, "../static/img")))
 
 export default app;
 
