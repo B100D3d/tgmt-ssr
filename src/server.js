@@ -16,12 +16,12 @@ import cookieParser from "cookie-parser"
 import path from "path"
 
 const app = express();
-
+console.log(path.join(__dirname, "../build"))
 app
 	.disable('x-powered-by')
 	.use(bodyParser.json())
 	.use(cookieParser())
-	.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
+	.use(express.static(path.join(__dirname, "../build")))
 	.use(api)
 	.get('/*', async (req, res) => {
 		console.log("Request to page")
