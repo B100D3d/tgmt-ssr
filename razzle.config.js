@@ -24,9 +24,9 @@ module.exports = {
         ///////////// PLUGINS //////////////////////////
         config.plugins.push(new Dotenv())
 
-        if(isServer) {
-            config.plugins.push(new OpenBrowserPlugin({ url: "http://localhost:3000" }))
-        }
+        // if(isServer && dev) {
+        //     config.plugins.push(new OpenBrowserPlugin({ url: "http://localhost:3000" }))
+        // }
 
         if(!isServer) {
             const filename = path.resolve(__dirname, 'build')
