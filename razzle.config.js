@@ -1,6 +1,5 @@
-
 const path = require("path")
-
+const razzleHeroku = require("razzle-heroku")
 const Dotenv = require("dotenv-webpack")
 const LoadableWebpackPlugin = require('@loadable/webpack-plugin')
 const OpenBrowserPlugin = require("open-browser-webpack-plugin")
@@ -17,16 +16,16 @@ module.exports = {
 
     modify: (baseConfig, { target, dev }, webpack) => {
 
-        const config = Object.assign({}, baseConfig);
+        const config = razzleHeroku(Object.assign({}, baseConfig), { target, dev }, webpack)
         const isServer = target !== 'web';
         config.devtool = false
 
         ///////////// PLUGINS //////////////////////////
         config.plugins.push(new Dotenv())
 
-        // if(isServer && dev) {
-        //     config.plugins.push(new OpenBrowserPlugin({ url: "http://localhost:3000" }))
-        // }
+        if(isServer && dev) {
+            config.plugins.push(new OpenBrowserPlugin({ url: "http://localhost:3000" }))
+        }
 
         if(!isServer) {
             const filename = path.resolve(__dirname, 'build')
