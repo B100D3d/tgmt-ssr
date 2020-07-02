@@ -28,6 +28,7 @@ module.exports = {
         }
 
         if(!isServer) {
+            console.log(path.resolve(__dirname, 'build'))
             const filename = path.resolve(__dirname, 'build')
             config.plugins.push(
                 new LoadableWebpackPlugin({

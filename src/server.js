@@ -25,8 +25,6 @@ app
 	.use(api)
 	.get('/*', async (req, res) => {
 		console.log("Request to page")
-		console.log(process.env.RAZZLE_PUBLIC_DIR)
-		console.log(path.resolve('build/loadable-stats.json'))
 		const ua = req.headers["user-agent"] || ""
 
 		const staticContext = {}
