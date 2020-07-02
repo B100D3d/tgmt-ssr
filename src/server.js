@@ -23,7 +23,7 @@ app
 	.use(bodyParser.json())
 	.use(cookieParser())
 	.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
-	.use("/img/*", express.static(path.join(__dirname, "../static/img")))
+	.use("/img", express.static(path.join(__dirname, "../static/img")))
 	.use(api)
 	.get('/*', async (req, res) => {
 		console.log("Request to page")
