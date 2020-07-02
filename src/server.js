@@ -26,6 +26,7 @@ app
 	.get('/*', async (req, res) => {
 		console.log("Request to page")
 		console.log(path.resolve('build/loadable-stats.json'))
+		console.log(path.join(__dirname, "build/loadable-stats.json"))
 		const ua = req.headers["user-agent"] || ""
 
 		const staticContext = {}
