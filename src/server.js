@@ -16,7 +16,7 @@ import cookieParser from "cookie-parser"
 import path from "path"
 
 const app = express();
-console.log(express.static(process.env.RAZZLE_PUBLIC_DIR))
+console.log(process.env.RAZZLE_PUBLIC_DIR)
 console.log(path.resolve('build/loadable-stats.json'))
 app
 	.disable('x-powered-by')
