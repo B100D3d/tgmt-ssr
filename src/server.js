@@ -24,6 +24,7 @@ app
 	.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
 	.use(api)
 	.get('/*', async (req, res) => {
+		console.log("Request to page")
 		const ua = req.headers["user-agent"] || ""
 
 		const staticContext = {}
