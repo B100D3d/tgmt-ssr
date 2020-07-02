@@ -1,10 +1,10 @@
 import dotenv from "dotenv"
 import db from "../api/Model/mongodb.ts"
 
-dotenv.config()
+//dotenv.config()
 
 let app = require('./server').default;
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 
 const server = app
 
