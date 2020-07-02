@@ -16,10 +16,13 @@ import cookieParser from "cookie-parser"
 import path from "path"
 
 const app = express();
+console.log(express.static(process.env.RAZZLE_PUBLIC_DIR))
+console.log(path.resolve('build/loadable-stats.json'))
 app
 	.disable('x-powered-by')
 	.use(bodyParser.json())
 	.use(cookieParser())
+	.use("/img/*", express.static(path.join(__dirname, "../static")))
 	.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
 	.use(api)
 	.get('/*', async (req, res) => {
