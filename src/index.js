@@ -1,22 +1,12 @@
-import https from 'https';
 import dotenv from "dotenv"
-import fs from "fs"
-import path from "path"
 import db from "../api/Model/mongodb.ts"
-
-const sslDir = "/etc/ssl";
 
 dotenv.config()
 
 let app = require('./server').default;
 const port = process.env.PORT
 
-const server = +process.env.HTTPS
-	  ? https.createServer({
-		    cert: fs.readFileSync(path.join(sslDir, "tgmt.crt")),
-        key: fs.readFileSync(path.join(sslDir, "tgmt.key"))
-	  }, app)
-	  : app
+const server = app
 
 let currentApp = app;
 

@@ -17,49 +17,45 @@ import path from "path"
 
 const app = express();
 
-app.set("trust proxy", true)
-app.use(bodyParser.json())
-app.use(cookieParser())
-!+process.env.PROD && app.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
-
-app.use(api)
-
 app
-  .disable('x-powered-by')
-  .get('/*', async (req, res) => {
+	.disable('x-powered-by')
+	.use(bodyParser.json())
+	.use(cookieParser())
+	.use(express.static(process.env.RAZZLE_PUBLIC_DIR))
+	.use(api)
+	.get('/*', async (req, res) => {
+		const ua = req.headers["user-agent"] || ""
 
-	const ua = req.headers["user-agent"] || ""
+		const staticContext = {}
 
-	const staticContext = {}
+		const extractor = new ChunkExtractor({
+			statsFile: path.resolve('build/loadable-stats.json'),
+			entrypoints: ['client'],
+		})
 
-	const extractor = new ChunkExtractor({
-		statsFile: path.resolve('build/loadable-stats.json'),
-		entrypoints: ['client'],
-	})
+		let promise = Promise.resolve({ })
+		routes.some(route => {
+			const match = matchPath(req.url, route)
+			if(match && route.loadData) promise = route.loadData()
+			return match
+		})
+		const data = await promise
 
-	let promise
-	routes.some(route => {
-		const match = matchPath(req.url, route)
-		if(match && route.loadData) promise = route.loadData()
-		return match
-	})
-	const data = await promise || { }
+		const markup = renderToString(
+			<ChunkExtractorManager extractor={ extractor }>
+				<StaticRouter context={ staticContext } location={ req.url }>
+					<App data={ data }/>
+				</StaticRouter>
+			</ChunkExtractorManager>
+		);
 
-    const markup = renderToString(
-		<ChunkExtractorManager extractor={ extractor }> 
-			<StaticRouter context={ staticContext } location={ req.url }>
-				<App data={ data }/>
-			</StaticRouter>
-	  	</ChunkExtractorManager>
-	);
-	
-	const helmet = Helmet.renderStatic()
+		const helmet = Helmet.renderStatic()
 
-	const status = staticContext.statusCode || 200
+		const status = staticContext.statusCode || 200
 
-	const html = await getHtml(markup, extractor, helmet, data, ua)
+		const html = await getHtml(markup, extractor, helmet, data, ua)
 
-	res.status(status).send(html)
+		res.status(status).send(html)
 })
 
 export default app;

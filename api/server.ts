@@ -12,9 +12,13 @@ import apiRouter from "./routes/apiRouter"
 const app = express()
 
 const isProduction = !!+process.env.PROD
-const origin = isProduction ? ["https://тгмт.рф", "https://www.тгмт.рф"] : ["http://localhost:3000"]
+const origin = isProduction ? [
+    "https://тгмт.рф",
+    "https://www.тгмт.рф",
+    "https://tgmt.herokuapp.com/",
+    "https://www.tgmt.herokuapp.com/"]
+    : ["http://localhost:3000"]
 
-app.set("trust proxy", "loopback")
 app.use(cors({
     origin,
     optionsSuccessStatus: 200, 
