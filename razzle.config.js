@@ -1,6 +1,5 @@
 const path = require("path")
 const Dotenv = require("dotenv-webpack")
-const RazzleHeroku = require("razzle-heroku")
 const LoadableWebpackPlugin = require('@loadable/webpack-plugin')
 const OpenBrowserPlugin = require("open-browser-webpack-plugin")
 
@@ -9,15 +8,39 @@ const NullishCoalescingBabelPlugin = require("@babel/plugin-proposal-nullish-coa
 const babelPresetRazzle = require('razzle/babel')
 const babelPresetTypescript = require("@babel/preset-typescript")
 
+const isHeroku = process.env.PWD === "/app"
+
+const modifyForHeroku = (config, {target, dev}, webpack) => {
+    if (target !== "node") return config
+
+    const isDefinePlugin = plugin => plugin.constructor.name === "DefinePlugin"
+    const indexDefinePlugin = config.plugins.findIndex(isDefinePlugin)
+
+    if (indexDefinePlugin < 0) {
+        console.warn("Couldn't setup razzle-heroku, no DefinePlugin...")
+        return config
+    }
+
+    const {definitions} = config.plugins[indexDefinePlugin]
+    const newDefs = Object.assign({}, definitions);
+
+    if (isHeroku) {
+        delete newDefs["process.env.PORT"]
+        newDefs["process.env.RAZZLE_PUBLIC_DIR"] = '"/app/build/public"'
+    }
+
+    config.plugins[indexDefinePlugin] = new webpack.DefinePlugin(newDefs)
+
+    return config
+}
 
 module.exports = {
     plugins: ['scss'],
 
 
     modify: (baseConfig, { target, dev }, webpack) => {
-        console.log("isHeroku", 'HEROKU' in process.env || ('DYNO' in process.env && process.env.HOME === '/app'))
-        console.log(process.env)
-        const config = RazzleHeroku(Object.assign({}, baseConfig), { target, dev }, webpack)
+        console.log("isHeroku", isHeroku)
+        const config = modifyForHeroku(Object.assign({}, baseConfig), { target, dev }, webpack)
         const isServer = target !== 'web';
         config.devtool = false
 
