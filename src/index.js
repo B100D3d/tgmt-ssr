@@ -16,6 +16,7 @@ server.listen(port, error => {
   }
 
   console.log(`🚀 started on port ${ port } | (${ new Date().toLocaleString() })`);
+  console.log(JSON.stringify(process.env))
 
   db.on("error", err => {
 	console.log(`Mongodb connection has error: ${err}`)
