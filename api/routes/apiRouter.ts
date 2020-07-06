@@ -10,7 +10,7 @@ import { clearFingerprints } from "../Model/User"
 
 const apiRouter = Router()
 
-const isDev = !(+process.env.PROD)
+const isDev = process.env.PROD === "false"
 
 apiRouter.use("/mainPage", graphqlHTTP({
     graphiql: isDev,

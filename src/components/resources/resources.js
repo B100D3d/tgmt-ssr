@@ -15,9 +15,7 @@ const Resources = () => {
     const resRef = useRef()
 
     useEffect(() => {
-
         !data.resources && getResources().then(data => setRes(data))
-
     }, [])
 
     const handleClick = el => {

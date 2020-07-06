@@ -1,6 +1,6 @@
 import axios from "axios"
 
-const url = +process.env.PROD ? "https://тгмт.рф" : "http://localhost:3000"
+const url = process.env.PROD === "false" ? "http://localhost:3000" : "https://tgmt.herokuapp.com/"
 
 const userData = `
     ...on Admin {
