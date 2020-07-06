@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 
-const servUrl = process.env.SERV_URL;
-const localUrl = process.env.LOCAL_URL;
-
-const dbUrl = +process.env.PROD ? localUrl : servUrl
+const servUrl = process.env.SERV_URL
 
 mongoose.connect(servUrl, { autoIndex: false,
                             useNewUrlParser: true, 

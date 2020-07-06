@@ -1,16 +1,16 @@
 import dotenv from "dotenv"
-import db from "../api/Model/mongodb.ts"
-
 dotenv.config()
 
+import db from "../api/Model/mongodb.ts"
+
 let app = require('./server').default;
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 
 const server = app
 
 let currentApp = app;
 
-server.listen(port, '0.0.0.0', error => {
+server.listen(port, error => {
   if (error) {
     console.log(error);
   }

@@ -24,9 +24,6 @@ app
 	.use(express.static(path.join(__dirname, "../static")))
 	.use(api)
 	.get('/*', async (req, res) => {
-		console.log("Request to page")
-		console.log(__dirname)
-		console.log(path.resolve('build/loadable-stats.json'))
 		const ua = req.headers["user-agent"] || ""
 
 		const staticContext = {}
