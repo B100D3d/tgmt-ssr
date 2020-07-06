@@ -1,5 +1,6 @@
 const path = require("path")
 const Dotenv = require("dotenv-webpack")
+const RazzleHeroku = require("razzle-heroku")
 const LoadableWebpackPlugin = require('@loadable/webpack-plugin')
 const OpenBrowserPlugin = require("open-browser-webpack-plugin")
 
@@ -15,7 +16,7 @@ module.exports = {
 
     modify: (baseConfig, { target, dev }, webpack) => {
 
-        const config = Object.assign({}, baseConfig)
+        const config = RazzleHeroku(Object.assign({}, baseConfig), { target, dev }, webpack)
         const isServer = target !== 'web';
         config.devtool = false
 
