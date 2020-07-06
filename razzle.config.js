@@ -16,6 +16,7 @@ module.exports = {
 
     modify: (baseConfig, { target, dev }, webpack) => {
         console.log("isHeroku", 'HEROKU' in process.env || ('DYNO' in process.env && process.env.HOME === '/app'))
+        console.log(process.env)
         const config = RazzleHeroku(Object.assign({}, baseConfig), { target, dev }, webpack)
         const isServer = target !== 'web';
         config.devtool = false
