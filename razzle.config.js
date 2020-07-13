@@ -8,38 +8,12 @@ const NullishCoalescingBabelPlugin = require("@babel/plugin-proposal-nullish-coa
 const babelPresetRazzle = require('razzle/babel')
 const babelPresetTypescript = require("@babel/preset-typescript")
 
-const isHeroku = process.env.PWD === "/app"
-
-const modifyForHeroku = (config, {target, dev}, webpack) => {
-    if (target !== "node") return config
-
-    const isDefinePlugin = plugin => plugin.constructor.name === "DefinePlugin"
-    const indexDefinePlugin = config.plugins.findIndex(isDefinePlugin)
-
-    if (indexDefinePlugin < 0) {
-        console.warn("Couldn't setup razzle-heroku, no DefinePlugin...")
-        return config
-    }
-
-    const {definitions} = config.plugins[indexDefinePlugin]
-    const newDefs = Object.assign({}, definitions);
-
-    if (isHeroku) {
-        delete newDefs["process.env.PORT"]
-        newDefs["process.env.RAZZLE_PUBLIC_DIR"] = '"/app/build/public"'
-    }
-
-    config.plugins[indexDefinePlugin] = new webpack.DefinePlugin(newDefs)
-
-    return config
-}
-
 module.exports = {
     plugins: ['scss'],
 
 
     modify: (baseConfig, { target, dev }, webpack) => {
-        const config = modifyForHeroku(Object.assign({}, baseConfig), { target, dev }, webpack)
+        const config = Object.assign({}, baseConfig)
         const isServer = target !== 'web';
         config.devtool = false
 

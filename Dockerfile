@@ -1,18 +1,19 @@
 FROM node:14.5
 
-WORKDIR /app
+ENV TZ=Europe/Moscow
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-COPY package*.json ./
+RUN npm i -g node-gyp
 
-RUN npm install -g node-gyp
-
-RUN npm i
+WORKDIR /usr/src/app
 
 COPY . .
+
+RUN npm i
 
 EXPOSE 3000
 
 RUN npm run build
 
-CMD [ "npm", "run", "start:prod" ]
+CMD npm run start:prod
 

@@ -1,6 +1,6 @@
 {
-  "name": "my-razzle-app",
-  "version": "0.1.0",
+  "name": "tgmt",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "start": "razzle start",
@@ -67,7 +67,6 @@
     "eslint-loader": "^3.0.4",
     "node-sass": "^4.14.1",
     "open-browser-webpack-plugin": "^0.0.5",
-    "razzle-heroku": "^3.0.0",
     "razzle-plugin-scss": "^3.1.3",
     "typescript": "^3.9.2"
   }

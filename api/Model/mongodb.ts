@@ -1,14 +1,14 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
-const servUrl = process.env.SERV_URL
+const url = process.env.MONGO_URL
 
-mongoose.connect(servUrl, { autoIndex: false,
+mongoose.connect(url, { autoIndex: false,
                             useNewUrlParser: true, 
                             useUnifiedTopology: true,
-                            useFindAndModify: false });
+                            useFindAndModify: false })
 
-mongoose.Promise = global.Promise;
+mongoose.Promise = global.Promise
 
-const db = mongoose.connection;
+const db = mongoose.connection
 
-export default db;
+export default db

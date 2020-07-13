@@ -4,15 +4,14 @@ import apiRouter from "./routes/apiRouter"
 
 const app = express()
 
-const isProduction = !!+process.env.PROD
+const isProduction = process.env.PROD === "true"
 const origin = isProduction ? [
     "https://тгмт.рф",
-    "https://www.тгмт.рф",
-    "https://tgmt.herokuapp.com",
-    "https://www.tgmt.herokuapp.com"]
+    "https://www.тгмт.рф"]
     : ["http://localhost:3000"]
 
 app
+    .disable('x-powered-by')
     .use(cors({
         origin,
         optionsSuccessStatus: 200,
