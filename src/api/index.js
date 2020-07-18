@@ -179,11 +179,8 @@ export const getStudentRecords = async (month) => {
     const res = await axios.post(`${ url }/api/studentRecords`, {
         query: `{
             getStudentRecords(month: ${ month }) {
-                entity
-                records {
-                    day
-                    record
-                }
+                name
+                records
             }
         }`
     }, { withCredentials: true })
@@ -196,11 +193,8 @@ export const getRecords = async (month, groupId, subjectId, fingerprint) => {
         getRecords(month: ${ month },
                    groupID: "${ groupId }",
                    subjectID: "${ subjectId }") {
-                        entity
-                        records {
-                            day
-                            record
-                        } 
+                        name
+                        records
                    }
         }`,
         fingerprint
@@ -208,32 +202,28 @@ export const getRecords = async (month, groupId, subjectId, fingerprint) => {
     return res.data.data.getRecords
 }
 
-export const sendRecords = async (fingerprint, month, groupId, subjectId, records) => {
+export const sendRecords = async (fingerprint, month, groupId, subjectId, cells) => {
     const res = await axios.post(`${ url }/api/records`, {
         query: `mutation {
                     setRecords(
                             month: ${ month },
                             groupID: "${ groupId }",
                             subjectID: "${ subjectId }",
-                            records: [${ records.map((r) => `
+                            entities: [${ cells.map((cell) => `
                                 {
-                                    student: "${ r.student }",
-                                    records: [${ r.records.map((re) => `
-                                        {
-                                            day: ${ re.day },
-                                            record: "${ re.record }"
-                                        }
-                                    `) }]
+                                    name: "${ cell.name }",
+                                    records: [${
+                                        Object
+                                            .entries(cells[0].records)
+                                            .map(([day, record]) => `["${day}", "${record}"]`)
+                                    }]
                                 }
                             `) }]
                    ) {
-                        entity
-                        records {
-                            day
-                            record
-                        } 
+                        name
+                        records
                    }
-        }`,
+    }`,
         fingerprint
     }, { withCredentials: true })
     return res.data.data.setRecords

@@ -4,7 +4,8 @@ import {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
-    GraphQLBoolean, GraphQLNonNull
+    GraphQLBoolean,
+    GraphQLNonNull
 } from "graphql"
 
 import Group from "./types/group"

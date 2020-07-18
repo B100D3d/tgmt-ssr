@@ -2,7 +2,9 @@ import {
     GraphQLSchema,
     GraphQLObjectType,
     GraphQLString,
-    GraphQLList, GraphQLInputObjectType, GraphQLNonNull, GraphQLInt
+    GraphQLList,
+    GraphQLInputObjectType,
+    GraphQLNonNull
 } from "graphql"
 
 const TeacherEntity = new GraphQLObjectType({

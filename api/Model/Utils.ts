@@ -4,16 +4,8 @@ const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#$
 
 export const range = (size: number, start = 0): Array<number> => [...Array(size).keys()].map(k => k + start)
 
-export const removeNullAndUndefinedProps = (object: Record<string, any>): Record<string, any> => {
-    
-    return Object.keys(object)
-                    .filter(k => object[k] !== undefined && object[k] !== null)
-                    .reduce((a: Record<string, any>, c) => {
-                        a[c] = object[c]
-                        return a
-                    }, {})
-}
 
+export const sortByName = (a: { name: string }, b: { name: string }) => a.name > b.name ? 1 : -1
 
 const generateStr = (length: number): string => {
     let str = ""

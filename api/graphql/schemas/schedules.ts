@@ -5,7 +5,8 @@ import {
     GraphQLInt,
     GraphQLList,
     GraphQLInputObjectType,
-    GraphQLBoolean, GraphQLNonNull
+    GraphQLBoolean,
+    GraphQLNonNull
 } from "graphql"
 
 import Schedule from "./types/schedule"

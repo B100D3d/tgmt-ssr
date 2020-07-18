@@ -106,9 +106,9 @@ export interface RecordsGetData {
 }
 
 export interface RecordsSetData extends RecordsGetData {
-    records: {
-        student: string;
-        records: Array<Record>;
+    entities: {
+        name: string;
+        records: Array<Array<string>>
     }[];
 }
 
@@ -247,13 +247,8 @@ export interface Subject {
 }
 
 export interface Records {
-    entity: string;
-    records: Array<Record>;
-}
-
-export interface Record {
-    day: number;
-    record?: string;
+    name: string;
+    records: { [key: string]: string };
 }
 
 export type MailingType = "All" | "Groups" | "Students" | "Teachers"

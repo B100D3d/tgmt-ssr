@@ -10,10 +10,10 @@ import {
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
 import groupModel from "./MongoModels/groupModel"
-import { generatePassword, generateLogin, generateTeacherID } from "./Utils"
+import { generatePassword, generateLogin, generateTeacherID, sortByName } from "./Utils"
 import teacherModel from "./MongoModels/teacherModel"
 import { sendUserCreatingEmail } from "./Email"
-import subjectModel from "./MongoModels/subjectModel";
+import subjectModel from "./MongoModels/subjectModel"
 
 
 export const getTeachers = async ({ teacherID, teachersID }: TeachersGetData, { res }: ExpressParams): Promise<Array<Teacher>> => {
@@ -46,7 +46,7 @@ export const getTeachers = async ({ teacherID, teachersID }: TeachersGetData, { 
     }
 
     const teachers = teachersDB
-        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .sort(sortByName)
         .map(
         ({ name, email, teacher: { id }}: UserModel) => 
         ({ name, email, id })

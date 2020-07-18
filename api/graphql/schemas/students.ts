@@ -3,7 +3,8 @@ import {
     GraphQLObjectType,
     GraphQLString,
     GraphQLList,
-    GraphQLInputObjectType, GraphQLNonNull, GraphQLInt
+    GraphQLInputObjectType,
+    GraphQLNonNull
 } from "graphql"
 
 import Group from "./types/group"

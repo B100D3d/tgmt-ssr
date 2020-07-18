@@ -3,7 +3,8 @@ import {
     GraphQLObjectType,
     GraphQLString,
     GraphQLList,
-    GraphQLBoolean, GraphQLNonNull, GraphQLInt
+    GraphQLBoolean,
+    GraphQLNonNull
 } from "graphql"
 
 import Subject from "./types/subject"

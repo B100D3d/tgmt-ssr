@@ -1,9 +1,7 @@
-import { 
-    RecordsGetData, 
+import {
     ExpressParams,
-    Records,
+    Records, RecordsGetData,
     RecordsSetData,
-    Record,
     StudentModel,
     SubjectModel
 } from "../types"
@@ -13,12 +11,7 @@ import studentModel from "./MongoModels/studentModel"
 import recordModel from "./MongoModels/recordsModel"
 import subjectModel from "./MongoModels/subjectModel"
 import groupModel from "./MongoModels/groupModel"
-
-const getRecordsArrayFromMap = (records: Map<string, string>): Array<Record> => 
-    Array.from(records.keys()).map((day: string) => ({
-        day: +day,
-        record: records.get(day)
-    }))
+import { sortByName } from "./Utils"
 
 
 export const getStudentRecords = async ({ month }: RecordsGetData, { req }: ExpressParams): Promise<Array<Records>> => {
@@ -34,20 +27,19 @@ export const getStudentRecords = async ({ month }: RecordsGetData, { req }: Expr
 
     const subjects = student.group.subjects.map(({ name }: SubjectModel) => name)
 
-    const records = subjects.map(subject => {
-        const recordsByMonthAndSubject = 
-            student.records.find(record => record.month === month && record.subject.name === subject)
-            || { records: new Map<string, string>() }
-                                
-        const records = { 
-            entity: subject, 
-            records: getRecordsArrayFromMap(recordsByMonthAndSubject.records) 
+    return subjects.map(subject => {
+        const recordsByMonthAndSubject =
+            student
+                .records
+                .find(record => record.month === month && record.subject.name === subject)
+                ?.records
+            || new Map<string, string>()
+
+        return {
+            name: subject,
+            records: Object.fromEntries(recordsByMonthAndSubject)
         }
-
-        return records
     })
-
-    return records
 
 }
 
@@ -67,29 +59,27 @@ export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): 
         return
     }
 
-    const records = groupDB.students
-        .sort((a, b) => a.name > b.name ? 1 : -1)
-        .map(({ name: entity, records: _records }: StudentModel) => {
+    return groupDB.students
+        .sort(sortByName)
+        .map(({ name, records }: StudentModel) => {
             const recordsByMonthAndSubject =
-                _records.find(r => r.month === month && r.subject.equals(subjectDB._id))
-                || { records: new Map<string, string>()}
+                records
+                    .find(r => r.month === month && r.subject.equals(subjectDB._id))
+                    ?.records
+                || new Map<string, string>()
 
-            const records = { 
-                entity, 
-                records: getRecordsArrayFromMap(recordsByMonthAndSubject.records) 
+            return {
+                name,
+                records: Object.fromEntries(recordsByMonthAndSubject)
             }
-
-            return records
         })
-
-    return records
 }
 
 
 export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promise<Array<Records>> => {
     await recordModel.createCollection()
 
-    const { month, subjectID, groupID, records } = args
+    const { month, subjectID, groupID, entities } = args
 
     const subjectDB = await subjectModel.findOne({ id: subjectID }).exec()
 
@@ -100,8 +90,8 @@ export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promi
     const opts = { session }
     
     try {
-        for (const item of records) {
-            const student = await studentModel.findOne({ name: item.student }).exec()
+        for (const entity of entities) {
+            const student = await studentModel.findOne({ name: entity.name }).exec()
     
             let studentRecords = recordsDB.find(records => records.student.equals(student._id))
     
@@ -113,12 +103,12 @@ export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promi
                     records: new Map<string, string>()
                 })
             }
-    
-            item.records.map(record => {
-                record.record 
-                    ? studentRecords.records.set(record.day.toString(), record.record) 
-                    : studentRecords.records.delete(record.day.toString())
-            })
+
+            for (const [day, record] of entity.records) {
+                record
+                    ? studentRecords.records.set(day, record)
+                    : studentRecords.records.delete(day)
+            }
 
             student.records.push(studentRecords._id)
 

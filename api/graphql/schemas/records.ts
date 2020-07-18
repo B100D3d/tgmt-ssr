@@ -4,10 +4,12 @@ import {
     GraphQLString,
     GraphQLInt,
     GraphQLList,
-    GraphQLInputObjectType, GraphQLNonNull
+    GraphQLInputObjectType,
+    GraphQLNonNull
 } from "graphql"
 
 import Record from "./types/record"
+
 
 export const records = new GraphQLSchema({
     query: new GraphQLObjectType({
@@ -52,25 +54,15 @@ export const records = new GraphQLSchema({
                     groupID: {
                         type: new GraphQLNonNull(GraphQLString)
                     },
-                    records: {
+                    entities: {
                         type: new GraphQLList(new GraphQLInputObjectType({
                             name: "InputRecords",
                             fields: () => ({
-                                student: {
+                                name: {
                                     type: new GraphQLNonNull(GraphQLString)
                                 },
                                 records: {
-                                    type: new GraphQLList(new GraphQLInputObjectType({
-                                        name: "InputStudentRecords",
-                                        fields: () => ({
-                                            day: {
-                                                type: new GraphQLNonNull(GraphQLInt)
-                                            },
-                                            record: {
-                                                type: new GraphQLNonNull(GraphQLString)
-                                            }
-                                        })
-                                    }))
+                                    type: new GraphQLList(new GraphQLList(GraphQLString))
                                 }
                             })
                         }))

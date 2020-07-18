@@ -1,29 +1,18 @@
-import { 
-    GraphQLInt,
+import {
     GraphQLString,
     GraphQLObjectType,
-    GraphQLList
-} from "graphql";
+} from "graphql"
+import { GraphQLJSONObject } from "graphql-type-json"
 
 
 export default new GraphQLObjectType({
     name: "Record",
     fields: () => ({
-        entity: {
+        name: {
             type: GraphQLString
         },
         records: {
-            type: new GraphQLList(new GraphQLObjectType({
-                name: "Records",
-                fields: () => ({
-                    day: {
-                        type: GraphQLInt
-                    },
-                    record: {
-                        type: GraphQLString
-                    }
-                })
-            }))
+            type: GraphQLJSONObject
         }
     })
 })

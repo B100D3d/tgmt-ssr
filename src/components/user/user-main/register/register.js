@@ -13,14 +13,7 @@ import ReactDataGrid from "react-data-grid"
 
 const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
 
-const getRows = (records) => records.reduce((acc, curr) => {
-        const recordsObj = curr.records.reduce((acc, curr) => {
-            acc[curr.day] = curr.record
-            return acc
-        }, {})
-        acc.push({ entity: curr.entity, ...recordsObj })
-        return acc
-}, [])
+const getRows = records => records.map(({ name, records }) => ({ name, ...records }))
 
 
 const getDaysCount = (m) => {
@@ -33,7 +26,7 @@ const getColumns = (month, role) => {
     const isEditable = role === "Admin" || role === "Teacher"
     const isStudent = role === "Student"
     return range(getDaysCount(month) + 1, 0).map((i) => {
-        if (i === 0) return { key: "entity", name: isStudent ? "Предмет" : "Студент",
+        if (i === 0) return { key: "name", name: isStudent ? "Предмет" : "Студент",
             resizable: true, width: 150, frozen: true }
         return { key: `${ i }`, name: i, editable: isEditable, resizable: true, width: 50 }
     })
@@ -110,28 +103,24 @@ const Register = () => {
     useEffect(() => setSaveBtnVisibility(changedCells.length), [changedCells])
 
     const onGridRowsUpdated = (data) => {
-        const day = +data.cellKey
-        const updated = data.updated[data.cellKey]
+        const day = data.cellKey
+        const updated = data.updated[day]
         const { toRow, fromRow } = data
         const rowsCount = toRow - fromRow + 1
         const newRows = [...rows]
         const newChangedCells = [...changedCells]
 
         range(rowsCount, fromRow).forEach((i) => {
-            const currCellValue = newRows[i][data.cellKey] ?? ""
+            const currCellValue = rows[i][day] ?? ""
             if(currCellValue !== updated) {
-                const student = rows[i].entity
+                const name = rows[i].name
                 newRows[i] = { ...newRows[i], ...data.updated }
-                const cell =  newChangedCells.find((c) => c.student === student)
-                if (cell) {
-                    const record = cell.records.find((r) => r.day === day)
-                    if (record) {
-                        record.record = updated
-                    } else {
-                        cell.records.push({ day, record: updated })
-                    }
+                const cell =  newChangedCells.find((c) => c.name === name)
+                if(cell) {
+                    cell.records[day] = updated
                 } else {
-                    newChangedCells.push({ student, records: [{ day, record: updated }] })
+                    const records = { [day]: updated }
+                    newChangedCells.push({ name, records })
                 }
             }
         })

@@ -7,12 +7,11 @@ import {
 } from "../types"
 import mongoose from "mongoose"
 import groupModel from "./MongoModels/groupModel"
-import { generateGroupID } from "./Utils"
+import { generateGroupID, sortByName } from "./Utils"
 import studentModel from "./MongoModels/studentModel"
 import scheduleModel from "./MongoModels/scheduleModel"
 import userModel from "./MongoModels/userModel";
 import recordsModel from "./MongoModels/recordsModel"
-
 
 
 export const getGroups = async (): Promise<Array<Group>> => {
@@ -20,7 +19,7 @@ export const getGroups = async (): Promise<Array<Group>> => {
     const groupsDB = await groupModel.find().exec()
 
     const groups = groupsDB
-        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .sort(sortByName)
         .map(
         ({ id, name, year }: GroupModel) =>
         ({ id, name, year })

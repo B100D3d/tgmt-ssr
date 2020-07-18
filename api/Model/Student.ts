@@ -14,7 +14,8 @@ import userModel from "./MongoModels/userModel"
 import {
     generatePassword,
     generateLogin,
-    generateStudentID
+    generateStudentID,
+    sortByName
 } from "./Utils"
 import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
@@ -64,7 +65,7 @@ export const getStudents = async ({ studentID, studentsID, groupsID }: StudentsG
     }
 
     const students = studentsDB
-        .sort((a, b) => a.name > b.name ? 1 : -1)
+        .sort(sortByName)
         .map(
         ({ name, email, student: { id, group: { year, id: groupId, name: groupName }}}: UserModel) => 
         ({ name, email, id, group: { year, id: groupId, name: groupName }})

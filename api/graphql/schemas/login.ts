@@ -1,7 +1,8 @@
 import {
     GraphQLSchema,
     GraphQLObjectType,
-    GraphQLString, GraphQLNonNull, GraphQLInt
+    GraphQLString,
+    GraphQLNonNull
 } from "graphql"
 import User from "./types/user"
 
