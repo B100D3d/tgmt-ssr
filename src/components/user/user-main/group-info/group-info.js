@@ -5,7 +5,7 @@ import { FingerprintContext, UserContext } from "context"
 import { useParams, useHistory } from "react-router-dom"
 import { changeGroup, createGroup } from "api"
 import cogoToast from "cogo-toast"
-import logout from "helpers/logout";
+import logout from "utils/logout"
 
 
 const GroupInfo = () => {

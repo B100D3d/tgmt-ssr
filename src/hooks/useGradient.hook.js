@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useContext } from "react"
 
 import { UserMenuOpenContext } from "context"
+import { registerCSSColorProperty } from "utils"
 
 
 const CSS_GRADIENTS = [{
@@ -375,16 +376,6 @@ const getDefaultGradient = gradient => {
     return { ...defGradient, deg }
 }
 
-const hasBrowserSupport =
-    typeof window !== "undefined" ?
-    typeof window.CSS.registerProperty === "function" :
-    false
-
-const prefersReducedMotion =
-    typeof window === "undefined" ?
-    true :
-    window.matchMedia("(prefers-reduced-motion: no-preference)")
-
 const useGradient = () => {
 
     const [isHover, setHover] = useState(false)
@@ -392,20 +383,9 @@ const useGradient = () => {
     const gradient = useRef(getCSSGradient())
     const defGradient = useRef(getDefaultGradient(gradient.current))
 
-    const isEnabled = hasBrowserSupport && prefersReducedMotion.matches
-
     useEffect(() => {
-        if (isEnabled) {
-            for (const name in noDeg(gradient.current)) {
-                try {
-                    CSS.registerProperty({
-                        name,
-                        initialValue,
-                        syntax: "<color>",
-                        inherits: false,
-                    })
-                } catch (err) {}
-            }
+        for (const name in noDeg(gradient.current)) {
+            registerCSSColorProperty(name, initialValue)
         }
     }, [gradient.current])
 

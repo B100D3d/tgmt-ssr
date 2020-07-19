@@ -6,7 +6,7 @@ import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
 import { Link, useLocation, useHistory } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group"
-import logout from "helpers/logout";
+import logout from "utils/logout";
 
 
 const UsersList = ({ type }) => {

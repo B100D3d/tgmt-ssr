@@ -7,11 +7,10 @@ import useWindowSize from "hooks/useWindowSize.hook"
 import { getRecords, getStudentRecords, sendRecords } from "api"
 import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
-import logout from "helpers/logout"
+import logout from "utils/logout"
+import { range } from "utils"
 
 import ReactDataGrid from "react-data-grid"
-
-const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
 
 const getRows = records => records.map(({ name, records }) => ({ name, ...records }))
 

@@ -5,7 +5,7 @@ import { FingerprintContext, UserContext } from "context"
 import { changeUserInfo, clearFingerprint } from "api"
 import cogoToast from "cogo-toast";
 import { useHistory } from "react-router-dom"
-import logout from "helpers/logout"
+import logout from "utils/logout"
 
 
 const Settings = () => {

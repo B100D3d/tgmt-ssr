@@ -4,6 +4,8 @@
     height: 30px
     margin: 0 10px
     outline: none
+    border: 1px solid white
+    border-radius: 20px
 
     .switch-title
         color: white
@@ -30,86 +32,63 @@
             &:checked
                 z-index: 0
 
-        &#third-pos
+        &#third-switch
             display: none
 
         &:checked
             & + input
                 z-index: 2
 
-                & + .checkbox-area .checkbox-circle
-                    left: 50%
+                & + .switch-checkbox
+                    transform: translateX(100%)
 
                     &::before
-                        content: attr(data-val1)
+                        content: attr(data-secondName)
 
-    .checkbox-area
-        position: absolute
-        left: 0
-        top: 0
-        width: 100%
-        height: 100%
-        z-index: -1
-        border: 1px solid white
+    .switch-checkbox
+        display: flex
+        justify-content: center
+        align-items: center
+        background: linear-gradient(160deg, var(--switch-color-0), var(--switch-color-1) 130%)
         border-radius: 20px
+        width: 50%
+        height: 100%
+        transition: transform 0.5s ease, --switch-color-0 0.8s linear, --switch-color-1 0.8s linear, background 0.8s ease
 
-        .checkbox-circle
-            position: absolute
-            left: 0
-            top: 0
-            background: linear-gradient(160deg, var(--switch-color-0), var(--switch-color-1) 130%)
-            border-radius: 20px
-            width: 50%
-            height: 100%
-            transition: left 0.5s ease, --switch-color-0 0.8s linear, --switch-color-1 0.8s linear, background 0.8s ease
-
-            &::before
-                content: attr(data-val0)
-                position: absolute
-                color: white
-                left: 23px
-                top: 4px
+        &::before
+            content: attr(data-firstName)
+            color: white
 
     &.admin
         input   
-            &#third-pos
+            &#third-switch
                 display: block
 
             &:checked
-                & + .checkbox-area .checkbox-circle
-                    left: 66%
+                & + .switch-checkbox
+                    transform: translateX(200%)
 
                     &::before
-                        content: "Все"
+                        content: attr(data-thirdName)
 
-                & + input + .checkbox-area .checkbox-circle
-                    left: 33%
+                & + input + .switch-checkbox
+                    transform: translateX(100%)
 
                     &::before
-                        content: attr(data-val1)
+                        content: attr(data-secondName)
 
-        .checkbox-area .checkbox-circle
-            width: 33%
-
-            &::before
-                left: 11px
-                top: 4px
+        .switch-checkbox
+            width: 33.3333333333%
 
 @media (max-width: 350px)
     .switch
         width: 120px
 
-        .checkbox-area
-            .checkbox-circle
-                &::before
-                    top: 5px
-                    left: 17px
-                    font-size: 14px
+        .switch-checkbox
+            &::before
+                font-size: 14px
 
         &.admin
-            .checkbox-area
-                .checkbox-circle
-                    &::before
-                        top: 5px
-                        left: 9px
-                        font-size: 12px
+            .switch-checkbox
+                &::before
+                    font-size: 12px

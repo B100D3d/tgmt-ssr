@@ -7,7 +7,7 @@ import { CSSTransition } from "react-transition-group"
 import { getStudents, getTeachers, mailing } from "api"
 import cogoToast from "cogo-toast"
 import Checkbox from "./checkbox/checkbox"
-import logout from "helpers/logout"
+import logout from "utils/logout"
 
 const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 

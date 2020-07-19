@@ -19,7 +19,7 @@ server.listen(port, error => {
 
   db.on("error", err => {
 	console.log(`Mongodb connection has error: ${err}`)
-})
+  })
 })
 
 if (module.hot) {

@@ -1,23 +1,6 @@
-import { useState, useEffect, useRef } from "react"
-
-function generateId(len = 4) {
-    const alfs = "abcdefghijklmnopqrstuvwxyz"
-    let id = "";
-    for (let i = 0; i < len; i++) {
-        id += alfs[Math.floor(Math.random() * alfs.length)]
-    }
-    return id
-}
-
-function useIncremetingNumber(interval) {
-    const [count, setCount] = useState(0)
-
-    useEffect(() => {
-        const timer = setTimeout(() => setCount(count + 1), interval)
-        return () => clearTimeout(timer)
-    }, [count, interval])
-    return count
-}
+import { useEffect, useMemo, useState } from "react"
+import { generateId, range, registerCSSColorProperty } from "utils"
+import useIncrementingNumber from "./useIncrementingNumber"
 
 const rainbowColors = [
     "#B326FF", // левый цвет алисы
@@ -27,51 +10,31 @@ const rainbowColors = [
     "hsl(325deg, 100%, 48%)", // pink
     "hsl(177deg, 100%, 35%)", // aqua
     "hsl(230deg, 100%, 45%)", // blue
-    
 ]
+
+const VISIBLE_COLORS_COUNT = 3
 
 const paletteSize = rainbowColors.length
 
-const range = [0, 1, 2]
-
-const hasBrowserSupport =
-  typeof window !== "undefined"
-    ? typeof window.CSS.registerProperty === "function"
-    : false
-
-
 const getColorName = (id, index) => `--rainbow-color-${id}-${index}`
-
 
 const useRainbow = (interval) => {
 
-    const prefersReducedMotion =
-    typeof window === "undefined"
-      ? true
-      : window.matchMedia("(prefers-reduced-motion: no-preference)")
-
-    const isEnabled = hasBrowserSupport && prefersReducedMotion.matches
-
-    const { current: uniqueId } = useRef(generateId()) // => { current: 'asdf' }
+    const uniqueId = useMemo(generateId, [])
+    const [isEnabled, setEnabled] = useState(false)
 
     useEffect(() => {
-        if (!isEnabled) return
-        range.map(index => {
+        range(VISIBLE_COLORS_COUNT).forEach(index => {
             const name = getColorName(uniqueId, index)
             const initialValue = rainbowColors[index]
-
-            CSS.registerProperty({
-                name,
-                initialValue,
-                syntax: "<color>",
-                inherits: false,
-            })
+            const isEnabled = registerCSSColorProperty(name, initialValue)
+            setEnabled(isEnabled)
         })
-    }, [isEnabled])
+    }, [])
 
-    const intervalCount = useIncremetingNumber(interval)
+    const intervalCount = useIncrementingNumber(interval)
 
-    return range.reduce((acc, index) => {
+    return range(VISIBLE_COLORS_COUNT).reduce((acc, index) => {
         const eIntervalCount = isEnabled ? intervalCount : 0
         const name = getColorName(uniqueId, index)
         const value = rainbowColors[(eIntervalCount + index) % paletteSize]

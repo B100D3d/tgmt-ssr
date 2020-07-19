@@ -6,7 +6,7 @@ import { FingerprintContext, UserContext } from "context"
 import { Link, useParams, useLocation, useHistory } from "react-router-dom"
 import { deleteGroup, getSubjects } from "api"
 import cogoToast from "cogo-toast"
-import logout from "helpers/logout"
+import logout from "utils/logout"
 
 const noDeg = ({ deg, ...rest }) => rest
 
@@ -18,7 +18,6 @@ const getCSSProperties = (gradient) => {
     }
     return colors
 }
-
 
 const Selector = ({ type, title, deletable }) => {
     const history = useHistory()

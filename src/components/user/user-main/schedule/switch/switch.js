@@ -1,89 +1,64 @@
-import React, { useEffect, useState, useRef, useContext, useMemo } from "react"
+import React, { useEffect, useState, useRef, useMemo } from "react"
+import { range, generateId, registerCSSColorProperty } from "utils"
 
 import "./switch.sass"
-import { WeekContext } from "context"
-
 
 const COLOR_NAME = `--switch-color-`
 const COLORS = ["#B326FF", "#5F26FF", "#4106c9", "#29B6F6"]
 
-const getNewState = (value, title) => {
-    if (title === "Неделя") {
-        const v = value === 2 ? null : !value
-        return { even: v }
-    } else {
-        const v = value === 2 ? null : value + 1
-        return { subgroup: v }
-    }
-}
-
-const generateId = (len = 5) => {
-    const alfs = "abcdefghijklmnopqrstuvwxyz1234567890"
-    let id = ""
-    for (let i = 0; i < len; i++) {
-        id += alfs[Math.floor(Math.random() * alfs.length)]
-    }
-    return id
-}
-
-const Switch = ({ firstName, secondName, title, initValue, isAdmin, onChange }) => {
-    const { even } = useContext(WeekContext)
-    const [switchState, setSwitch] = useState(initValue)
-    const initColors = !even && title === "Неделя" ? COLORS.slice(1, 3) : COLORS.slice(0, 2)
+const Switch = ({ names, title, values, initValue, isAdmin, onChange }) => {
+    const checkedIndex = useMemo(() => values.indexOf(initValue), [values, initValue])
+    const initColors = useMemo(() =>
+        checkedIndex === 0 ? COLORS.slice(0, 2)
+        : checkedIndex === 1 ? COLORS.slice(1, 3)
+        : COLORS.slice(2, 4)
+    , [checkedIndex])
     const [colors, setColors] = useState(initColors)
     const checkbox = useRef()
     const id = useMemo(generateId, [])
 
-    const adminClass = isAdmin ? "admin" : ""
+    const adminClass = useMemo(() => isAdmin ? "admin" : "", [isAdmin])
 
     useEffect(() => {
-        [0, 1].map(i => {
+        range(2).forEach(i => {
             const name = `${ COLOR_NAME }${ i }`
             const initialValue = COLORS[i]
-            try {
-                CSS.registerProperty({
-                    name,
-                    initialValue,
-                    syntax: '<color>',
-                    inherits: false
-                })
-            } catch(err) {}
+            registerCSSColorProperty(name, initialValue)
         })
-    }, [])
-
-    useEffect(() => {
-        checkbox.current.setAttribute("data-val0", firstName)
-        checkbox.current.setAttribute("data-val1", secondName)
-    }, [])
-
-    useEffect(() => {
-        isAdmin && onChange(switchState)
     }, [])
 
     const handleClick = () => {
         const el = document.querySelector(`input[name = "check${ id }"]:checked`)
-        const value = +el.value
+        const value = Number(el.value)
 
-        setColors([COLORS[value], COLORS[value+1]])
+        const lastFirstColorIndex = isAdmin ? 3 : 2
+        const newFirstColorIndex = (COLORS.indexOf(colors[0]) + 1) % lastFirstColorIndex
+        setColors([
+            COLORS[newFirstColorIndex],
+            COLORS[newFirstColorIndex + 1]
+        ])
 
-        const newState = { ...switchState, ...getNewState(value, title) }
-        setSwitch(newState)
-        onChange(newState)
+        onChange(values[value])
     }
 
     return (
         <div className={`switch ${ adminClass }`} >
             <input type="radio" name={`check${ id }`} value="0" onClick={ handleClick }
-                   defaultChecked={ even || title === "Подгруппа" } />
+                   defaultChecked={ checkedIndex === 0 } />
             <input type="radio" name={`check${ id }`} value="1" onClick={ handleClick }
-                   defaultChecked={ !even && title === "Неделя" }/>
-            <input type="radio" name={`check${ id }`} id="third-pos" value="2" onClick={ handleClick } />
-            <div className="checkbox-area">
-                <div className="checkbox-circle" ref={ checkbox } style={{
+                   defaultChecked={ checkedIndex === 1 }/>
+            <input type="radio" name={`check${ id }`} value="2" onClick={ handleClick }
+                   id="third-switch" />
+            <div className="switch-checkbox"
+                 ref={ checkbox }
+                 data-firstName={names[0]}
+                 data-secondName={names[1]}
+                 data-thirdName={names[2]}
+                 style={{
                     "--switch-color-0": colors[0],
                     "--switch-color-1": colors[1]
-                }} />
-            </div>
+                 }}
+            />
             <span className="switch-title">{ title }</span>
         </div>
     )

@@ -6,7 +6,7 @@ import "./user-info.sass"
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
 import { changeTeacher, changeStudent, createStudent, createTeacher, getStudent, getTeacher } from "api"
-import logout from "helpers/logout"
+import logout from "utils/logout"
 
 const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 

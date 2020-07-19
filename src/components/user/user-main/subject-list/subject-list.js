@@ -6,7 +6,7 @@ import { CSSTransition, TransitionGroup } from "react-transition-group"
 import { FingerprintContext, UserContext } from "context"
 import { deleteSubject, getSubjects } from "api"
 import cogoToast from "cogo-toast"
-import logout from "helpers/logout"
+import logout from "utils/logout"
 
 
 const SubjectList = () => {
