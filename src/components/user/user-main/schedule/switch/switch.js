@@ -51,9 +51,9 @@ const Switch = ({ names, title, values, initValue, isAdmin, onChange }) => {
                    id="third-switch" />
             <div className="switch-checkbox"
                  ref={ checkbox }
-                 data-firstName={names[0]}
-                 data-secondName={names[1]}
-                 data-thirdName={names[2]}
+                 data-first-name={names[0]}
+                 data-second-name={names[1]}
+                 data-third-name={names[2]}
                  style={{
                     "--switch-color-0": colors[0],
                     "--switch-color-1": colors[1]

@@ -4,13 +4,14 @@ import SelectEditor from "./select-editor"
 import ReactDataGrid from "react-data-grid"
 import { getSchedule, getSubjects, sendSchedule } from "api"
 import { UserMenuOpenContext, UserContext, FingerprintContext } from "context"
+import { range } from "utils"
 import useWindowSize from "hooks/useWindowSize.hook"
 
 import cogoToast from "cogo-toast"
 import logout from "utils/logout"
 
 import "./schedule.sass"
-import ScheduleSwitches from "./schedule-switches/schedule-switches";
+import ScheduleSwitches from "./schedule-switches/schedule-switches"
 
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",
@@ -33,9 +34,11 @@ const DEFAULT_ROWS = [
 
 const getRows = (schedule) => {
     return schedule.reduce((acc, curr) => {
+        const weekday = curr.weekday + 1
+        const currClassNumber = curr.classNumber + 1
 
-        const scheduleItem = acc.find(({ classNumber }) => classNumber === curr.classNumber)
-        scheduleItem[curr.weekday] = `${ curr.subject.name } (${ curr.subject.teacher })`
+        const scheduleItem = acc.find(({ classNumber }) => classNumber === currClassNumber)
+        scheduleItem[weekday] = `${ curr.subject.name } (${ curr.subject.teacher })`
 
         return acc
     }, DEFAULT_ROWS.map(r => ({ ...r })))
@@ -58,17 +61,18 @@ const Schedule = () => {
     const [changedCells, setChangedCells] = useState([])
     const [width, setWidth] = useState()
     const [schedule, setSchedule] = useState(user.schedule)
+    const [switchesState, setSwitches] = useState()
     const switchTimeout = useRef()
 
     const windowSize = useWindowSize()
 
     const [subjectTypes, setSubjectTypes] = useState()
 
-    const handleSchedule = (switchState) => {
+    const handleSchedule = () => {
         clearTimeout(switchTimeout.current)
         switchTimeout.current = setTimeout(() => {
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-            getSchedule(group, switchState)
+            getSchedule(group, switchesState)
                 .then((s) => {
                     hide()
                     cogoToast.success("Данные успешно загружены.", { position: "top-right" })
@@ -84,6 +88,10 @@ const Schedule = () => {
                 })
         }, 500)
     }
+
+    useEffect(() => {
+        switchesState && handleSchedule()
+    }, [switchesState])
 
     useEffect(() => {
         if (isAdmin) {
@@ -103,7 +111,9 @@ const Schedule = () => {
         }
     }, [isAdmin])
 
-    useEffect(() => schedule && setRows(getRows(schedule)), [schedule])
+    useEffect(() => {
+        schedule && setRows(getRows(schedule))
+    }, [schedule])
 
     useEffect(() => {
         subjectTypes && setColumns(columns.map((c, i) => i === 0 ? c
@@ -132,21 +142,21 @@ const Schedule = () => {
 
     const onGridRowsUpdated = (data) => {
         if(Object.values(data.updated)[0] !== undefined) {
-            const range = (size, start) => [...Array(size).keys()].map((key) => key + start)
-            const weekday = +data.cellKey
+            const weekday = data.cellKey - 1
             let { toRow, fromRow } = data
             const rowsCount = toRow - fromRow + 1
-            const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday]) || { key: "" }
+            const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday + 1]) || { key: "" }
             const newRows = [...rows]
             const newChangedCells = [...changedCells]
 
             range(rowsCount, fromRow).forEach((i) => {
                 newRows[i] = {...newRows[i], ...data.updated }
-                const existedChangedCell = newChangedCells.find((c) => c.weekday === weekday && c.classNumber === i + 1)
-                if (existedChangedCell) {
-                    existedChangedCell.subjectID = subject.key
+                const classNumber = i
+                const cell = newChangedCells.find((c) => c.weekday === weekday && c.classNumber === classNumber)
+                if (cell) {
+                    cell.subjectID = subject.key
                 } else {
-                    newChangedCells.push({ weekday, classNumber: i + 1, subjectID: subject.key })
+                    newChangedCells.push({ weekday, classNumber, subjectID: subject.key })
                 }
             })
             setRows(newRows)
@@ -157,7 +167,7 @@ const Schedule = () => {
     const handleSave = () => {
         document.querySelector(".save-button").disabled = true
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-        sendSchedule(fingerprint, group, switchState, changedCells)
+        sendSchedule(fingerprint, group, switchesState, changedCells)
             .then((s) => {
                 document.querySelector(".save-button").disabled = false
                 hide()
@@ -179,7 +189,7 @@ const Schedule = () => {
         <div className="schedule-container">
             <h1>Расписание</h1>
             <div className="buttons-container">
-                <ScheduleSwitches onChange={ handleSchedule }
+                <ScheduleSwitches onChange={ setSwitches }
                                   firstExecution={ !isStudent }
                                   isAdmin={ isAdmin }
                 />

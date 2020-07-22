@@ -43,7 +43,7 @@
                     transform: translateX(100%)
 
                     &::before
-                        content: attr(data-secondName)
+                        content: attr(data-second-name)
 
     .switch-checkbox
         display: flex
@@ -56,7 +56,7 @@
         transition: transform 0.5s ease, --switch-color-0 0.8s linear, --switch-color-1 0.8s linear, background 0.8s ease
 
         &::before
-            content: attr(data-firstName)
+            content: attr(data-first-name)
             color: white
 
     &.admin
@@ -69,13 +69,13 @@
                     transform: translateX(200%)
 
                     &::before
-                        content: attr(data-thirdName)
+                        content: attr(data-third-name)
 
                 & + input + .switch-checkbox
                     transform: translateX(100%)
 
                     &::before
-                        content: attr(data-secondName)
+                        content: attr(data-second-name)
 
         .switch-checkbox
             width: 33.3333333333%
