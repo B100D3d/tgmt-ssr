@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from "react"
+import React, { useContext, useEffect, useRef, useState } from "react"
 import { useParams, useHistory } from "react-router-dom"
 
 import "./register.sass"
@@ -13,7 +13,6 @@ import { range } from "utils"
 import ReactDataGrid from "react-data-grid"
 
 const getRows = records => records.map(({ name, records }) => ({ name, ...records }))
-
 
 const getDaysCount = (m) => {
     const year = new Date().getFullYear()

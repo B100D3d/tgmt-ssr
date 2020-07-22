@@ -1,40 +1,25 @@
-import { 
-    ScheduleGetData, 
-    Schedule, 
+import {
+    ScheduleGetData,
+    Schedule,
     ScheduleModel,
     ScheduleCreatingData,
     ExpressParams,
-    GroupModel,
-    SubjectModel
+    GroupModel, SubjectModel
 } from "../types"
-import mongoose, { Schema, ClientSession } from "mongoose"
+import mongoose from "mongoose"
 import groupModel from "./MongoModels/groupModel"
 import subjectModel from "./MongoModels/subjectModel"
-import scheduleModel from "./MongoModels/scheduleModel"
+import scheduleModel, { CLASS_NUMBERS } from "./MongoModels/scheduleModel"
+import subject from "../graphql/schemas/types/subject";
+import {range} from "./Utils";
 
 const isNull = (v: any) => v === null
 
-const SCHEDULE_DATA: Array<{ even: boolean; subgroup: number }> = [
-    {
-        even: true,
-        subgroup: 1
-    },
-    {
-        even: true,
-        subgroup: 2
-    },
-    {
-        even: false,
-        subgroup: 1
-    },
-    {
-        even: false,
-        subgroup: 2
-    }
-]
 
-
-export const getSchedule = async (args: ScheduleGetData, { res }: ExpressParams): Promise<Array<Schedule>> => {
+export const getSchedule = async (
+    args: ScheduleGetData,
+    { res }: ExpressParams
+): Promise<Array<Schedule>> => {
     const { groupID: id, even, subgroup } = args
 
     const groupDB = await groupModel
@@ -42,7 +27,8 @@ export const getSchedule = async (args: ScheduleGetData, { res }: ExpressParams)
                             .populate({
                                 path: "schedule",
                                 populate: {
-                                    path: "subject",
+                                    path: "weekdays",
+                                    model: "Subject",
                                     populate: {
                                         path: "teacher"
                                     }
@@ -55,93 +41,42 @@ export const getSchedule = async (args: ScheduleGetData, { res }: ExpressParams)
         return
     }
 
-
-    const schedule = groupDB.schedule
+    console.time("get schedule")
+    const schedules = groupDB
+        .schedule
         .filter(({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
                                                                 : (isNull(even)) ? s === subgroup
                                                                 : (isNull(subgroup)) ? e === even
                                                                 : s === subgroup && e === even
         )
-        .map(
-            ({ weekday, classNumber, subject: { id, name, teacher: { name: teacherName }}}: ScheduleModel) =>
-            ({ weekday, classNumber, subject: { id, name, teacher: teacherName }})
-        )
-                    
+        .map(({ weekdays }: ScheduleModel) => weekdays)
+
+
+    const schedule: Array<Schedule> = []
+    schedules.forEach(weekdays => {
+        weekdays.forEach((classNumbers, weekday) => {
+            classNumbers.forEach(
+                (subject, classNumber) =>
+                {
+                    if(subject) {
+                        const { id, name, teacher: { name: teacher } } = subject
+                        schedule.push({
+                            weekday,
+                            classNumber,
+                            subject: { id, name, teacher }
+                        })
+                    }
+                })
+        })
+    })
+    console.timeEnd("get schedule")
     return schedule
 }
 
-const deleteUnusedSubjects = async (subjectsId: Array<Schema.Types.ObjectId & SubjectModel>, group: GroupModel): Promise<void> => {
-    for(const id of subjectsId) {
-        const scheduleForSubject = await scheduleModel.findOne({ group: group._id, subject: id }).exec()
-        if (!scheduleForSubject) {
-            group.subjects.pull(id)
-        }
-    }
-}
-
-const createSchedule = async (
-    schedules: ScheduleModel[],
-    group: GroupModel,
-    subject: SubjectModel,
-    weekday: number,
-    classNumber: number, 
-    scheduleData: Array<{ even: boolean; subgroup: number }>, 
-	scheduleLength: number,
-	opts: Record<string, ClientSession>
-    ): Promise<void> => {
-
-    const existingSchedule = schedules.filter(
-        ({ weekday: w, classNumber: c }: ScheduleModel) => (w === weekday && c === classNumber)
-    )
-
-    const subjectsIdToFind = Array.from(new Set(existingSchedule.map(s => s.subject._id)))
-    const defaultData = { subject: subject._id }
-
-    while(existingSchedule.length < scheduleLength) {
-        const schedule = new scheduleModel({
-            classNumber,
-            weekday,
-            group
-        })
-        existingSchedule.push(schedule)
-        group.schedule.addToSet(schedule._id)
-        await schedule.save(opts)
-    }
-
-    for (const [i, schedule] of existingSchedule.entries()) {
-        await scheduleModel.updateOne({ _id: schedule._id }, { ...defaultData, ...scheduleData[i] }, opts).exec()
-    }
-
-    await deleteUnusedSubjects(subjectsIdToFind, group)
-    
-}
-
-const deleteSchedule = async (
-	schedules: ScheduleModel[],
-	weekday: number,
-	classNumber: number,
-	group: GroupModel, 
-	opts: Record<string, ClientSession>
-	): Promise<void> => {
-
-    const existingSchedule = schedules.filter(
-        ({ weekday: w, classNumber: c }: ScheduleModel) => (w === weekday && c === classNumber)
-    )
-
-    if(existingSchedule.length) {
-        const subjectsIdToFind = Array.from(new Set(existingSchedule.map(s => s.subject._id)))
-
-        for (const schedule of existingSchedule) {
-            group.schedule.pull({ _id: schedule._id })
-            await scheduleModel.deleteOne({ _id: schedule._id }, opts)
-        }
-
-        await deleteUnusedSubjects(subjectsIdToFind, group)
-    }
-}
-
-
-export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressParams): Promise<Array<Schedule>> => {
+export const setSchedule = async (
+    args: ScheduleCreatingData,
+    { res, req }: ExpressParams
+): Promise<Array<Schedule>> => {
     await scheduleModel.createCollection()
 
     const { groupID, even, subgroup, schedule } = args
@@ -153,59 +88,70 @@ export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressPa
         }
     }).exec()
 
-    const schedules = group.schedule.filter(
-        ({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
-                                                    : (isNull(even)) ? s === subgroup
-                                                    : (isNull(subgroup)) ? e === even
+    const scheduleDB = group.schedule.filter(
+        ({ even: e, subgroup: s }: ScheduleModel) => isNull(even) && isNull(subgroup) ? true
+                                                    : isNull(even) ? s === subgroup
+                                                    : isNull(subgroup) ? e === even
                                                     : s === subgroup && e === even
     )
 
-    const scheduleData = (isNull(even) && isNull(subgroup)) ? SCHEDULE_DATA
-                            : (isNull(even)) ? SCHEDULE_DATA.filter(val => val.subgroup === subgroup)
-                            : (isNull(subgroup)) ? SCHEDULE_DATA.filter(val => val.even === even)
-                            : SCHEDULE_DATA.filter(val => (val.even === even && val.subgroup === subgroup))
-
-    const scheduleLength =  (isNull(even) && isNull(subgroup)) ?  4
-                          : (isNull(even) || isNull(subgroup)) ?  2
-                          :                                       1
+    const subjectsIdsToDelete: Set<mongoose.Schema.Types.ObjectId> = new Set()
     
     const session = await mongoose.startSession()
     session.startTransaction()
 	const opts = { session }
-	
+
 	try {
-		for (const item of schedule) {
+        console.time("get subjects")
+        const subjectsId = Array.from(new Set(
+            schedule
+                .filter(({ subjectID }) => subjectID !== "")
+                .map(({ subjectID }) => subjectID)))
+        let subjects: Record<string, SubjectModel> = {}
+        for (const id of subjectsId) {
+            subjects[id] = await subjectModel.findOne({ id }).exec()
+        }
+        console.timeEnd("get subjects")
+        console.time("setting schedule")
+		for (const scheduleItem of schedule) {
 
-			const { subjectID, weekday, classNumber } = item
-	
+			const { subjectID, weekday, classNumber } = scheduleItem
+
 			if(subjectID) {
-				const subject = await subjectModel.findOne({ id: subjectID }).exec()
+                console.time("get subject")
+				const subject = subjects[subjectID]
 				group.subjects.addToSet(subject._id)
-
-				await createSchedule(schedules, group, subject, weekday, classNumber, scheduleData, scheduleLength, opts)
+                console.timeEnd("get subject")
+                console.time("add schedule item")
+				scheduleDB.forEach(({ weekdays }) => {
+				    if(weekdays[weekday][classNumber]) {
+				        subjectsIdsToDelete.add(weekdays[weekday][classNumber])
+                    }
+                    weekdays[weekday][classNumber] = subject._id
+                })
+                console.timeEnd("add schedule item")
 			} else {
-                await deleteSchedule(schedules, weekday, classNumber, group, opts)
+                console.time("delete schedule item")
+			    scheduleDB.forEach(({ weekdays }) => {
+                    if(weekdays[weekday][classNumber]) {
+                        subjectsIdsToDelete.add(weekdays[weekday][classNumber])
+                    }
+                    weekdays[weekday][classNumber] = null
+			    })
+                console.timeEnd("delete schedule item")
 			}
 		}
-	
+
+		deleteUnusedSubjects(group, scheduleDB, subjectsIdsToDelete)
+        console.timeEnd("setting schedule")
+        console.time("save in database")
+        for (const schedule of scheduleDB) {
+            await scheduleModel.updateOne({ _id: schedule._id }, schedule, opts )
+        }
 		await group.save(opts)
 		await session.commitTransaction()
-	
-		const scheduleDB = await scheduleModel
-								.find({ group: group._id })
-								.populate({ path: "subject", populate: { path: "teacher" }})
-								.exec()
-
-		return scheduleDB
-					.filter(({ even: e, subgroup: s }: ScheduleModel) => (isNull(even) && isNull(subgroup)) ? true
-																			: (isNull(even)) ? s === subgroup
-																			: (isNull(subgroup)) ? e === even
-																			: s === subgroup && e === even
-					)
-					.map(
-						({ weekday, classNumber, subject: { id, name, teacher: { name: teacherName }}}: ScheduleModel) =>
-						({ weekday, classNumber, subject: { id, name, teacher: teacherName }})
-					)
+        console.timeEnd("save in database")
+		return getSchedule({ groupID, even, subgroup }, { res, req })
 	} catch(err) {
 		console.log(err)
 		await session.abortTransaction()
@@ -213,5 +159,28 @@ export const setSchedule = async (args: ScheduleCreatingData, { res }: ExpressPa
 		res.status(500)
 		return
 	}
-    
 }
+
+const deleteUnusedSubjects = (
+    group: GroupModel,
+    schedules: Array<ScheduleModel>,
+    deletedSubjects: Set<mongoose.Schema.Types.ObjectId>
+): void => {
+    console.time("deleteSubjects")
+    schedules.forEach(({ weekdays }) => {
+        weekdays.forEach(weekday => {
+            weekday.forEach(subject => {
+                subject && deletedSubjects.delete(subject._id)
+            })
+        })
+    })
+    deletedSubjects.forEach(id => group.subjects.pull(id))
+    console.timeEnd("deleteSubjects")
+}
+
+export const getDefaultSchedule = (group: GroupModel) =>
+    range(4).map(i => new scheduleModel({
+        group,
+        even: i % 2,
+        subgroup: i < 2 ? 1 : 2
+    }))

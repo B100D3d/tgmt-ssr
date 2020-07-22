@@ -191,12 +191,10 @@ export interface GroupModel extends Document {
 }
 
 export interface ScheduleModel extends Document {
-    classNumber: number;
-    weekday: number;
-    even?: boolean;
-    subgroup?: number;
-    subject: Schema.Types.ObjectId & SubjectModel;
     group: Schema.Types.ObjectId & GroupModel;
+    even: boolean;
+    subgroup: number;
+    weekdays: Array<Array<Schema.Types.ObjectId & SubjectModel>>
 }
 
 export interface Admin {

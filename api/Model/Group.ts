@@ -12,6 +12,7 @@ import studentModel from "./MongoModels/studentModel"
 import scheduleModel from "./MongoModels/scheduleModel"
 import userModel from "./MongoModels/userModel";
 import recordsModel from "./MongoModels/recordsModel"
+import { getDefaultSchedule } from "./Schedule";
 
 
 export const getGroups = async (): Promise<Array<Group>> => {
@@ -36,15 +37,20 @@ export const createGroup = async ({ name, year }: GroupCreatingData, { res }: Ex
 
     const groupData = { id, name, year }
     const group = new groupModel(groupData)
+    const schedule = getDefaultSchedule(group)
 
     const session = await mongoose.startSession()
     session.startTransaction()
     const opts = { session }
     try {
+        for (const s of schedule) {
+            group.schedule.addToSet(s._id)
+            await s.save(opts)
+        }
         await group.save(opts)
         await session.commitTransaction()
-        return groupData
 
+        return groupData
     } catch (err) {
         console.log(`Group didn't saved: \n ${err}`)
         await session.abortTransaction()

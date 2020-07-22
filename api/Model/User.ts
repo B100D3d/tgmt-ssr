@@ -19,14 +19,14 @@ import { getTeacherData } from "./Teacher"
 
 const DEFAULT_OPTIONS = { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }
 
-const getUserData = (user: UserModel): Promise<Admin | Teacher | Student> => {
+const getUserData = (user: UserModel, ex: ExpressParams): Promise<Admin | Teacher | Student> => {
     const USER_DATA_FUNC: {[key: string]: Function} = {
         "Admin": getAdminData,
         "Student": getStudentData,
         "Teacher": getTeacherData
     }
 
-    return USER_DATA_FUNC[user.role](user)
+    return USER_DATA_FUNC[user.role](user, ex)
 }
 
 
@@ -39,7 +39,7 @@ export const auth = async (_: any, { req, res }: ExpressParams): Promise<Admin |
         const token = user.generateJWT()
         res.cookie("token", token, options)
 
-        return getUserData(user);
+        return getUserData(user, { req, res });
 
     } catch (err) {
         console.log(err)
@@ -89,7 +89,7 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
         const token = user.generateJWT()
         res.cookie("token", token, options)
 
-        return getUserData(user)
+        return getUserData(user, { req, res })
 
     } catch (err) {
         console.log(err)
