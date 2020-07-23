@@ -3,16 +3,18 @@ import {
     GroupModel,
     GroupCreatingData,
     ExpressParams,
-    CreatedGroup, GroupID, GroupChangingData
+    CreatedGroup,
+    GroupID,
+    GroupChangingData
 } from "../types"
 import mongoose from "mongoose"
 import groupModel from "./MongoModels/groupModel"
 import { generateGroupID, sortByName } from "./Utils"
 import studentModel from "./MongoModels/studentModel"
 import scheduleModel from "./MongoModels/scheduleModel"
-import userModel from "./MongoModels/userModel";
+import userModel from "./MongoModels/userModel"
 import recordsModel from "./MongoModels/recordsModel"
-import { getDefaultSchedule } from "./Schedule";
+import { getDefaultSchedule } from "./Schedule"
 
 
 export const getGroups = async (): Promise<Array<Group>> => {

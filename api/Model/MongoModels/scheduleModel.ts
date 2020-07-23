@@ -2,8 +2,8 @@ import mongoose from "mongoose"
 import { ScheduleModel } from "../../types"
 import { range } from "../Utils"
 
-export const WEEKDAYS = 7
-export const CLASS_NUMBERS = 7
+const WEEKDAYS = 7
+const CLASS_NUMBERS = 7
 
 const scheduleSchema = new mongoose.Schema({
     group: {

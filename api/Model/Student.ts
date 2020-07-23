@@ -1,29 +1,22 @@
 import {
-    Student,
-    UserModel,
-    StudentCreatingData,
     ExpressParams,
-    StudentRegData,
-    ScheduleModel,
+    Student,
     StudentChangedData,
+    StudentCreatingData,
     StudentID,
-    StudentsGetData
+    StudentRegData,
+    StudentsGetData,
+    UserModel
 } from "../types"
 import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
-import {
-    generatePassword,
-    generateLogin,
-    generateStudentID,
-    sortByName
-} from "./Utils"
+import {generateLogin, generatePassword, generateStudentID, sortByName} from "./Utils"
 import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
-import { sendUserCreatingEmail, sendEmailChangedEmail } from "./Email"
-import { getWeekNumber } from "./Date"
+import {sendEmailChangedEmail, sendUserCreatingEmail} from "./Email"
+import {getWeekNumber} from "./Date"
 import recordsModel from "./MongoModels/recordsModel";
-import {getSchedule} from "./Schedule";
-
+import {formatSchedule, getSchedule} from "./Schedule";
 
 
 export const getStudents = async ({ studentID, studentsID, groupsID }: StudentsGetData, { res }: ExpressParams): Promise<Array<Student>> => {
@@ -263,11 +256,10 @@ export const getStudentData = async (user: UserModel, ex: ExpressParams): Promis
         }
     }).execPopulate()
 
-    const schedule = await getSchedule({
-        groupID: studentDB.student.group.id,
-        subgroup: 1,
-        even: !(getWeekNumber() % 2)
-    }, ex)
+    const schedule = formatSchedule(
+        studentDB.student.group.schedule,
+        { subgroup: 1, even: !(getWeekNumber() % 2) }
+    )
 
     const group = {
         id: studentDB.student.group.id,
@@ -275,8 +267,7 @@ export const getStudentData = async (user: UserModel, ex: ExpressParams): Promis
         year: studentDB.student.group.year
     }
 
-    const student: Student = 
-    {
+    return {
         login,
         name,
         email,
@@ -284,6 +275,4 @@ export const getStudentData = async (user: UserModel, ex: ExpressParams): Promis
         group,
         schedule
     }
-
-    return student
 }
