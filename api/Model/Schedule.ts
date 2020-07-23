@@ -22,6 +22,7 @@ export const getSchedule = async (
 ): Promise<Array<Schedule>> => {
     const { groupID: id, even, subgroup } = args
 
+    console.time("get group")
     const groupDB = await groupModel
                             .findOne({ id })
                             .populate({
@@ -35,7 +36,7 @@ export const getSchedule = async (
                                 }
                             })
                             .exec()
-    
+    console.timeEnd("get group")
     if(!groupDB) {
         res.status(404)
         return
@@ -77,10 +78,11 @@ export const setSchedule = async (
     args: ScheduleCreatingData,
     { res, req }: ExpressParams
 ): Promise<Array<Schedule>> => {
+    console.time("Full set schedule")
     await scheduleModel.createCollection()
 
     const { groupID, even, subgroup, schedule } = args
-
+    console.time("get start data")
     const group = await groupModel.findOne({ id: groupID }).populate({
         path: "schedule",
         populate: {
@@ -96,7 +98,7 @@ export const setSchedule = async (
     )
 
     const subjectsIdsToDelete: Set<mongoose.Schema.Types.ObjectId> = new Set()
-    
+    console.timeEnd("get start data")
     const session = await mongoose.startSession()
     session.startTransaction()
 	const opts = { session }
@@ -151,6 +153,7 @@ export const setSchedule = async (
 		await group.save(opts)
 		await session.commitTransaction()
         console.timeEnd("save in database")
+        console.timeEnd("Full set schedule")
 		return getSchedule({ groupID, even, subgroup }, { res, req })
 	} catch(err) {
 		console.log(err)
