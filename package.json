@@ -31,18 +31,20 @@
     "react": "^16.13.1",
     "react-awesome-slider": "^4.1.0",
     "react-burger-menu": "^2.6.13",
-    "react-data-grid": "^5.0.1",
+    "react-data-grid": "^7.0.0-canary.17",
     "react-dom": "^16.13.1",
     "react-helmet": "^5.2.1",
     "react-lottie": "^1.2.3",
     "react-router-dom": "^5.2.0",
     "react-transition-group": "^4.4.1",
+    "react-virtualized": "^9.21.2",
     "semantic-ui-react": "^0.88.2",
     "transliteration": "^2.1.11",
     "ua-parser-js": "^0.7.21"
   },
   "devDependencies": {
     "@babel/plugin-proposal-nullish-coalescing-operator": "^7.8.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.10.4",
     "@babel/preset-typescript": "^7.9.0",
     "@loadable/babel-plugin": "^5.12.0",
     "@loadable/webpack-plugin": "^5.12.0",
@@ -65,9 +67,9 @@
     "dotenv-webpack": "^1.8.0",
     "eslint": "^6.8.0",
     "eslint-loader": "^3.0.4",
-    "node-sass": "^4.14.1",
     "open-browser-webpack-plugin": "^0.0.5",
     "razzle-plugin-scss": "^3.1.3",
+    "sass": "^1.26.10",
     "typescript": "^3.9.2"
   }
 }

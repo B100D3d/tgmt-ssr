@@ -5,6 +5,7 @@ const OpenBrowserPlugin = require("open-browser-webpack-plugin")
 
 const LoadableBabelPlugin = require('@loadable/babel-plugin')
 const NullishCoalescingBabelPlugin = require("@babel/plugin-proposal-nullish-coalescing-operator")
+const ProposalOptionalChainingBabelPlugin = require("@babel/plugin-proposal-optional-chaining")
 const babelPresetRazzle = require('razzle/babel')
 const babelPresetTypescript = require("@babel/preset-typescript")
 
@@ -61,13 +62,28 @@ module.exports = {
         //////////////////////////////////////////////////////
 
 
+        //////////REACT DATA GRID///////////////////////
+        const babelOptions = config.module.rules[1].use[0].options
+        config.module.rules.push({
+            test: /\.js$/,
+            exclude: /node_modules[/\\](?!react-data-grid[/\\]lib)/,
+            use: [
+                {
+                    loader: require.resolve('babel-loader'),
+                    options: babelOptions,
+                },
+            ]
+        })
+        ////////////////////////////////////////////////
+
+
         return config;
       },
 
       modifyBabelOptions: () => ({
         babelrc: false,
         presets: [babelPresetRazzle, babelPresetTypescript],
-        plugins: [LoadableBabelPlugin, NullishCoalescingBabelPlugin],
+        plugins: [LoadableBabelPlugin, NullishCoalescingBabelPlugin, ProposalOptionalChainingBabelPlugin],
       }),
 
 };
