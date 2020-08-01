@@ -35,7 +35,9 @@ export const auth = async (_: any, { req, res }: ExpressParams): Promise<Admin |
     try {
         const user = req.user
 
-        const options = +process.env.PROD ? { ...DEFAULT_OPTIONS, secure: true } : DEFAULT_OPTIONS
+        const options = process.env.PROD === "true"
+            ? { ...DEFAULT_OPTIONS, secure: true }
+            : DEFAULT_OPTIONS
         const token = user.generateJWT()
         res.cookie("token", token, options)
 
@@ -85,7 +87,9 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
         }
         
 
-        const options = +process.env.PROD ? { ...DEFAULT_OPTIONS, secure: true } : DEFAULT_OPTIONS
+        const options = process.env.PROD === "true"
+            ? { ...DEFAULT_OPTIONS, secure: true }
+            : DEFAULT_OPTIONS
         const token = user.generateJWT()
         res.cookie("token", token, options)
 
