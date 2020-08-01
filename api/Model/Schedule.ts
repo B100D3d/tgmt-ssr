@@ -120,7 +120,7 @@ export const setSchedule = async (
                     weekdays[weekday][classNumber] = value
                 })
 
-            const subject = subjects[subjectID]?._id || null
+            const subject = subjects[subjectID] || null
             if(subject) {
                 group.subjects.addToSet(subject)
             }
@@ -132,6 +132,7 @@ export const setSchedule = async (
         for (const schedule of scheduleDB) {
             await scheduleModel.updateOne({ _id: schedule._id }, schedule, opts )
         }
+		await group.save(opts)
 		await session.commitTransaction()
 
 		return getSchedule({ groupID, even, subgroup }, { res, req })
