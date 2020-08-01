@@ -1,5 +1,7 @@
 
 
+export const timeout = ms => new Promise(r => setTimeout(r, ms))
+
 export const range = (size, start = 0) =>
     [...Array(size).keys()].map((key) => key + start)
 

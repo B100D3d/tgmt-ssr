@@ -1,0 +1,32 @@
+.news
+    box-sizing: border-box   
+    margin-top: -140px
+    z-index: 0 
+
+    .slide
+        z-index: 100
+
+main
+    .awssld
+        --content-background-color: transparent
+        --organic-arrow-color: #ffffff
+        --control-bullet-color: #ffffff59
+        --control-bullet-active-color: #ffffff
+        --slider-height-percentage: 50%
+
+        .awssld__timer
+            top: auto
+            bottom: 10%
+
+        .awssld__bullets
+            bottom: 50px
+            z-index: 1000
+
+
+@media (max-width: 950px)
+    .news
+        margin-top: -20px
+
+@media (max-width: 700px)
+    main .awssld .awssld__bullets
+        bottom: -40px

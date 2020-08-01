@@ -1,6 +1,6 @@
 import React from "react"
 
-import useRainbow from "hooks/useRainbow.hook"
+import useRainbow from "hooks/useRainbow"
 
 const RainbowButton = ({ className, interval, children, onClick }) => {
 
@@ -19,14 +19,14 @@ const RainbowButton = ({ className, interval, children, onClick }) => {
                         var(${ colorKeys[0] }),
                         var(${ colorKeys[1] }),
                         var(${ colorKeys[2] })
-                    )
+                    ) 
                 `,
                 transition: `
                 ${ colorKeys[0] } ${ interval+300 }ms linear,
                 ${ colorKeys[1] } ${ interval+300 }ms linear,
                 ${ colorKeys[2] } ${ interval+300 }ms linear,
                 box-shadow .5s ease,
-                transform .5s ease
+                transform .5s ease 
                 `
             }}
         >

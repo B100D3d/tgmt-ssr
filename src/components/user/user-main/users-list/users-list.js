@@ -1,22 +1,22 @@
 import React, { useContext, useEffect, useState, useRef } from "react"
 
 import "./users-list.sass"
-import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "api"
+import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "services"
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
 import { Link, useLocation, useHistory } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group"
-import logout from "utils/logout";
+import useLogout from "hooks/useLogout"
 
 
 const UsersList = ({ type }) => {
+    const logout = useLogout()
     const [entities, setEntities] = useState([])
     const [filteringEntities, setFilteringEntities] = useState([])
     const fingerprint = useContext(FingerprintContext)
-    const { user, setUser, setError } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
     const search = useRef()
     const location = useLocation()
-    const history = useHistory()
 
     useEffect(() => {
         const getEntitiesFunc = type === "Student" ? getStudents : getTeachers
@@ -33,7 +33,7 @@ const UsersList = ({ type }) => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }, [])
@@ -70,13 +70,13 @@ const UsersList = ({ type }) => {
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 enableBtn(target)
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
     return (
-        <div className="users-container">
+        <div className="user-main-container users-container">
             <h1>{ type === "Student" ? "Студенты" : "Преподаватели" }</h1>
             <div className="navigation-con">
                 <input placeholder="Поиск..." ref={ search } onChange={ handleChange } />

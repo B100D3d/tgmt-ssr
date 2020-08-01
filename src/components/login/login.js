@@ -2,7 +2,7 @@ import React, { useRef, useContext, useEffect } from "react"
 import { Link } from "react-router-dom"
 import loadable from "@loadable/component"
 import cogoToast from "cogo-toast"
-import { login } from "api"
+import { login } from "services"
 
 import { UserContext, FingerprintContext } from "context"
 

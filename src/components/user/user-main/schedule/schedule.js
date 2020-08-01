@@ -1,17 +1,16 @@
 import React, { useEffect, useContext, useState, useRef } from "react"
-import { useParams, useHistory } from "react-router-dom"
-import SelectEditor from "./select-editor"
-import ReactDataGrid from "react-data-grid"
-import { getSchedule, getSubjects, sendSchedule } from "api"
-import { UserMenuOpenContext, UserContext, FingerprintContext } from "context"
+import { useParams } from "react-router-dom"
+import SelectEditor from "./select-editor/select-editor"
+import { getSchedule, getSubjects, sendSchedule } from "services"
+import { UserContext, FingerprintContext } from "context"
 import { range } from "utils"
-import useWindowSize from "hooks/useWindowSize.hook"
 
 import cogoToast from "cogo-toast"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 
 import "./schedule.sass"
 import ScheduleSwitches from "./schedule-switches/schedule-switches"
+import DataGrid from "components/data-grid/data-grid"
 
 const DEFAULT_SCHEDULE_ITEM = {
     1: "",
@@ -22,15 +21,19 @@ const DEFAULT_SCHEDULE_ITEM = {
     6: ""
 }
 
-const DEFAULT_ROWS = [
-    { classNumber: 1, ...DEFAULT_SCHEDULE_ITEM },
-    { classNumber: 2, ...DEFAULT_SCHEDULE_ITEM },
-    { classNumber: 3, ...DEFAULT_SCHEDULE_ITEM },
-    { classNumber: 4, ...DEFAULT_SCHEDULE_ITEM },
-    { classNumber: 5, ...DEFAULT_SCHEDULE_ITEM },
-    { classNumber: 6, ...DEFAULT_SCHEDULE_ITEM },
-    { classNumber: 7, ...DEFAULT_SCHEDULE_ITEM }
-]
+const DEFAULT_ROWS = () =>
+    range(7, 1).map(i => ({ classNumber: i, ...DEFAULT_SCHEDULE_ITEM }))
+
+
+const DEFAULT_COLUMNS = isAdmin => [
+        { key: "classNumber", name: "№ пары", resizable: true },
+        { key: "1", name: "Понедельник", editable: isAdmin, resizable: true },
+        { key: "2", name: "Вторник", editable: isAdmin, resizable: true },
+        { key: "3", name: "Среда", editable: isAdmin, resizable: true },
+        { key: "4", name: "Четверг", editable: isAdmin, resizable: true },
+        { key: "5", name: "Пятница", editable: isAdmin, resizable: true },
+        { key: "6", name: "Суббота", editable: isAdmin, resizable: true }
+    ]
 
 const getRows = (schedule) => {
     return schedule.reduce((acc, curr) => {
@@ -41,30 +44,27 @@ const getRows = (schedule) => {
         scheduleItem[weekday] = `${ curr.subject.name } (${ curr.subject.teacher })`
 
         return acc
-    }, DEFAULT_ROWS.map(r => ({ ...r })))
+    }, DEFAULT_ROWS())
 }
 
 const Schedule = () => {
 
+    const logout = useLogout()
     const params = useParams()
-    const history = useHistory()
 
-    const [isOpen] = useContext(UserMenuOpenContext)
-    const { user, setUser, setError } = useContext(UserContext)
+    const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
 
     const isAdmin = user.role === "Admin"
     const isStudent = user.role === "Student"
     const group = user.group?.id || params.group
 
-    const [rows, setRows] = useState(DEFAULT_ROWS.map(r => ({ ...r })))
+    const [rows, setRows] = useState(() => DEFAULT_ROWS())
+    const [columns, setColumns] = useState(() => DEFAULT_COLUMNS(isAdmin))
     const [changedCells, setChangedCells] = useState([])
-    const [width, setWidth] = useState()
     const [schedule, setSchedule] = useState(user.schedule)
     const [switchesState, setSwitches] = useState()
     const switchTimeout = useRef()
-
-    const windowSize = useWindowSize()
 
     const [subjectTypes, setSubjectTypes] = useState()
 
@@ -83,14 +83,14 @@ const Schedule = () => {
                     hide()
                     cogoToast.error("Ошибка.", { position: "top-right" })
                     if(error.response.status === 401 || error.response.status === 403) {
-                        logout(history, setUser, setError)
+                        logout()
                     }
                 })
         }, 500)
     }
 
     useEffect(() => {
-        switchesState && handleSchedule()
+        if(switchesState) handleSchedule()
     }, [switchesState])
 
     useEffect(() => {
@@ -105,47 +105,35 @@ const Schedule = () => {
                 })
                 .catch((error) => {
                     if(error.response.status === 401 || error.response.status === 403) {
-                        logout(history, setUser, setError)
+                        logout()
                     }
                 })
         }
     }, [isAdmin])
 
     useEffect(() => {
-        schedule && setRows(getRows(schedule))
+        if(schedule) setRows(getRows(schedule))
     }, [schedule])
 
     useEffect(() => {
-        subjectTypes && setColumns(columns.map((c, i) => i === 0 ? c
-            : ({ ...c, editor: <SelectEditor options={ subjectTypes }/> })))
+        if(subjectTypes) {
+            setColumns(columns.map((column, i) => i === 0
+                ? column
+                : ({...column,
+                    editor: React.forwardRef((props, ref) =>
+                        <SelectEditor ref={ref} {...props} options={ subjectTypes }/>)})
+            ))
+        }
     }, [subjectTypes])
 
-    useEffect(() => resize(isOpen, windowSize, setWidth), [isOpen, windowSize])
 
-    useEffect(() => {
-        new Promise(r => setTimeout(r, 500)).then(() => {
-            document.querySelector(".schedule-container").classList.add("anim")
-        })
-    }, [])
-
-    useEffect(() => setSaveBtnVisibility(changedCells.length), [changedCells])
-
-    const [columns, setColumns] = useState([
-        { key: "classNumber", name: "№ пары", resizable: true, width: 80 },
-        { key: "1", name: "Понедельник", editable: isAdmin, resizable: true },
-        { key: "2", name: "Вторник", editable: isAdmin, resizable: true },
-        { key: "3", name: "Среда", editable: isAdmin, resizable: true },
-        { key: "4", name: "Четверг", editable: isAdmin, resizable: true },
-        { key: "5", name: "Пятница", editable: isAdmin, resizable: true },
-        { key: "6", name: "Суббота", editable: isAdmin, resizable: true }
-    ])
-
-    const onGridRowsUpdated = (data) => {
+    const onRowsUpdate = data => {
         if(Object.values(data.updated)[0] !== undefined) {
             const weekday = data.cellKey - 1
-            let { toRow, fromRow } = data
-            const rowsCount = toRow - fromRow + 1
-            const subject = subjectTypes.find((subject) => subject.value === data.updated[weekday + 1]) || { key: "" }
+            const { fromRow, rowsCount } = data
+            const subject = subjectTypes
+                .find((subject) => subject.value === data.updated[weekday + 1])
+                || { key: "" }
             const newRows = [...rows]
             const newChangedCells = [...changedCells]
 
@@ -180,57 +168,46 @@ const Schedule = () => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
     return (
-        <div className="schedule-container">
+        <div className="user-main-container schedule-container">
             <h1>Расписание</h1>
             <div className="buttons-container">
                 <ScheduleSwitches onChange={ setSwitches }
                                   firstExecution={ !isStudent }
                                   isAdmin={ isAdmin }
                 />
-                <button className="save-button" onClick={ handleSave }>Сохранить</button>
+                <button className={`save-button ${changedCells.length ? "visible" : ""}`}
+                        onClick={ handleSave }
+                >Сохранить
+                </button>
             </div>
             <div className="schedule">
-                <ReactDataGrid
+                <DataGrid
                     columns={ columns }
-                    rowGetter={ i => rows[i] }
-                    rowsCount={ rows.length }
-                    minWidth={ width }
-                    enableCellSelect={ true }
-                    onGridRowsUpdated={ onGridRowsUpdated }
-                    cellRangeSelection={{
-                        onStart: args => setSelectEditorPosition(args.cursorCell.idx > 4)
-                    }}
+                    rows={ rows }
+                    stretch
+                    onUpdate={ onRowsUpdate }
+                    onSelectedCellChange={
+                        args => setSelectEditorPosition(args.idx > 4, args.rowIdx > 2)
+                    }
                 />
             </div>
         </div>
     )
 }
 
-const resize = (isOpen, windowSize, setWidth) => {
-    if (isOpen) {
-        const menuWidth = windowSize.width > 800 ? document.querySelector(".user-menu").clientWidth : 0
-        setWidth(windowSize.width * 0.95 - menuWidth)
-    } else {
-        setWidth(windowSize.width * 0.95)
-    }
-}
-
-const setSaveBtnVisibility = (isVisible) => {
-    isVisible
-        ? document.querySelector(".save-button").classList.add("visible")
-        : document.querySelector(".save-button").classList.remove("visible")
-}
-
-const setSelectEditorPosition = right => {
+const setSelectEditorPosition = (right, top) => {
     right
-        ? document.querySelector(".react-grid-Canvas").classList.add("right")
-        : document.querySelector(".react-grid-Canvas").classList.remove("right")
+        ? document.body.dataset.rdgSelectRight = "true"
+        : document.body.dataset.rdgSelectRight = ""
+    top
+        ? document.body.dataset.rdgSelectTop = "true"
+        : document.body.dataset.rdgSelectTop = ""
 }
 
 export default Schedule

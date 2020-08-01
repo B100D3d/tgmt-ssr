@@ -20,7 +20,7 @@ export default class SelectEditor extends React.Component {
 
     render() {
         return (
-            <div ref={ this.select } className="dropdown-con" tabIndex="-1">
+            <div ref={ this.select } className="dropdown-con">
                 <Dropdown placeholder={ this.props.value }
                           options={ [{ key: "", value: "", text: "" }, ...this.props.options] }
                           onChange={ this.handleChange }

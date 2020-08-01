@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from "react"
-import { getResources } from "api"
+import { getResources } from "services"
 import OpenButton from "components/open-button/open-button"
 
 import { InitialDataContext } from "context"

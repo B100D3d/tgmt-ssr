@@ -1,19 +1,7 @@
-.users-container
-    position: absolute
-    display: flex
-    flex-direction: column
-    align-items: center
-    width: 100%
-    height: 100%
-    box-sizing: border-box
+.user-main-container.users-container
+    justify-content: flex-start
     overflow: hidden
     padding: 10px 40px
-    left: 0
-    top: 0
-
-    h1
-        color: #ffffff
-        font-size: 44px
 
     .navigation-con
         width: 100%
@@ -136,7 +124,7 @@
 
 
 @media (max-width: 695px)
-    .users-container
+    .user-main-container.users-container
         padding: 10px
         h1
             font-size: 34px

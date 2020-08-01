@@ -6,7 +6,7 @@ import logoutImg from "static/logout.svg"
 import AdminList from "./admin-list/admin-list"
 import StudentList from "./student-list/student-list"
 import TeachersList from "./teacher-list/teacher-list"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 import { useHistory } from "react-router-dom"
 
 
@@ -32,13 +32,10 @@ const getRole = (user) => {
 
 const UserMenu = () => {
 
-    const { user, setUser, setError } = useContext(UserContext)
+    const logout = useLogout()
+    const { user } = useContext(UserContext)
     const list = LISTS[user.role]
     const role = getRole(user)
-    const history = useHistory()
-
-    const handleClick = () => logout(history, setUser, setError)
-
 
     return (
         <div className="user-menu">
@@ -49,7 +46,7 @@ const UserMenu = () => {
                 </div>
                 <div className="logout-con">
                     <img src={ logoutImg } alt="logout" />
-                    <button onClick={ handleClick } className="logout-btn" />
+                    <button onClick={ logout } className="logout-btn" />
                 </div>
             </div>
             <hr />

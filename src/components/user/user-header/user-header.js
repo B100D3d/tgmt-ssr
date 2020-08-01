@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 
 import "./user-header.sass"
 import { WeekContext, UserMenuOpenContext } from "context"
-import useWindowSize from "hooks/useWindowSize.hook"
+import useWindowSize from "hooks/useWindowSize"
 import burger from "static/burger.svg"
 import home from "static/home.svg"
 import { Link } from "react-router-dom"
@@ -11,15 +11,10 @@ import { Link } from "react-router-dom"
 const UserHeader = () => {
 
     const [isOpen, setOpen] = useContext(UserMenuOpenContext)
-    const {date, weekNumber, even} = useContext(WeekContext)
+    const { date, weekNumber, even } = useContext(WeekContext)
     const windowSize = useWindowSize()
 
     const handleClick = () => {
-        if (isOpen) {
-            document.querySelector(".flex-container").classList.remove("open")
-        } else {
-            document.querySelector(".flex-container").classList.add("open")
-        } 
         windowSize.width > 800 ? setUserMainWidth() : setUserMainTop()
         setOpen(!isOpen)
     }

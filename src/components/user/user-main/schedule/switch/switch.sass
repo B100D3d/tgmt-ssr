@@ -4,7 +4,7 @@
     height: 30px
     margin: 0 10px
     outline: none
-    border: 1px solid white
+    border: 2px solid white
     border-radius: 20px
 
     .switch-title
@@ -41,6 +41,7 @@
 
                 & + .switch-checkbox
                     transform: translateX(100%)
+                    animation: from0to100 0.5s ease-in-out
 
                     &::before
                         content: attr(data-second-name)
@@ -60,25 +61,43 @@
             color: white
 
     &.admin
+        .switch-checkbox
+            width: 33.3%
+
         input   
             &#third-switch
                 display: block
 
             &:checked
-                & + .switch-checkbox
-                    transform: translateX(200%)
-
-                    &::before
-                        content: attr(data-third-name)
-
                 & + input + .switch-checkbox
                     transform: translateX(100%)
+                    animation: from0to100 0.5s ease-in-out
 
                     &::before
                         content: attr(data-second-name)
 
-        .switch-checkbox
-            width: 33.3%
+                & + .switch-checkbox
+                    transform: translateX(200%)
+                    animation: from100to200 0.5s ease-in-out
+
+                    &::before
+                        content: attr(data-third-name)
+
+@keyframes from0to100
+    0%
+        transform: scaleX(1) translateX(0)
+    50%
+        transform: scaleX(1.2) translateX(50%)
+    100%
+        transform: scaleX(1) translateX(100%)
+
+@keyframes from100to200
+    0%
+        transform: scaleX(1) translateX(100%)
+    50%
+        transform: scaleX(1.2) translateX(150%)
+    100%
+        transform: scaleX(1) translateX(200%)
 
 @media (max-width: 350px)
     .switch

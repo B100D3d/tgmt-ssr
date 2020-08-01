@@ -1,7 +1,7 @@
 import React from "react"
 import Helmet from "react-helmet"
 import loadable from "@loadable/component"
-import useAuth from "hooks/useAuth.hook"
+import useAuth from "hooks/useAuth"
 import { UserContext } from "context"
 
 const Loading = loadable(() => import(/* webpackChunkName: "Loading" */"components/loading/loading"))

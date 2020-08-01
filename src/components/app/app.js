@@ -4,7 +4,7 @@ import loadable from "@loadable/component"
 import Fingerprint from "fingerprintjs2"
 import UAParser from "ua-parser-js"
 import { FingerprintContext, InitialDataContext, WeekContext } from "context"
-import { getWeek } from "api"
+import { getWeek } from "services"
 
 const MainPage = loadable(() => import(/* webpackChunkName: "MainPage" */"pages/MainPage"))
 const Page404 = loadable(() => import(/* webpackChunkName: "Page404" */"pages/Page404"))

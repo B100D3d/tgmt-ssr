@@ -4,19 +4,19 @@ import "./subject-list.sass"
 import { Link, useLocation, useHistory } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group"
 import { FingerprintContext, UserContext } from "context"
-import { deleteSubject, getSubjects } from "api"
+import { deleteSubject, getSubjects } from "services"
 import cogoToast from "cogo-toast"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 
 
 const SubjectList = () => {
+    const logout = useLogout()
     const [subjects, setSubjects] = useState([])
     const [filteringSubjects, setFilteringSubjects] = useState([])
     const fingerprint = useContext(FingerprintContext)
-    const { user, setUser, setError } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
     const search = useRef()
     const location = useLocation()
-    const history = useHistory()
 
     useEffect(() => {
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
@@ -35,7 +35,7 @@ const SubjectList = () => {
                 hide()
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }, [])
@@ -71,14 +71,14 @@ const SubjectList = () => {
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 enableBtn(target)
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
 
     return (
-        <div className="subjects-container">
+        <div className="user-main-container subjects-container">
             <h1>Предметы</h1>
             <div className="navigation-con">
                 <input placeholder="Поиск..." ref={ search } onChange={ handleChange } />

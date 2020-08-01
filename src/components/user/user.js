@@ -18,7 +18,7 @@ const User = () => {
         <>
             <UserMenuOpenContext.Provider value={ [isOpen, setOpen] }>
                 <UserHeader />
-                <div className="flex-container">
+                <div className={`flex-container ${ isOpen ? "open" : "" }`}>
                     <UserMenu />
                     <UserMain />
                 </div>

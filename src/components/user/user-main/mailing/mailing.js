@@ -4,10 +4,10 @@ import "./mailing.sass"
 import loadable from "@loadable/component"
 import { FingerprintContext, UserContext } from "context"
 import { CSSTransition } from "react-transition-group"
-import { getStudents, getTeachers, mailing } from "api"
+import { getStudents, getTeachers, mailing } from "services"
 import cogoToast from "cogo-toast"
 import Checkbox from "./checkbox/checkbox"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 
 const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 
@@ -20,8 +20,8 @@ const TYPE_OPTIONS = [
 
 
 const Mailing = () => {
-    const history = useHistory()
-    const { user, setUser, setError } = useContext(UserContext)
+    const logout = useLogout()
+    const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const [type, setType] = useState()
     const [entities, setEntities] = useState([])
@@ -60,7 +60,7 @@ const Mailing = () => {
             return entities.map((e) => ({ key: e.id, value: e.id, text: e.name }))
         } catch (error) {
             if (error.response.status === 401 || error.response.status === 403) {
-                logout(history, setUser, setError)
+                logout()
             }
         }
     }
@@ -82,7 +82,7 @@ const Mailing = () => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
@@ -107,7 +107,10 @@ const Mailing = () => {
                     <Dropdown options={ TYPE_OPTIONS } placeholder="Выберите тип" onChange={ handleType } />
                 </div>
                 <CSSTransition
-                    in={ !!(type && type !== "All") } timeout={ 500 } classNames="fade" unmountOnExit
+                    in={ !!(type && type !== "All") }
+                    timeout={ 500 }
+                    classNames="fade"
+                    unmountOnExit
                 >
                     <div className="recipients">
                         <h3>Выберите получателей</h3>
@@ -119,7 +122,10 @@ const Mailing = () => {
                     </div>
                 </CSSTransition>
                 <CSSTransition
-                    in={ !!(selectedEntities.length || type === "All") } timeout={ 500 } classNames="fade" unmountOnExit
+                    in={ !!(selectedEntities.length || type === "All") }
+                    timeout={ 500 }
+                    classNames="fade"
+                    unmountOnExit
                 >
                     <div className="textarea">
                         <h3>Введите текст</h3>
@@ -127,7 +133,10 @@ const Mailing = () => {
                     </div>
                 </CSSTransition>
                 <CSSTransition
-                    in={ !!message } timeout={ 500 } classNames="fade" unmountOnExit
+                    in={ !!message }
+                    timeout={ 500 }
+                    classNames="fade"
+                    unmountOnExit
                 >
                     <button className="send-btn" onClick={ handleSend }>Отправить</button>
                 </CSSTransition>

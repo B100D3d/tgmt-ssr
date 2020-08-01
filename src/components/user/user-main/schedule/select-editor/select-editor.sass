@@ -1,0 +1,39 @@
+.dropdown-con
+    outline: none
+    width: calc(100% - 1px)
+    height: calc(100% - 1px)
+
+    .ui:not(.multiple):not(.label)
+        background-color: #201E1E !important
+
+        .menu
+            background-color: #201E1E !important
+            max-height: 200px
+
+            &.right
+                right: 0
+                left: auto
+
+            .item
+                &:hover
+                    background: rgba(255, 255, 255, 0.1) !important
+
+body[data-rdg-select-right="true"]
+    .rdg-editor-container
+        .dropdown-con
+            .ui.dropdown
+                .menu
+                    left: auto
+                    right: 0
+
+
+body[data-rdg-select-top="true"]
+    .rdg-editor-container
+        .dropdown-con
+            .ui.dropdown
+                border-top-left-radius: 0
+                border-top-right-radius: 0
+                .menu
+                    top: auto
+                    bottom: 100%
+                    border-radius: 5px 5px 0 0

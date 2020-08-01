@@ -1,16 +1,4 @@
 .settings-container
-    position: absolute
-    left: 0
-    top: 0
-    display: flex
-    flex-direction: column
-    align-items: center
-    justify-content: space-between
-    width: 100%
-    height: 100%
-    padding: 10px 20px
-    box-sizing: border-box
-
     input
         padding: 5px 10px
         color: white
@@ -92,32 +80,8 @@
                 visibility: visible
                 opacity: 1
 
-        .save-button
-            width: 90%
-            color: white
-            background-color: #19CCF3
-            border: none
-            border-radius: 10px
-            font-size: 24px
-            margin-bottom: 20px
-            transition: all 0.5s ease, visibility 0s linear 0.5s
-            opacity: 0
-            cursor: pointer
-            outline: none
-            visibility: hidden
-
-            &.visible
-                transition: all 0.5s ease
-                visibility: visible
-                opacity: 1
-
-            &:hover
-                transform: scale(1.03)
-                box-shadow: 4px 8px 8px rgba(0, 0, 0, 0.5)
-
-
 @media (max-width: 695px)
-    .settings-container
+    .user-main-container.settings-container
         padding: 10px
         .settings-header
             flex-direction: column

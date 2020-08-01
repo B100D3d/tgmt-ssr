@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 import "./register.sass"
-import { FingerprintContext, UserContext, UserMenuOpenContext } from "context"
-import useWindowSize from "hooks/useWindowSize.hook"
-import { getRecords, getStudentRecords, sendRecords } from "api"
+import { FingerprintContext, UserContext } from "context"
+import { getRecords, getStudentRecords, sendRecords } from "services"
 import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 import { range } from "utils"
-
-import ReactDataGrid from "react-data-grid"
+import DataGrid from "components/data-grid/data-grid"
 
 const getRows = records => records.map(({ name, records }) => ({ name, ...records }))
 
@@ -33,11 +31,10 @@ const getColumns = (month, role) => {
 
 const Register = () => {
 
+    const logout = useLogout()
     const params = useParams()
-    const history = useHistory()
 
-    const [isOpen] = useContext(UserMenuOpenContext)
-    const { user, setUser, setError } = useContext(UserContext)
+    const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
 
     const isStudent = user.role === "Student"
@@ -46,13 +43,10 @@ const Register = () => {
 
     const [rows, setRows] = useState([])
     const [changedCells, setChangedCells] = useState([])
-    const [width, setWidth] = useState()
     const [records, setRecords] = useState()
     const [month, setMonth] = useState()
     const [columns, setColumns] = useState([])
     const monthTimeout = useRef()
-
-    const windowSize = useWindowSize()
 
     const handleRecords = () => {
         clearTimeout(monthTimeout.current)
@@ -70,41 +64,28 @@ const Register = () => {
                     hide()
                     cogoToast.error("Ошибка.", { position: "top-right" })
                     if (error.response.status === 401 || error.response.status === 403) {
-                        logout(history, setUser, setError)
+                        logout()
                     }
                 })
         }, 500)
     }
 
     useEffect(() => {
-        month && handleRecords()
+        if(month) handleRecords()
     }, [month])
 
     useEffect(() => {
-        month && setColumns(getColumns(month, user.role))
+        if(month) setColumns(getColumns(month, user.role))
     }, [month])
 
     useEffect(() => {
-        records && setRows(getRows(records))
+        if(records) setRows(getRows(records))
     }, [records])
 
-    useEffect(() => {
-        resize(isOpen, windowSize, setWidth)
-    }, [isOpen, windowSize])
-
-    useEffect(() => {
-        new Promise(r => setTimeout(r, 500)).then(() => {
-            document.querySelector(".register-container").classList.add("anim")
-        })
-    }, [])
-
-    useEffect(() => setSaveBtnVisibility(changedCells.length), [changedCells])
-
-    const onGridRowsUpdated = (data) => {
+    const onRowsUpdate = (data) => {
         const day = data.cellKey
         const updated = data.updated[day]
-        const { toRow, fromRow } = data
-        const rowsCount = toRow - fromRow + 1
+        const { fromRow, rowsCount } = data
         const newRows = [...rows]
         const newChangedCells = [...changedCells]
 
@@ -142,46 +123,32 @@ const Register = () => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
-
     return (
-        <div className="register-container">
+        <div className="user-main-container register-container">
             <h1>Журнал</h1>
             <div className="buttons-container">
                 <MonthSelector onChange={ setMonth } />
-                <button className="save-button" onClick={ handleSave }>Сохранить</button>
+                <button
+                    className={`save-button ${changedCells.length ? "visible" : ""}`}
+                    onClick={ handleSave }
+                >
+                    Сохранить
+                </button>
             </div>
             <div className="register">
-                <ReactDataGrid
+                <DataGrid
                     columns={ columns }
-                    rowGetter={ i => rows[i] }
-                    rowsCount={ rows.length }
-                    minWidth={ width }
-                    enableCellSelect={ true }
-                    onGridRowsUpdated={ onGridRowsUpdated }
+                    rows={ rows }
+                    onUpdate={ onRowsUpdate }
                 />
             </div>
         </div>
     )
-}
-
-const resize = (isOpen, windowSize, setWidth) => {
-    if (isOpen) {
-        const menuWidth = windowSize.width > 800 ? document.querySelector(".user-menu").clientWidth : 0
-        setWidth(windowSize.width * 0.95 - menuWidth)
-    } else {
-        setWidth(windowSize.width * 0.95)
-    }
-}
-
-const setSaveBtnVisibility = (isVisible) => {
-    isVisible
-        ? document.querySelector(".save-button").classList.add("visible")
-        : document.querySelector(".save-button").classList.remove("visible")
 }
 
 export default Register

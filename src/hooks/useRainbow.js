@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from "react"
-import { generateId, range, registerCSSColorProperty } from "utils"
+import { useEffect, useState } from "react"
+import {generateId, range, registerCSSColorProperty} from "utils"
 import useIncrementingNumber from "./useIncrementingNumber"
 
 const rainbowColors = [
@@ -16,16 +16,15 @@ const VISIBLE_COLORS_COUNT = 3
 
 const paletteSize = rainbowColors.length
 
-const getColorName = (id, index) => `--rainbow-color-${id}-${index}`
+const getColorName = (index) => `--rainbow-color-${index}`
 
 const useRainbow = (interval) => {
 
-    const uniqueId = useMemo(generateId, [])
     const [isEnabled, setEnabled] = useState(false)
 
     useEffect(() => {
         range(VISIBLE_COLORS_COUNT).forEach(index => {
-            const name = getColorName(uniqueId, index)
+            const name = getColorName(index)
             const initialValue = rainbowColors[index]
             const isEnabled = registerCSSColorProperty(name, initialValue)
             setEnabled(isEnabled)
@@ -36,7 +35,7 @@ const useRainbow = (interval) => {
 
     return range(VISIBLE_COLORS_COUNT).reduce((acc, index) => {
         const eIntervalCount = isEnabled ? intervalCount : 0
-        const name = getColorName(uniqueId, index)
+        const name = getColorName(index)
         const value = rainbowColors[(eIntervalCount + index) % paletteSize]
         return {
             ...acc,

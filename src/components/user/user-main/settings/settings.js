@@ -2,19 +2,22 @@ import React, {useContext, useEffect, useRef, useState} from "react"
 
 import "./settings.sass"
 import { FingerprintContext, UserContext } from "context"
-import { changeUserInfo, clearFingerprint } from "api"
+import { changeUserInfo, clearFingerprint } from "services"
 import cogoToast from "cogo-toast";
 import { useHistory } from "react-router-dom"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 
 
 const Settings = () => {
-    const { user, setUser, setError } = useContext(UserContext)
+    const logout = useLogout()
+    const { user, setUser } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const [login, setLogin] = useState(user.login)
     const [email, setEmail] = useState(user.email)
     const [newPassword, setNewPassword] = useState("")
     const [password, setPassword] = useState("")
+    const [isValid, setValid] = useState(false)
+    const [showSave, setShow] = useState(false)
     const loginRef = useRef()
     const emailRef = useRef()
     const newPasswordRef = useRef()
@@ -25,12 +28,11 @@ const Settings = () => {
         const isValid = (login !== user.login || email !== user.email || newPassword)
             && (loginRef.current.checkValidity() && emailRef.current.checkValidity()
                 && newPasswordRef.current.checkValidity())
-        setPasswordVisibility(isValid)
+        setValid(isValid)
     }, [login, email, newPassword])
 
     useEffect(() => {
-        const isValid = passwordRef.current.checkValidity()
-        setSaveBtnVisibility(isValid)
+        setShow(passwordRef.current.checkValidity())
     }, [password])
 
     const handleLogin = () => setLogin(loginRef.current.value)
@@ -50,7 +52,7 @@ const Settings = () => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
@@ -63,13 +65,13 @@ const Settings = () => {
             .catch((error) => {
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
     return (
-        <div className="settings-container">
+        <div className="user-main-container settings-container">
             <div className="settings-header">
                 <h1>
                     { user.name }
@@ -86,23 +88,12 @@ const Settings = () => {
                        ref={ newPasswordRef } onChange={ handleNewPassword } data-lpignore="true" />
             </div>
             <div className="submit">
-                <input type="password" placeholder="Подтвердите паролем" autoComplete="new-password"
+                <input className={`${ isValid ? "visible" : "" }`} type="password" placeholder="Подтвердите паролем" autoComplete="new-password"
                        required ref={ passwordRef } onChange={ handlePassword } data-lpignore="true" />
-                <button className="save-button" onClick={ handleSave } >Сохранить</button>
+                <button className={`save-button ${ showSave ? "visible" : "" }`} onClick={ handleSave } >Сохранить</button>
             </div>
         </div>
     )
 }
 
 export default Settings
-
-const setSaveBtnVisibility = (isVisible) => {
-    isVisible
-        ? document.querySelector(".save-button").classList.add("visible")
-        : document.querySelector(".save-button").classList.remove("visible")
-}
-const setPasswordVisibility = (isVisible) => {
-    isVisible
-        ? document.querySelector(".submit input").classList.add("visible")
-        : document.querySelector(".submit input").classList.remove("visible")
-}

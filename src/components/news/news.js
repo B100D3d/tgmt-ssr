@@ -6,7 +6,7 @@ import withAutoplay from "react-awesome-slider/dist/autoplay"
 import bg from "static/1.webp"
 
 import sliderS from "react-awesome-slider/src/core/styles.scss"
-import s from "./news.module.sass"
+import "./news.sass"
 
 const AutoplaySlider = withAutoplay(Slider)
 
@@ -17,10 +17,10 @@ const News = () => (
         play={ true }
         cancelOnInteraction={ true }
         interval={ 8000 }
-        className={ s.news }>
-            <div className={ s.slide } data-src={ bg }>
+        className="news">
+            <div className="slide" data-src={ bg }>
             </div>
-            <div className={ s.slide } data-src={ bg }>
+            <div className="slide" data-src={ bg }>
             </div>
     </AutoplaySlider>
 )

@@ -2,35 +2,32 @@ import React, { useContext, useEffect, useRef, useState } from "react"
 
 import "./group-info.sass"
 import { FingerprintContext, UserContext } from "context"
-import { useParams, useHistory } from "react-router-dom"
-import { changeGroup, createGroup } from "api"
+import { useParams } from "react-router-dom"
+import { changeGroup, createGroup } from "services"
 import cogoToast from "cogo-toast"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 
 
 const GroupInfo = () => {
-    const { user, setUser, setError } = useContext(UserContext)
+    const logout = useLogout()
+    const { user, setUser } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const params = useParams()
-    const history = useHistory()
     const id = params.id
     const nameInput = useRef()
     const yearInput = useRef()
+    const [isValid, setValid] = useState(false)
     const [name, setName] = useState(id ? user.groups.find((g) => g.id === id)?.name : "")
     const [year, setYear] = useState(id ? user.groups.find((g) => g.id === id)?.year : undefined)
 
     useEffect(() => {
-        validate()
+        setValid(name && year && yearInput.current.checkValidity())
     }, [name, year])
 
-    const validate = () => {
-        const isValid = name && year && yearInput.current.checkValidity()
-        setSaveBtnVisibility(isValid)
-    }
 
     const handleName = () => setName(nameInput.current.value)
 
-    const handleYear = () => setYear(+yearInput.current.value)
+    const handleYear = () => setYear(Number(yearInput.current.value) || "")
 
     const handleSave = () => {
         id ? change() : create()
@@ -51,7 +48,7 @@ const GroupInfo = () => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
@@ -71,13 +68,13 @@ const GroupInfo = () => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
     return (
-        <div className="group-info-con">
+        <div className="user-main-container group-info-con">
             <h1>{ id ? "Редактирование" : "Создание" } группы</h1>
             <div className="input-con">
                 <input placeholder="Название" required pattern="[А-Я0-9]{1,}"
@@ -85,16 +82,9 @@ const GroupInfo = () => {
                 <input placeholder="Курс" required pattern="[1-4]"
                        ref={ yearInput } onChange={ handleYear } value={ year } />
             </div>
-            <button className="save-button" onClick={ handleSave } >Сохранить</button>
+            <button className={`save-button ${ isValid ? "visible" : "" }`} onClick={ handleSave } >Сохранить</button>
         </div>
     )
 }
 
 export default GroupInfo
-
-
-const setSaveBtnVisibility = (isVisible) => {
-    isVisible
-        ? document.querySelector(".save-button").classList.add("visible")
-        : document.querySelector(".save-button").classList.remove("visible")
-}

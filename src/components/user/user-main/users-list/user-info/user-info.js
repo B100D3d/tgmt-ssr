@@ -1,20 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import loadable from "@loadable/component"
 import "./user-info.sass"
 
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
-import { changeTeacher, changeStudent, createStudent, createTeacher, getStudent, getTeacher } from "api"
-import logout from "utils/logout"
+import { changeTeacher, changeStudent, createStudent, createTeacher, getStudent, getTeacher } from "services"
+import useLogout from "hooks/useLogout"
 
 const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 
 const UserInfo = ({ type }) => {
-    const { user, setUser, setError } = useContext(UserContext)
+    const logout = useLogout()
+    const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const params = useParams()
-    const history = useHistory()
     const id = params.id
     const entity = user.entities?.find((e) => e.id === id)
     const nameInput = useRef()
@@ -48,7 +48,7 @@ const UserInfo = ({ type }) => {
                     hide()
                     cogoToast.error("Ошибка.", { position: "top-right" })
                     if (error.response.status === 401 || error.response.status === 403) {
-                        logout(history, setUser, setError)
+                        logout()
                     }
                 })
         }
@@ -86,7 +86,7 @@ const UserInfo = ({ type }) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
@@ -103,13 +103,13 @@ const UserInfo = ({ type }) => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
     return (
-        <div className="user-info-con">
+        <div className="user-main-container user-info-con">
             <h1>{ id ? "Редактирование" : "Создание" } { type === "Student" ? "студента" : "преподавателя" }</h1>
             <div className="input-con">
                 <input placeholder="ФИО" onChange={ handleName } ref={ nameInput } value={ name } />

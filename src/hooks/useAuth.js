@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react"
 
 import { FingerprintContext } from "context"
 
-import { auth } from "api"
+import { auth } from "services"
 
 const useAuth = () => {
     const [loading, setLoading] = useState(true)

@@ -1,20 +1,20 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { useParams, useHistory } from "react-router-dom"
 import loadable from "@loadable/component"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 import cogoToast from "cogo-toast"
 import { FingerprintContext, UserContext } from "context"
-import { changeSubject, createSubject, getSubject, getTeachers } from "api"
+import { changeSubject, createSubject, getSubject, getTeachers } from "services"
 
 import "./subject-info.sass"
 
 const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
 
 const SubjectInfo = () => {
-    const { user, setUser, setError } = useContext(UserContext)
+    const logout = useLogout()
+    const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const params = useParams()
-    const history = useHistory()
     const id = params.id
     const subject = user.subjects?.find((e) => e.id === id)
     const nameInput = useRef()
@@ -44,7 +44,7 @@ const SubjectInfo = () => {
                     hide()
                     cogoToast.error("Ошибка.", { position: "top-right" })
                     if (error.response.status === 401 || error.response.status === 403) {
-                        logout(history, setUser, setError)
+                        logout()
                     }
                 })
         }
@@ -57,7 +57,7 @@ const SubjectInfo = () => {
             })
             .catch((error) => {
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }, [])
@@ -86,7 +86,7 @@ const SubjectInfo = () => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
@@ -102,13 +102,13 @@ const SubjectInfo = () => {
                 hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
     return (
-        <div className="subject-info-con">
+        <div className="user-main-container subject-info-con">
             <h1>{ id ? "Редактирование" : "Создание" } предмета</h1>
             <div className="input-con">
                 <input placeholder="Название предмета" onChange={ handleName } ref={ nameInput } value={ name } />

@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react"
+import React, { useContext, useEffect, useState, useMemo } from "react"
 
-import s from "./selector.module.sass"
-import useGradient from "hooks/useGradient.hook"
+import "./selector.sass"
+import useGradient from "hooks/useGradient"
 import { FingerprintContext, UserContext } from "context"
-import { Link, useParams, useLocation, useHistory } from "react-router-dom"
-import { deleteGroup, getSubjects } from "api"
+import { Link, useParams, useLocation } from "react-router-dom"
+import { deleteGroup, getSubjects } from "services"
 import cogoToast from "cogo-toast"
-import logout from "utils/logout"
+import useLogout from "hooks/useLogout"
 
 const noDeg = ({ deg, ...rest }) => rest
 
@@ -20,16 +20,17 @@ const getCSSProperties = (gradient) => {
 }
 
 const Selector = ({ type, title, deletable }) => {
-    const history = useHistory()
+    const logout = useLogout()
     const params = useParams()
-    const { user, setUser, setError } = useContext(UserContext)
+    const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
-    const years = new Set(user.groups.map(({ year }) => year).sort((a, b) => a - b))
+    const years = useMemo(() =>
+        new Set(user.groups.map(({ year }) => year).sort((a, b) => a - b)), [user.groups])
     const [subjects, setSubjects] = useState([])
     const entities = type === "group"
-        ? user.groups.filter((group) => params.year ? group.year === +params.year : true)
+        ? useMemo(() => user.groups.filter((group) => params.year ? group.year === +params.year : true), [user.groups, params])
         : type === "year"
-        ? Array.from(years)
+        ? useMemo(() => Array.from(years), [years])
         : subjects
 
     useEffect(() => {
@@ -39,7 +40,7 @@ const Selector = ({ type, title, deletable }) => {
                     .then(setSubjects)
                     .catch((error) => {
                         if(error.response.status === 401 || error.response.status === 403) {
-                            logout(history, setUser, setError)
+                            logout()
                         }
                     })
             }
@@ -53,16 +54,16 @@ const Selector = ({ type, title, deletable }) => {
 
 
     return (
-        <div className={ s.selector }>
+        <div className="user-main-container selector">
             <h1>{ title }</h1>
             { !deletable
                 ? <h2>{ type === "group" ? "Выбор группы"
                     : type === "year" ? "Выбор курса"
                         : "Выбор предмета" }
                   </h2>
-                : <Link className={ s.plus } to={ `${ location.pathname }/new` }>+</Link>
+                : <Link className="plus" to={ `${ location.pathname }/new` }>+</Link>
             }
-            <div className={ s.items }>
+            <div className="selector__items">
                 { entities.map((e) => 
                     <Item key={ e.id || e } name={ e.name || e }
                           id={ e.id || e } type={ type } deletable={ deletable } />
@@ -74,14 +75,13 @@ const Selector = ({ type, title, deletable }) => {
 }
 
 const Item = ({ name, id, type, deletable }) => {
-    const { user, setUser, setError } = useContext(UserContext)
+    const { user, setUser } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const [gradient, setHover] = useGradient()
     const CSSProperties = getCSSProperties(gradient)
     const colors = Object.values(noDeg(gradient))
     const colorKeys = Object.keys(noDeg(gradient))
     const location = useLocation()
-    const history = useHistory()
     
     const styles = {
         ...CSSProperties,
@@ -122,20 +122,20 @@ const Item = ({ name, id, type, deletable }) => {
                 cogoToast.error("Ошибка сервера.", { position: "top-right" })
                 enableBtn(target)
                 if (error.response.status === 401 || error.response.status === 403) {
-                    logout(history, setUser, setError)
+                    logout()
                 }
             })
     }
 
     return (
         <Link to={ `${ location.pathname }/${ id }` }>
-            <div className={ s.item } id={ s[type] } style={ styles }
+            <div className="selector__item" id={ type } style={ styles }
                 onMouseOver={ handleMouseOver } onMouseOut={ handleMouseOut }>
-                { deletable && <div className={s.delete} onClick={handleDelete} id={id}>
+                { deletable && <div className="delete" onClick={handleDelete} id={id}>
                     <span>&#215;</span>
                 </div> }
-                <p className={ s.name }>{ name }</p>
-                <p className={ s.size }>{ name }</p>
+                <p className="name">{ name }</p>
+                <p className="size">{ name }</p>
             </div>
         </Link>
     )
