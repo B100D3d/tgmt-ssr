@@ -13,7 +13,7 @@ import { clearFingerprints } from "../Model/User"
 
 const apiRouter = Router()
 
-const EXCEPT_URLS = /^((?!\/mainPage)|(?!\/login).*)$/
+const EXCEPT_URLS = /^(?!(\/login|\/mainPage)).*$/
 apiRouter.use(EXCEPT_URLS, checkToken, checkUser, checkTestAccount, checkFingerprint)
 
 const isDev = process.env.PROD === "false"

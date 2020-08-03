@@ -33,7 +33,9 @@ const App = (props) => {
     const [fingerprint, setFingerprint] = useState()
 
     useEffect(() => {
-        !week && getWeek().then(setWeek)
+        if(!week){
+            getWeek().then(setWeek)
+        }
     },[])
 
     useEffect(() => {
