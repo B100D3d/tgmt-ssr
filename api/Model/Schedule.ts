@@ -12,6 +12,7 @@ import groupModel from "./MongoModels/groupModel"
 import subjectModel from "./MongoModels/subjectModel"
 import scheduleModel from "./MongoModels/scheduleModel"
 import { range } from "./Utils"
+import { startSession } from "./mongodb"
 
 const isNull = (v: any) => v === null
 
@@ -52,7 +53,9 @@ export const formatSchedule = (
 
 export const getSchedule = async (
     args: ScheduleGetData,
-    { res }: ExpressParams
+    { req, res }: ExpressParams,
+    _?: any,
+    session: mongoose.ClientSession = null
 ): Promise<Array<Schedule>> => {
     const { groupID: id } = args
     const groupDB = await groupModel
@@ -67,6 +70,7 @@ export const getSchedule = async (
                                     }
                                 }
                             })
+                            .session(session)
                             .exec()
 
     if(!groupDB) {
@@ -86,14 +90,14 @@ export const setSchedule = async (
     const { groupID, even, subgroup, schedule } = args
     const group = await groupModel.findOne({ id: groupID }).exec()
 
-    let conditions: any = { group: group._id }
-    if(even) conditions = { ...conditions, even }
-    if(subgroup) conditions = { ...conditions, subgroup }
+    const conditions: any = { group: group._id }
+    if(even) conditions.even = even
+    if(subgroup) conditions.subgroup = subgroup
     const scheduleDB = await scheduleModel.find(conditions).exec()
 
     const subjectsIdsToDelete: Set<mongoose.Schema.Types.ObjectId> = new Set()
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
 	const opts = { session }
 
@@ -134,12 +138,14 @@ export const setSchedule = async (
         }
 		await group.save(opts)
 		await session.commitTransaction()
+        session.endSession()
 
-		return getSchedule({ groupID, even, subgroup }, { res, req })
+        return getSchedule({ groupID, even, subgroup }, { res, req }, null, session)
+
 	} catch(err) {
 		console.log(err)
 		await session.abortTransaction()
-		session.endSession()
+        session.endSession()
 		res.status(500)
 		return
 	}

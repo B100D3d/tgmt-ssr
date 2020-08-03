@@ -7,7 +7,6 @@ import AdminList from "./admin-list/admin-list"
 import StudentList from "./student-list/student-list"
 import TeachersList from "./teacher-list/teacher-list"
 import useLogout from "hooks/useLogout"
-import { useHistory } from "react-router-dom"
 
 
 

@@ -16,6 +16,7 @@ import { sendLoginEmail, sendPassChangedEmail, sendEmailChangedEmail, sendLoginC
 import { getAdminData } from "./Admin"
 import { getStudentData } from "./Student"
 import { getTeacherData } from "./Teacher"
+import { startSession } from "./mongodb";
 
 const DEFAULT_OPTIONS = { httpOnly: true, maxAge: 1000 * 60 * 60 * 24 * 7 }
 
@@ -81,6 +82,7 @@ export const login = async ({ login, password }: LoginInfo, { req, res }: Expres
 
             await user.save(opts)
             await session.commitTransaction()
+            session.endSession()
 
             user.email && sendLoginEmail(user.name, user.email, user.role, req)
 
@@ -133,7 +135,7 @@ export const changeUserInfo = async (args: UserInfo, { req, res }: ExpressParams
 
     const { login, email, password, newPassword } = args
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
 
@@ -154,6 +156,7 @@ export const changeUserInfo = async (args: UserInfo, { req, res }: ExpressParams
 
         await user.save(opts)
         await session.commitTransaction()
+        session.endSession()
 
         login && user.email && sendLoginChangedEmail(user.name, user.role, user.email, user.login)
         newPassword && user.email && sendPassChangedEmail(user.name, user.role, user.email, newPassword)
@@ -171,7 +174,7 @@ export const changeUserInfo = async (args: UserInfo, { req, res }: ExpressParams
 export const clearFingerprints = async ({ req, res }: ExpressParams): Promise<boolean> => {
     const user = req.user
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
 
@@ -179,6 +182,7 @@ export const clearFingerprints = async ({ req, res }: ExpressParams): Promise<bo
         user.fingerprints = []
         await user.save(opts)
         await session.commitTransaction()
+        session.endSession()
 
         return true
     } catch (e) {

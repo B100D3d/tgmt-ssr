@@ -7,7 +7,7 @@ const baseURL = process.env.PROD === "true"
 
 const apiClient = axios.create({ baseURL })
 
-export const getSchedule = async (group, { subgroup, even }) => {
+export const getSchedule = async (fingerprint, group, { subgroup, even }) => {
     const res = await apiClient.post("/getSchedule", {
         query: `{
             getSchedule(groupID: "${ group }",
@@ -15,7 +15,8 @@ export const getSchedule = async (group, { subgroup, even }) => {
                         even: ${ even }) {
                             ${ Fields.scheduleFields }
                         }
-        }`
+        }`,
+        fingerprint
     }) 
     return res.data.data.getSchedule
 }
@@ -108,18 +109,19 @@ export const sendSchedule = async (fingerprint, group, { even, subgroup }, sched
     return res.data.data.setSchedule
 }
 
-export const getStudentRecords = async (month) => {
+export const getStudentRecords = async (fingerprint, month) => {
     const res = await apiClient.post("/studentRecords", {
         query: `{
             getStudentRecords(month: ${ month }) {
                 ${ Fields.recordsFields }
             }
-        }`
+        }`,
+        fingerprint
     })
     return res.data.data.getStudentRecords
 }
 
-export const getRecords = async (month, groupId, subjectId, fingerprint) => {
+export const getRecords = async (fingerprint, month, groupId, subjectId) => {
     const res = await apiClient.post("/records", {
         query: `{
         getRecords(month: ${ month },
@@ -394,6 +396,7 @@ export const auth = async (fingerprint) => {
     return query.data.data.auth
 }
 
-export const logout = async () => await apiClient.post("/logout", {})
+export const logout = async (fingerprint) =>
+    await apiClient.post("/logout", { fingerprint })
 
 

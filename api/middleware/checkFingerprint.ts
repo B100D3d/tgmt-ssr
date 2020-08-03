@@ -1,5 +1,4 @@
-import  {NextFunction, Request, Response } from "express";
-import userModel from "../Model/MongoModels/userModel";
+import  { NextFunction, Request, Response } from "express"
 
 const checkFingerprint = async (req: Request, res: Response, next: NextFunction) => {
 
@@ -12,19 +11,15 @@ const checkFingerprint = async (req: Request, res: Response, next: NextFunction)
         });
     }
 
-    const { uniqueId } = req.uniqueId
-    req.user = req.user || await userModel.findById(uniqueId).exec()
-    const user = req.user
-
-    if (!user.isFingerprintValid(fingerprint)) {
+    if (!req.user.isFingerprintValid(fingerprint)) {
         return res.clearCookie("token").status(403).json({
             error: {
                 msg: "Fingerprint invalid"
             }
-        });
+        })
     }
 
-    next();
-};
+    next()
+}
 
-export default checkFingerprint;
+export default checkFingerprint

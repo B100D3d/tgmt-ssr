@@ -41,7 +41,6 @@
 
                 & + .switch-checkbox
                     transform: translateX(100%)
-                    animation: from0to100 0.5s ease-in-out
 
                     &::before
                         content: attr(data-second-name)
@@ -71,33 +70,15 @@
             &:checked
                 & + input + .switch-checkbox
                     transform: translateX(100%)
-                    animation: from0to100 0.5s ease-in-out
 
                     &::before
                         content: attr(data-second-name)
 
                 & + .switch-checkbox
                     transform: translateX(200%)
-                    animation: from100to200 0.5s ease-in-out
 
                     &::before
                         content: attr(data-third-name)
-
-@keyframes from0to100
-    0%
-        transform: scaleX(1) translateX(0)
-    50%
-        transform: scaleX(1.2) translateX(50%)
-    100%
-        transform: scaleX(1) translateX(100%)
-
-@keyframes from100to200
-    0%
-        transform: scaleX(1) translateX(100%)
-    50%
-        transform: scaleX(1.2) translateX(150%)
-    100%
-        transform: scaleX(1) translateX(200%)
 
 @media (max-width: 350px)
     .switch

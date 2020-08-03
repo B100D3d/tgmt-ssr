@@ -72,7 +72,7 @@ const Schedule = () => {
         clearTimeout(switchTimeout.current)
         switchTimeout.current = setTimeout(() => {
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
-            getSchedule(group, switchesState)
+            getSchedule(fingerprint, group, switchesState)
                 .then((s) => {
                     hide()
                     cogoToast.success("Данные успешно загружены.", { position: "top-right" })

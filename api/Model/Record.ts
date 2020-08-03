@@ -12,9 +12,13 @@ import recordModel from "./MongoModels/recordsModel"
 import subjectModel from "./MongoModels/subjectModel"
 import groupModel from "./MongoModels/groupModel"
 import { sortByName } from "./Utils"
+import { startSession } from "./mongodb"
 
 
-export const getStudentRecords = async ({ month }: RecordsGetData, { req }: ExpressParams): Promise<Array<Records>> => {
+export const getStudentRecords = async (
+    { month }: RecordsGetData,
+    { req }: ExpressParams
+): Promise<Array<Records>> => {
 
     const { uniqueId } = req.uniqueId
 
@@ -44,7 +48,12 @@ export const getStudentRecords = async ({ month }: RecordsGetData, { req }: Expr
 }
 
 
-export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): Promise<Array<Records>> => {
+export const getRecords = async (
+    args: RecordsGetData,
+    { res }: ExpressParams,
+    _?: any,
+    session: mongoose.ClientSession = null
+): Promise<Array<Records>> => {
    
     const { month, subjectID, groupID } = args
 
@@ -52,6 +61,7 @@ export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): 
     const groupDB = await groupModel
                             .findOne({ id: groupID })
                             .populate({ path: "students", populate: { path: "records" }})
+                            .session(session)
                             .exec()
 
     if (!subjectDB || !groupDB) {
@@ -76,7 +86,10 @@ export const getRecords = async (args: RecordsGetData, { res }: ExpressParams): 
 }
 
 
-export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promise<Array<Records>> => {
+export const setRecords = async (
+    args: RecordsSetData,
+    ep: ExpressParams
+): Promise<Array<Records>> => {
     await recordModel.createCollection()
 
     const { month, subjectID, groupID, entities } = args
@@ -85,7 +98,7 @@ export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promi
 
     const recordsDB = await recordModel.find({ month, subject: subjectDB._id }).exec()
 
-    const session = await mongoose.startSession()
+    const session = await startSession(ep.req)
     session.startTransaction()
     const opts = { session }
     
@@ -117,8 +130,8 @@ export const setRecords = async (args: RecordsSetData, ep: ExpressParams): Promi
         }
 
         await session.commitTransaction()
-    
-        return getRecords({ month, subjectID, groupID }, ep)
+        session.endSession()
+        return getRecords({ month, subjectID, groupID }, ep, null, session)
         
     } catch(err) {
         console.log(err)

@@ -11,10 +11,14 @@ import subjectModel from "./MongoModels/subjectModel"
 import { generateSubjectID } from "./Utils"
 import teacherModel from "./MongoModels/teacherModel"
 import groupModel from "./MongoModels/groupModel";
+import {startSession} from "./mongodb";
 
 
 
-export const getSubjects = async ({ groupID, subjectID }: SubjectGettingData, { res }: ExpressParams): Promise<Array<Subject>> => {
+export const getSubjects = async (
+    { groupID, subjectID }: SubjectGettingData,
+    { res }: ExpressParams
+): Promise<Array<Subject>> => {
 
     const subjectsDB = groupID
         ? (await groupModel.findOne({ id: groupID }).populate({
@@ -38,7 +42,10 @@ export const getSubjects = async ({ groupID, subjectID }: SubjectGettingData, { 
     return subjects
 }
 
-export const createSubject = async (args: SubjectData, { res }: ExpressParams): Promise<CreatedSubject> => {
+export const createSubject = async (
+    args: SubjectData,
+    { req, res }: ExpressParams
+): Promise<CreatedSubject> => {
     await subjectModel.createCollection()
 
     const { name, teacher: teacherName } = args
@@ -54,7 +61,7 @@ export const createSubject = async (args: SubjectData, { res }: ExpressParams): 
 
     teacher.subjects.addToSet(subject._id)
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
     try {
@@ -62,6 +69,7 @@ export const createSubject = async (args: SubjectData, { res }: ExpressParams): 
         await subject.save(opts)
         await teacher.save(opts)
         await session.commitTransaction()
+        session.endSession()
 
         return { ...args, id }
 
@@ -74,7 +82,10 @@ export const createSubject = async (args: SubjectData, { res }: ExpressParams): 
     }
 }
 
-export const deleteSubject = async ({ subjectID }: SubjectID, { res }: ExpressParams): Promise<boolean> => {
+export const deleteSubject = async (
+    { subjectID }: SubjectID,
+    { req, res }: ExpressParams
+): Promise<boolean> => {
 
     const subject = await subjectModel.findOne({ id: subjectID }).exec()
     const teacher = await teacherModel.findById(subject.teacher).exec()
@@ -85,7 +96,7 @@ export const deleteSubject = async ({ subjectID }: SubjectID, { res }: ExpressPa
         return
     }
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
     try {
@@ -93,6 +104,8 @@ export const deleteSubject = async ({ subjectID }: SubjectID, { res }: ExpressPa
         await subjectModel.deleteOne({ _id: subject._id }, opts)
         await teacher.save(opts)
         await session.commitTransaction()
+        session.endSession()
+
         return true
     } catch(err) {
         console.log(`Subject not deleted: ${err}`)
@@ -104,7 +117,10 @@ export const deleteSubject = async ({ subjectID }: SubjectID, { res }: ExpressPa
 }
 
 
-export const changeSubject = async (args: SubjectChangingData, { res }: ExpressParams): Promise<CreatedSubject> => {
+export const changeSubject = async (
+    args: SubjectChangingData,
+    { req, res }: ExpressParams
+): Promise<CreatedSubject> => {
     const { subjectID, name, teacher: teacherName } = args
 
     const id = generateSubjectID(name, teacherName)
@@ -120,7 +136,7 @@ export const changeSubject = async (args: SubjectChangingData, { res }: ExpressP
 
     const subjectData = { id, name, teacher }
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
 
@@ -135,6 +151,7 @@ export const changeSubject = async (args: SubjectChangingData, { res }: ExpressP
 
         await subject.updateOne(subjectData).exec()
         await session.commitTransaction()
+        session.endSession()
 
         return { id, name, teacher: teacher.name }
 

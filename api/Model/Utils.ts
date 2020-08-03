@@ -2,8 +2,13 @@ import { transliterate } from "transliteration"
 
 const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#$%*"
 
-export const range = (size: number, start = 0): Array<number> => [...Array(size).keys()].map(k => k + start)
-
+export const range = (from: number, to?: number, step = 1): Array<number> => {
+    if(!to){
+        [from, to] = [0, from]
+    }
+    const size = to - from + 1
+    return [...Array(size).keys()].map(k => from + k * step)
+}
 
 export const sortByName = (a: { name: string }, b: { name: string }) => a.name > b.name ? 1 : -1
 

@@ -15,11 +15,15 @@ import groupModel from "./MongoModels/groupModel"
 import studentModel from "./MongoModels/studentModel"
 import {sendEmailChangedEmail, sendUserCreatingEmail} from "./Email"
 import {getWeekNumber} from "./Date"
-import recordsModel from "./MongoModels/recordsModel";
-import {formatSchedule, getSchedule} from "./Schedule";
+import recordsModel from "./MongoModels/recordsModel"
+import { formatSchedule } from "./Schedule"
+import { startSession } from "./mongodb"
 
 
-export const getStudents = async ({ studentID, studentsID, groupsID }: StudentsGetData, { res }: ExpressParams): Promise<Array<Student>> => {
+export const getStudents = async (
+    { studentID, studentsID, groupsID }: StudentsGetData,
+    { res }: ExpressParams
+): Promise<Array<Student>> => {
 
     const student = studentID
         ? await studentModel.findOne({ id: studentID }).exec()
@@ -68,9 +72,12 @@ export const getStudents = async ({ studentID, studentsID, groupsID }: StudentsG
     return students
 }
 
-export const changeStudent = async (args: StudentChangedData, { res }: ExpressParams): Promise<Student> => {
+export const changeStudent = async (
+    args: StudentChangedData,
+    { req, res }: ExpressParams
+): Promise<Student> => {
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
     try {
@@ -107,6 +114,7 @@ export const changeStudent = async (args: StudentChangedData, { res }: ExpressPa
         await group.save(opts)
 
         await session.commitTransaction()
+        session.endSession()
 
         return { 
             id: student.id,
@@ -128,7 +136,10 @@ export const changeStudent = async (args: StudentChangedData, { res }: ExpressPa
 }
 
 
-export const createStudent = async (args: StudentCreatingData, { res }: ExpressParams): Promise<StudentRegData | null> => {
+export const createStudent = async (
+    args: StudentCreatingData,
+    { req, res }: ExpressParams
+): Promise<StudentRegData | null> => {
     await studentModel.createCollection()
     await userModel.createCollection()
 
@@ -138,7 +149,7 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
     const id = generateStudentID(name, group)
     const role = "Student"
     
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
     try {
@@ -174,7 +185,7 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
         await groupDB.save(opts)
         await user.save(opts)
         await session.commitTransaction()
-
+        session.endSession()
         const studentRegData: StudentRegData = {
             ...args,
             login,
@@ -198,7 +209,10 @@ export const createStudent = async (args: StudentCreatingData, { res }: ExpressP
 
 }
 
-export const deleteStudent = async ({ studentID }: StudentID, { res }: ExpressParams): Promise<Boolean> => {
+export const deleteStudent = async (
+    { studentID }: StudentID,
+    { req, res }: ExpressParams
+): Promise<Boolean> => {
 
     const student = await studentModel.findOne({ id: studentID }).exec()
 
@@ -211,7 +225,7 @@ export const deleteStudent = async ({ studentID }: StudentID, { res }: ExpressPa
     const user = await userModel.findOne({ student: student._id }).exec()
     const group = await groupModel.findById(student.group).exec()
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
 
@@ -225,19 +239,24 @@ export const deleteStudent = async ({ studentID }: StudentID, { res }: ExpressPa
 
         await session.commitTransaction()
 
-        return true
+
 
     } catch(e) {
         console.log("Student not deleted", e)
         await session.abortTransaction()
-        session.endSession()
+
         res.status(500)
         return
     }
 
+    session.endSession()
+    return true
+
 }
 
-export const getStudentData = async (user: UserModel, ex: ExpressParams): Promise<Student> => {
+export const getStudentData = async (
+    user: UserModel
+): Promise<Student> => {
     const { login, name, role, email } = user
 
     const studentDB = await user.populate({

@@ -7,16 +7,19 @@ import {
     ExpressParams,
     UserRegData, TeacherID, TeacherChangedData, TeachersGetData
 } from "../types"
-import mongoose from "mongoose"
 import userModel from "./MongoModels/userModel"
 import groupModel from "./MongoModels/groupModel"
 import { generatePassword, generateLogin, generateTeacherID, sortByName } from "./Utils"
 import teacherModel from "./MongoModels/teacherModel"
 import { sendUserCreatingEmail } from "./Email"
 import subjectModel from "./MongoModels/subjectModel"
+import {startSession} from "./mongodb";
 
 
-export const getTeachers = async ({ teacherID, teachersID }: TeachersGetData, { res }: ExpressParams): Promise<Array<Teacher>> => {
+export const getTeachers = async (
+    { teacherID, teachersID }: TeachersGetData,
+    { res }: ExpressParams
+): Promise<Array<Teacher>> => {
 
     const teacher = teacherID
         ? await teacherModel.findOne({ id: teacherID }).exec()
@@ -99,7 +102,10 @@ export const getTeacherData = async (user: UserModel): Promise<Teacher> => {
     return teacher
 }
 
-export const createTeacher = async (args: UserCreatingData, { res }: ExpressParams): Promise<UserRegData | null> => {
+export const createTeacher = async (
+    args: UserCreatingData,
+    { req, res }: ExpressParams
+): Promise<UserRegData | null> => {
     await userModel.createCollection()
     await teacherModel.createCollection()
 
@@ -123,13 +129,15 @@ export const createTeacher = async (args: UserCreatingData, { res }: ExpressPara
 
     await user.setPassword(password)
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
     try {
         await teacher.save(opts)
         await user.save(opts)
         await session.commitTransaction()
+        session.endSession()
+
         const teacherRegData: UserRegData = {
             ...args,
             login,
@@ -152,12 +160,15 @@ export const createTeacher = async (args: UserCreatingData, { res }: ExpressPara
     }
 }
 
-export const deleteTeacher = async ({ teacherID }: TeacherID, { res }: ExpressParams): Promise<Boolean> => {
+export const deleteTeacher = async (
+    { teacherID }: TeacherID,
+    { req, res }: ExpressParams
+): Promise<Boolean> => {
 
     const teacher = await teacherModel.findOne({ id: teacherID }).exec()
     const user = await userModel.findOne({ teacher: teacher._id }).exec()
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
 
@@ -167,6 +178,7 @@ export const deleteTeacher = async ({ teacherID }: TeacherID, { res }: ExpressPa
         await userModel.deleteOne({ _id: user._id }, opts).exec()
 
         await session.commitTransaction()
+        session.endSession()
 
         return true
 
@@ -181,15 +193,16 @@ export const deleteTeacher = async ({ teacherID }: TeacherID, { res }: ExpressPa
 }
 
 
-export const changeTeacher = async (args: TeacherChangedData, { res }: ExpressParams): Promise<Teacher> => {
+export const changeTeacher = async (
+    args: TeacherChangedData,
+    { req, res }: ExpressParams
+): Promise<Teacher> => {
 
-    const session = await mongoose.startSession()
+    const session = await startSession(req)
     session.startTransaction()
     const opts = { session }
     try {
         const { teacherID: id, data: { name, email } } = args
-
-        if (!name) return
 
         const teacher = await teacherModel.findOne({ id }).exec()
         const user = await userModel.findOne({ teacher: teacher._id }).exec()
@@ -203,6 +216,7 @@ export const changeTeacher = async (args: TeacherChangedData, { res }: ExpressPa
         await userModel.findByIdAndUpdate(user._id, userData, opts)
 
         await session.commitTransaction()
+        session.endSession()
 
         return userData
 

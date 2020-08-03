@@ -11,8 +11,6 @@ import { generatePassword, generateLogin } from "./Utils";
 import userModel from "./MongoModels/userModel";
 import { sendUserCreatingEmail } from "./Email";
 
-
-
 export const getAdminData = async (user: UserModel): Promise<Admin> => {
     const { login, name, role, email } = user
 

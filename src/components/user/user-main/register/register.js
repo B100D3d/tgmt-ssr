@@ -53,7 +53,7 @@ const Register = () => {
         monthTimeout.current = setTimeout(() => {
             const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
             const getRecordsFunc = isStudent ? getStudentRecords : getRecords
-            getRecordsFunc(month, groupId, subjectId, fingerprint)
+            getRecordsFunc(fingerprint, month, groupId, subjectId)
                 .then((r) => {
                     hide()
                     cogoToast.success("Данные успешно загружены.", { position: "top-right" })
