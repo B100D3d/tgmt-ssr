@@ -4,7 +4,7 @@ import "./users-list.sass"
 import { deleteStudent, deleteTeacher, getStudents, getTeachers } from "services"
 import { FingerprintContext, UserContext } from "context"
 import cogoToast from "cogo-toast"
-import { Link, useLocation, useHistory } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group"
 import useLogout from "hooks/useLogout"
 

@@ -12,6 +12,12 @@
     overflow: hidden
     transition: max-height 1s ease-in-out
 
+    &.opened
+        max-height: 5000px
+
+        + .open-container .open
+            display: none
+
     h2
         font-weight: bold
         color: #19CCF3

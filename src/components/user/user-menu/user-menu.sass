@@ -66,21 +66,23 @@
         margin: 0
         padding: 0
 
-        a:last-child li
-            border-radius: 5px 5px 20px 5px
-
         li
-            color: #968c8c
-            padding: 10px 20px
-            cursor: pointer
-            font-size: 20px
-            border-radius: 5px
+            &:last-child a
+                border-radius: 5px 5px 20px 5px
+            a
+                display: block
+                height: 100%
+                color: #968c8c
+                padding: 10px 20px
+                cursor: pointer
+                font-size: 20px
+                border-radius: 5px
 
-            &.active
-                color: white
+                &.active
+                    color: white
 
-            &:hover
-                background-color: rgba(255, 255, 255, 0.1)
+                &:hover
+                    background-color: rgba(255, 255, 255, 0.1)
 
 
 

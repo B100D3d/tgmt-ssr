@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 
 import "./subject-list.sass"
-import { Link, useLocation, useHistory } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { CSSTransition, TransitionGroup } from "react-transition-group"
 import { FingerprintContext, UserContext } from "context"
 import { deleteSubject, getSubjects } from "services"

@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
 import { useParams } from "react-router-dom"
-
-import "./register.sass"
+import loadable from "@loadable/component"
 import { FingerprintContext, UserContext } from "context"
 import { getRecords, getStudentRecords, sendRecords } from "services"
 import cogoToast from "cogo-toast"
 import MonthSelector from "./month-selector/month-selector"
 import useLogout from "hooks/useLogout"
 import { range } from "utils"
-import DataGrid from "components/data-grid/data-grid"
+
+const DataGrid = loadable(() => import(/* webpackChunkName: "DataGrid" */"components/data-grid/data-grid"))
+
+import "./register.sass"
 
 const getRows = records => records.map(({ name, records }) => ({ name, ...records }))
 

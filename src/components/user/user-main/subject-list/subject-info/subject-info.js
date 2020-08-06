@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams } from "react-router-dom"
 import loadable from "@loadable/component"
 import useLogout from "hooks/useLogout"
 import cogoToast from "cogo-toast"
@@ -9,6 +9,8 @@ import { changeSubject, createSubject, getSubject, getTeachers } from "services"
 import "./subject-info.sass"
 
 const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
+//import Dropdown from "components/dropdown/dropdown"
+
 
 const SubjectInfo = () => {
     const logout = useLogout()

@@ -1,15 +1,16 @@
-import React, {useContext, useEffect, useMemo, useState} from "react"
-import { useHistory } from "react-router-dom"
-import "./mailing.sass"
-import loadable from "@loadable/component"
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react"
 import { FingerprintContext, UserContext } from "context"
 import { CSSTransition } from "react-transition-group"
+import loadable from "@loadable/component"
 import { getStudents, getTeachers, mailing } from "services"
 import cogoToast from "cogo-toast"
 import Checkbox from "./checkbox/checkbox"
 import useLogout from "hooks/useLogout"
 
+import "./mailing.sass"
+
 const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
+//import Dropdown from "components/dropdown/dropdown"
 
 const TYPE_OPTIONS = [
     { key: "All", value: "All", text: "Все" },
@@ -18,35 +19,40 @@ const TYPE_OPTIONS = [
     { key: "Teachers", value: "Teachers", text: "Преподаватели" }
 ]
 
-
 const Mailing = () => {
     const logout = useLogout()
     const { user } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
     const [type, setType] = useState()
     const [entities, setEntities] = useState([])
-    const [message, setMessage] = useState()
     const [selectedEntities, setSelectedEntities] = useState([])
-    const [disabledRecipients, setDisabledRecipients] = useState(false)
-    const recipientsPlaceholder = useMemo(() => disabledRecipients
-        ? "Все получатели выбраны" : "Выберите получателей", [disabledRecipients])
+    const [message, setMessage] = useState("")
+    const [allSelected, setAllSelected] = useState(false)
+    const submitBtn = useRef()
+    const recipientsPlaceholder = useMemo(() => allSelected
+        ? "Все получатели выбраны" : "Выберите получателей", [allSelected])
 
 
     useEffect(() => {
         getEntities()
             .then((e) => {
                 setEntities(e)
-                setSelectedEntities(disabledRecipients ? e : [])
+                setSelectedEntities(allSelected ? e : [])
                 setMessage("")
-            })
-            .catch((error) => {
-                cogoToast.error("Ошибка.", { position: "top-right" })
             })
     }, [type])
 
     useEffect(() => {
-        !selectedEntities.length && setMessage("")
+        if(!selectedEntities.length) {
+            setMessage("")
+        }
     }, [selectedEntities])
+
+    useEffect(() => {
+        if(message) {
+            submitBtn.current.scrollIntoView()
+        }
+    }, [message])
 
     const getEntities = async () => {
         try {
@@ -60,6 +66,7 @@ const Mailing = () => {
             return entities.map((e) => ({ key: e.id, value: e.id, text: e.name }))
         } catch (error) {
             if (error.response.status === 401 || error.response.status === 403) {
+                cogoToast.error("Ошибка.", { position: "top-right" })
                 logout()
             }
         }
@@ -75,27 +82,21 @@ const Mailing = () => {
         const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
         mailing(fingerprint, type, selectedEntities, message)
             .then(() => {
-                hide()
                 cogoToast.success("Успешно отправлено.", { position: "top-right" })
             })
             .catch(() => {
-                hide()
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 if (error.response.status === 401 || error.response.status === 403) {
                     logout()
                 }
             })
+            .finally(hide)
     }
 
     const handleAll = (e) => {
         const checked = e.target.checked
-        if (checked) {
-            setDisabledRecipients(true)
-            setSelectedEntities([...entities])
-        } else {
-            setDisabledRecipients(false)
-            setSelectedEntities([])
-        }
+        setAllSelected(checked)
+        setSelectedEntities(checked ? [...entities] : [])
     }
 
     return (
@@ -107,7 +108,7 @@ const Mailing = () => {
                     <Dropdown options={ TYPE_OPTIONS } placeholder="Выберите тип" onChange={ handleType } />
                 </div>
                 <CSSTransition
-                    in={ !!(type && type !== "All") }
+                    in={ Boolean(type && type !== "All") }
                     timeout={ 500 }
                     classNames="fade"
                     unmountOnExit
@@ -116,13 +117,13 @@ const Mailing = () => {
                         <h3>Выберите получателей</h3>
                         <div className="input-wrapper">
                             <Dropdown options={ entities } placeholder={ recipientsPlaceholder }
-                                      multiple search onChange={ handleEntities } disabled={ disabledRecipients } />
+                                      multiple search onChange={ handleEntities } disabled={ allSelected } />
                             <Checkbox onClick={ handleAll } />
                         </div>
                     </div>
                 </CSSTransition>
                 <CSSTransition
-                    in={ !!(selectedEntities.length || type === "All") }
+                    in={ Boolean(selectedEntities.length || type === "All") }
                     timeout={ 500 }
                     classNames="fade"
                     unmountOnExit
@@ -133,12 +134,17 @@ const Mailing = () => {
                     </div>
                 </CSSTransition>
                 <CSSTransition
-                    in={ !!message }
+                    in={ Boolean(message) }
                     timeout={ 500 }
                     classNames="fade"
                     unmountOnExit
                 >
-                    <button className="send-btn" onClick={ handleSend }>Отправить</button>
+                    <button
+                        ref={ submitBtn }
+                        className="send-btn"
+                        onClick={ handleSend }>
+                        Отправить
+                    </button>
                 </CSSTransition>
             </div>
         </div>

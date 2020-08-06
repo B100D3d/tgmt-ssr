@@ -6,23 +6,23 @@ import inst from "static/instagram.svg"
 import vk from "static/vk.svg"
 import google from "static/google.svg"
 
+const MILLISECONDS_IN_YEAR = 1000 * 60 * 60 * 24 * 365
 
 const Footer = () => {
-
     const [diff, setDiff] = useState()
 
     useEffect(() => {
         const currentDate = new Date() //сегодняшняя дата
         const creatingDate = new Date(1952, 6, 16) //дата начала
-        setDiff(Math.floor((currentDate - creatingDate) / (1000 * 60 * 60 * 24 * 365)))
+        setDiff(Math.floor((currentDate - creatingDate) / MILLISECONDS_IN_YEAR))
     }, [])
 
     return (
         <div className="footer">
             <div className="title-and-logo">
                 <h2>Друзья ТГМТ</h2>
-                <div className="friends-container" >
-                    <img src={ rggmu } alt="rggmu" className="rggmu" />
+                <div className="friends-container">
+                    <img src={rggmu} alt="rggmu" className="rggmu" />
                 </div>
             </div>
             <div className="info">
@@ -39,14 +39,25 @@ const Footer = () => {
             </div>
             <div className="social">
                 <h2>Присоединяйтесь</h2>
-                <a href="#" target="_blank"><img src={ google } alt="google+" className="google" /></a>
-                <a href="https://vk.com/tgmt_tuapse" target="_blank"><img src={ vk } alt="vk" className="vk" /></a>
-                <a href="https://www.instagram.com/tgmt_tuapse/" target="_blank"><img src={ inst } 
-                    alt="instagram" className="inst" /></a>
+                <a href="#" target="_blank">
+                    <img src={google} alt="google+" className="google" />
+                </a>
+                <a href="https://vk.com/tgmt_tuapse" target="_blank">
+                    <img src={vk} alt="vk" className="vk" />
+                </a>
+                <a
+                    href="https://www.instagram.com/tgmt_tuapse/"
+                    target="_blank"
+                >
+                    <img src={inst} alt="instagram" className="inst" />
+                </a>
             </div>
-            <span className="subtitle">{ diff } лет успешной деятельности в сфере профессионального образования</span>
+            <span className="subtitle">
+                {diff} лет успешной деятельности в сфере профессионального
+                образования
+            </span>
             <span className="copyright">Copyright © 2020</span>
-        </div >
+        </div>
     )
 }
 

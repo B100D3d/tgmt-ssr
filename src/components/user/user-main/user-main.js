@@ -1,21 +1,21 @@
 import React, { useContext } from "react"
 import { TransitionGroup, CSSTransition } from "react-transition-group"
 import { Route, Switch, useLocation, useHistory } from "react-router-dom"
-
-import "./user-main.sass"
-import Schedule from "./schedule/schedule"
 import { UserContext } from "context"
+
+import Schedule from "./schedule/schedule"
 import Selector from "./selector/selector"
 import Register from "./register/register"
 import UsersList from "./users-list/users-list"
-
-import back from "static/previous.svg"
 import UserInfo from "./users-list/user-info/user-info"
 import GroupInfo from "./group-info/group-info"
 import SubjectList from "./subject-list/subject-list"
 import SubjectInfo from "./subject-list/subject-info/subject-info"
 import Settings from "./settings/settings"
 import Mailing from "./mailing/mailing"
+
+import "./user-main.sass"
+import back from "static/previous.svg"
 
 const LINKS = [
     "/user/register",
@@ -27,9 +27,7 @@ const LINKS = [
     "/user"
 ]
 
-const shouldBackRender = (path) => {
-    return !LINKS.includes(path)
-}
+const shouldBackRender = path => !LINKS.includes(path)
 
 const UserMain = () => {
 
@@ -37,13 +35,9 @@ const UserMain = () => {
     const history = useHistory()
     const { user: { role } } = useContext(UserContext)
 
-    const onBack = () => {
-        history.goBack()
-    }
-
     return (
         <div className="user-main">
-            { shouldBackRender(location.pathname) && <img className="back" src={ back } alt="back" onClick={ onBack }/> }
+            { shouldBackRender(location.pathname) && <img className="back" src={ back } alt="back" onClick={ history.goBack }/> }
             <TransitionGroup>
                 <CSSTransition
                     key={ location.key }

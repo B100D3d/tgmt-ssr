@@ -1,12 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react"
-
-import "./group-info.sass"
 import { FingerprintContext, UserContext } from "context"
 import { useParams } from "react-router-dom"
+
 import { changeGroup, createGroup } from "services"
 import cogoToast from "cogo-toast"
 import useLogout from "hooks/useLogout"
 
+import "./group-info.sass"
 
 const GroupInfo = () => {
     const logout = useLogout()

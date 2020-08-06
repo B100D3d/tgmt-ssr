@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import {generateId, range, registerCSSColorProperty} from "utils"
+import { range, registerCSSColorProperty } from "utils"
 import useIncrementingNumber from "./useIncrementingNumber"
 
 const rainbowColors = [

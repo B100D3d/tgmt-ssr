@@ -1,25 +1,36 @@
-import React, { useContext } from "react"
-
-import "./user-menu.sass"
+import React, { useContext, useMemo } from "react"
 import { UserContext } from "context"
-import logoutImg from "static/logout.svg"
-import AdminList from "./admin-list/admin-list"
-import StudentList from "./student-list/student-list"
-import TeachersList from "./teacher-list/teacher-list"
+
 import useLogout from "hooks/useLogout"
 
+import "./user-menu.sass"
+import logoutImg from "static/logout.svg"
+import { NavLink as Link } from "react-router-dom"
 
+const ROUTE_TEXT = {
+    "/user": "Рассписание",
+    "/user/register": "Журнал",
+    "/user/subjects": "Предметы",
+    "/user/students": "Студенты",
+    "/user/teachers": "Преподаватели",
+    "/user/mailing": "Рассылка",
+    "/user/settings": "Настройки",
+}
 
-const LISTS = {
-    Admin: <AdminList />,
-    Student: <StudentList />,
-    Teacher: <TeachersList />
+const ROUTES = {
+    "/user": "All",
+    "/user/register": "All",
+    "/user/subjects": ["Admin"],
+    "/user/students": ["Admin"],
+    "/user/teachers": ["Admin"],
+    "/user/mailing": ["Admin"],
+    "/user/settings": "All",
 }
 
 const getRole = (user) => {
     if (user.role === "Admin") {
         return "Администратор"
-    } 
+    }
     if (user.role === "Student") {
         return `Студент | ${user.group.year} курс | группа ${user.group.name}`
     }
@@ -28,29 +39,45 @@ const getRole = (user) => {
     }
 }
 
-
 const UserMenu = () => {
-
     const logout = useLogout()
     const { user } = useContext(UserContext)
-    const list = LISTS[user.role]
-    const role = getRole(user)
+    const routes = useMemo(
+        () =>
+            Object.entries(ROUTES).map(([key, value]) => {
+                if (value.includes(user.role) || value === "All") {
+                    return key
+                }
+            }),
+        [user]
+    )
+    const role = useMemo(() => getRole(user), [user])
 
     return (
         <div className="user-menu">
             <div className="user-info">
                 <div className="user-text">
-                    <h3>{ user.name }</h3>
-                    <p>{ role }</p>
+                    <h3>{user.name}</h3>
+                    <p>{role}</p>
                 </div>
                 <div className="logout-con">
-                    <img src={ logoutImg } alt="logout" />
-                    <button onClick={ logout } className="logout-btn" />
+                    <img src={logoutImg} alt="logout" />
+                    <button onClick={logout} className="logout-btn" />
                 </div>
             </div>
             <hr />
             <ul className="list">
-                { list }
+                {routes.map((route) => (
+                    <li key={route}>
+                        <Link
+                            exact={route === "/user"}
+                            activeClassName="active"
+                            to={route}
+                        >
+                            {ROUTE_TEXT[route]}
+                        </Link>
+                    </li>
+                ))}
             </ul>
         </div>
     )

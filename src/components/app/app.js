@@ -1,30 +1,34 @@
 import React, { useEffect, useState } from "react"
 import { Route, Switch } from "react-router-dom"
-import loadable from "@loadable/component"
 import Fingerprint from "fingerprintjs2"
 import UAParser from "ua-parser-js"
+import loadable from "@loadable/component"
 import { FingerprintContext, InitialDataContext, WeekContext } from "context"
 import { getWeek } from "services"
 
-const MainPage = loadable(() => import(/* webpackChunkName: "MainPage" */"pages/MainPage"))
-const Page404 = loadable(() => import(/* webpackChunkName: "Page404" */"pages/Page404"))
-const AuthPage = loadable(() => import(/* webpackChunkName: "AuthPage" */"pages/AuthPage"))
-
+const MainPage = loadable(() =>
+    import(/* webpackChunkName: "MainPage" */ "pages/MainPage")
+)
+const Page404 = loadable(() =>
+    import(/* webpackChunkName: "Page404" */ "pages/Page404")
+)
+const AuthPage = loadable(() =>
+    import(/* webpackChunkName: "AuthPage" */ "pages/AuthPage")
+)
 
 const getFingerPrint = async () => {
     const components = await Fingerprint.getPromise({
         preprocessor: (key, value) => {
             if (key === "userAgent") {
                 const parser = new UAParser(value)
-                return `${ parser.getOS().name } ${ parser.getBrowser().name }`
-            } 
+                return `${parser.getOS().name} ${parser.getBrowser().name}`
+            }
             return value
-        }
+        },
     })
     const values = components.map((c) => c.value)
-    return Fingerprint.x64hash128(values.join(''), 31)
+    return Fingerprint.x64hash128(values.join(""), 31)
 }
-
 
 const App = (props) => {
     const data = props.data || {}
@@ -33,10 +37,10 @@ const App = (props) => {
     const [fingerprint, setFingerprint] = useState()
 
     useEffect(() => {
-        if(!week){
+        if (!week) {
             getWeek().then(setWeek)
         }
-    },[])
+    }, [])
 
     useEffect(() => {
         if (window.requestIdleCollback) {
@@ -50,30 +54,25 @@ const App = (props) => {
         }
     }, [])
 
-
     return (
-        <FingerprintContext.Provider value={ fingerprint }>
-            <InitialDataContext.Provider value={ data }>
-                <WeekContext.Provider value={ week || {} }>
+        <FingerprintContext.Provider value={fingerprint}>
+            <InitialDataContext.Provider value={data}>
+                <WeekContext.Provider value={week || {}}>
                     <Switch>
-                        <Route exact path='/' component={ MainPage } />
-                        <Route path='/user' component={ AuthPage } />
-                        <Route path='/documents' component={ Test } />
-                        <Route render={({ staticContext }) => {
-                            if (staticContext) staticContext.statusCode = 404
-                            return <Page404 />
-                        }} />
+                        <Route exact path="/" component={MainPage} />
+                        <Route path="/user" component={AuthPage} />
+                        <Route
+                            render={({ staticContext }) => {
+                                if (staticContext)
+                                    staticContext.statusCode = 404
+                                return <Page404 />
+                            }}
+                        />
                     </Switch>
-                </WeekContext.Provider>   
+                </WeekContext.Provider>
             </InitialDataContext.Provider>
-        </FingerprintContext.Provider> 
+        </FingerprintContext.Provider>
     )
 }
-
-const Test = () => (
-    <>
-        <div>Lorem</div>
-    </>
-)
 
 export default App

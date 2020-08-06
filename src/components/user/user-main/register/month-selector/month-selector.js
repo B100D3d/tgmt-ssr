@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer} from "react"
+import React, { useEffect, useReducer } from "react"
 
 import "./month-selector.sass"
 import { CSSTransition, TransitionGroup } from "react-transition-group"

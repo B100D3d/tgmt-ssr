@@ -5,21 +5,30 @@ import Search from "components/search/search"
 import "./header-top.sass"
 import eye from "static/eye.svg"
 import student from "static/student.svg"
-const RainbowButton = loadable(() => import(/* webpackChunkName: "RainbowButton" */"components/rainbow-button/rainbow-button"))
-
+const RainbowButton = loadable(() =>
+    import(
+        /* webpackChunkName: "RainbowButton" */ "components/rainbow-button/rainbow-button"
+    )
+)
 
 const HeaderTop = () => {
     return (
         <div className="header-top">
             <div className="container">
                 <button className="contrast">
-                    <img src={ eye } alt="eye" className="eye" width="30px" height="30px" />
+                    <img
+                        src={eye}
+                        alt="eye"
+                        className="eye"
+                        width="30px"
+                        height="30px"
+                    />
                     Версия для слабовидящих
                 </button>
                 <Search />
                 <Link to="/user">
-                    <RainbowButton className="login" interval={ 2000 }>
-                        <img src={ student } alt="student" className="student" />
+                    <RainbowButton className="login" interval={2000}>
+                        <img src={student} alt="student" className="student" />
                         Личный кабинет
                     </RainbowButton>
                 </Link>

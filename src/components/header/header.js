@@ -14,7 +14,7 @@ const Header = () => {
             <HeaderMenu />
             <HeaderMid />
             <hr />
-            <SecondMenu /> 
+            <SecondMenu />
         </header>
     )
 }

@@ -1,38 +1,35 @@
-import React, { useRef } from "react"
+import React, { useState } from "react"
 import OpenButton from "components/open-button/open-button"
 
-import s from "./about.module.sass"
+import "./about.sass"
 import tgmt from "static/tgmt.webp"
 
-import { t, text } from "./text.js"
+import text from "./text.js"
 
 const About = () => {
-    const aboutEl = useRef()
-
-    const handleClick = el => {
-        aboutEl.current.style.maxHeight = "5000px"
-        el.currentTarget.style.display = "none"
-    }
+    const [opened, setOpened] = useState(false)
 
     return (
         <>
-            <div className={ s.about } ref={ aboutEl }>
-                <h2>
-                    О техникуме
-                </h2>
+            <div className={`about ${opened ? "opened" : ""}`}>
+                <h2>О техникуме</h2>
                 <p>
-                    <img src={ tgmt } alt="tgmt" />
+                    <img src={tgmt} alt="tgmt" />
                 </p>
-                <p>
-                    <span>{ t }</span>
-                    { text[0] }
-                </p>
-                { text.map((item, i) => {
-                    if (i !== 0) 
-                        return <p key={ i }>{ item }</p>                        
-                })}
+                {text.map((item, i) => (
+                    <p key={i}>
+                        {i === 0 ? (
+                            <>
+                                <span>{item[0]}</span>
+                                {item.slice(1, item.length)}
+                            </>
+                        ) : (
+                            item
+                        )}
+                    </p>
+                ))}
             </div>
-            <OpenButton onClick={ handleClick } />
+            <OpenButton onClick={() => setOpened(!opened)} />
         </>
     )
 }
