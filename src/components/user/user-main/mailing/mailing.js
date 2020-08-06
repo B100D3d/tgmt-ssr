@@ -99,7 +99,7 @@ const Mailing = () => {
     }
 
     return (
-        <div className="mailing-container">
+        <div className="user-main-container mailing-container">
             <h1>Рассылка</h1>
             <div className="mailing">
                 <div className="type">
