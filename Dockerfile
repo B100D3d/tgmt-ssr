@@ -7,9 +7,11 @@ RUN npm i -g node-gyp
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY package*.json ./
 
-RUN npm i
+RUN npm ci --only=production
+
+COPY . .
 
 EXPOSE 3000
 
