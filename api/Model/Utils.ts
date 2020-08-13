@@ -1,21 +1,23 @@
 import { transliterate } from "transliteration"
 
-const CHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#$%*"
+const CHARS =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#$%*"
 
 export const range = (from: number, to?: number, step = 1): Array<number> => {
-    if(!to){
-        [from, to] = [0, from]
+    if (!to) {
+        ;[from, to] = [0, from]
     }
-    const size = to - from + 1
-    return [...Array(size).keys()].map(k => from + k * step)
+    const size = to - from
+    return [...Array(size).keys()].map((k) => from + k * step)
 }
 
-export const sortByName = (a: { name: string }, b: { name: string }) => a.name > b.name ? 1 : -1
+export const sortByName = (a: { name: string }, b: { name: string }) =>
+    a.name > b.name ? 1 : -1
 
 const generateStr = (length: number): string => {
     let str = ""
-    for (let i = 0; i < length; i++){
-        str += CHARS[Math.floor(Math.random() * CHARS.length)];
+    for (let i = 0; i < length; i++) {
+        str += CHARS[Math.floor(Math.random() * CHARS.length)]
     }
     return str
 }
@@ -25,12 +27,12 @@ export const generateLogin = (name: string): string => {
     const tLastName = transliterate(lastName)
     const str = generateStr(4)
     return `${tLastName}_${str}`
-};
+}
 
 export const generatePassword = (): string => {
     const length = Math.floor(12 + Math.random() * 5)
     return generateStr(length)
-};
+}
 
 export const generateGroupID = (name: string): string => {
     return transliterate(name.split(" ").join(""))
