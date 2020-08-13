@@ -1,30 +1,45 @@
 import React, { useContext, useMemo } from "react"
 import { UserContext } from "context"
-
+import { NavLink as Link } from "react-router-dom"
+import CircleButton from "components/circle-button/circle-button"
 import useLogout from "hooks/useLogout"
 
 import "./user-menu.sass"
 import logoutImg from "static/logout.svg"
-import { NavLink as Link } from "react-router-dom"
-
-const ROUTE_TEXT = {
-    "/user": "Рассписание",
-    "/user/register": "Журнал",
-    "/user/subjects": "Предметы",
-    "/user/students": "Студенты",
-    "/user/teachers": "Преподаватели",
-    "/user/mailing": "Рассылка",
-    "/user/settings": "Настройки",
-}
 
 const ROUTES = {
-    "/user": "All",
-    "/user/register": "All",
-    "/user/subjects": ["Admin"],
-    "/user/students": ["Admin"],
-    "/user/teachers": ["Admin"],
-    "/user/mailing": ["Admin"],
-    "/user/settings": "All",
+    "/user": {
+        roles: "All",
+        text: "Рассписание",
+    },
+    "/user/register": {
+        roles: "All",
+        text: "Журнал",
+    },
+    "/user/groups": {
+        roles: ["Admin"],
+        text: "Группы",
+    },
+    "/user/subjects": {
+        roles: ["Admin"],
+        text: "Предметы",
+    },
+    "/user/students": {
+        roles: ["Admin"],
+        text: "Студенты",
+    },
+    "/user/teachers": {
+        roles: ["Admin"],
+        text: "Преподаватели",
+    },
+    "/user/mailing": {
+        roles: ["Admin"],
+        text: "Рассылка",
+    },
+    "/user/settings": {
+        roles: "All",
+        text: "Настройки",
+    },
 }
 
 const getRole = (user) => {
@@ -44,9 +59,9 @@ const UserMenu = () => {
     const { user } = useContext(UserContext)
     const routes = useMemo(
         () =>
-            Object.entries(ROUTES).map(([key, value]) => {
-                if (value.includes(user.role) || value === "All") {
-                    return key
+            Object.entries(ROUTES).map(([route, { roles }]) => {
+                if (roles.includes(user.role) || roles === "All") {
+                    return route
                 }
             }),
         [user]
@@ -60,10 +75,7 @@ const UserMenu = () => {
                     <h3>{user.name}</h3>
                     <p>{role}</p>
                 </div>
-                <div className="logout-con">
-                    <img src={logoutImg} alt="logout" />
-                    <button onClick={logout} className="logout-btn" />
-                </div>
+                <CircleButton img={logoutImg} onClick={logout} />
             </div>
             <hr />
             <ul className="list">
@@ -71,10 +83,20 @@ const UserMenu = () => {
                     <li key={route}>
                         <Link
                             exact={route === "/user"}
+                            isActive={(match, location) => {
+                                if (match) {
+                                    return match
+                                }
+                                if (route === "/user") {
+                                    return location.pathname.match(
+                                        /^(\/user\/\d)/
+                                    )
+                                }
+                            }}
                             activeClassName="active"
                             to={route}
                         >
-                            {ROUTE_TEXT[route]}
+                            {ROUTES[route].text}
                         </Link>
                     </li>
                 ))}

@@ -1,6 +1,8 @@
 import React from "react"
-import anim from "./loading.json"
 import loadable from "@loadable/component"
+
+import anim from "static/loading.json"
+
 const Lottie = loadable(() =>
     import(/* webpackChunkName: "Lottie" */ "components/lottie/lottie")
 )

@@ -1,5 +1,5 @@
 import React, { useRef, useContext, useEffect } from "react"
-import { Link } from "react-router-dom"
+import { Link, useHistory } from "react-router-dom"
 import cogoToast from "cogo-toast"
 import loadable from "@loadable/component"
 import { login } from "services"
@@ -13,8 +13,10 @@ const RainbowButton = loadable(() =>
 
 import back from "static/previous.svg"
 import "./login.sass"
+import CircleButton from "components/circle-button/circle-button"
 
 const Login = () => {
+    const history = useHistory()
     const { setUser, setError } = useContext(UserContext)
     const fingerprint = useContext(FingerprintContext)
 
@@ -72,9 +74,7 @@ const Login = () => {
     return (
         <div className="auth-back" ref={background}>
             <div className="auth">
-                <Link to="/">
-                    <img src={back} alt="back" />
-                </Link>
+                <CircleButton img={back} onClick={history.goBack} />
                 <h1 className="title">Авторизация</h1>
                 <div className="input-container">
                     <div className="input-border">

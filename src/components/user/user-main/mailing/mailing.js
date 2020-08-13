@@ -9,14 +9,15 @@ import useLogout from "hooks/useLogout"
 
 import "./mailing.sass"
 
-const Dropdown = loadable(() => import(/* webpackChunkName: "Dropdown" */"components/dropdown/dropdown"))
-//import Dropdown from "components/dropdown/dropdown"
+const Dropdown = loadable(() =>
+    import(/* webpackChunkName: "Dropdown" */ "components/dropdown/dropdown")
+)
 
 const TYPE_OPTIONS = [
     { key: "All", value: "All", text: "Все" },
     { key: "Groups", value: "Groups", text: "Группы" },
     { key: "Students", value: "Students", text: "Студенты" },
-    { key: "Teachers", value: "Teachers", text: "Преподаватели" }
+    { key: "Teachers", value: "Teachers", text: "Преподаватели" },
 ]
 
 const Mailing = () => {
@@ -29,43 +30,51 @@ const Mailing = () => {
     const [message, setMessage] = useState("")
     const [allSelected, setAllSelected] = useState(false)
     const submitBtn = useRef()
-    const recipientsPlaceholder = useMemo(() => allSelected
-        ? "Все получатели выбраны" : "Выберите получателей", [allSelected])
-
+    const recipientsPlaceholder = useMemo(
+        () => (allSelected ? "Все получатели выбраны" : "Выберите получателей"),
+        [allSelected]
+    )
 
     useEffect(() => {
-        getEntities()
-            .then((e) => {
-                setEntities(e)
-                setSelectedEntities(allSelected ? e : [])
-                setMessage("")
-            })
+        getEntities().then((e) => {
+            setEntities(e)
+            setSelectedEntities(allSelected ? e : [])
+            setMessage("")
+        })
     }, [type])
 
     useEffect(() => {
-        if(!selectedEntities.length) {
+        if (!selectedEntities.length) {
             setMessage("")
         }
     }, [selectedEntities])
 
     useEffect(() => {
-        if(message) {
+        if (message) {
             submitBtn.current.scrollIntoView()
         }
     }, [message])
 
     const getEntities = async () => {
         try {
-            const entities = type === "Students"
-                ? await getStudents(fingerprint)
-                : type === "Teachers"
-                ? await getTeachers(fingerprint)
-                : type === "Groups"
-                ? user.groups
-                : []
-            return entities.map((e) => ({ key: e.id, value: e.id, text: e.name }))
+            const entities =
+                type === "Students"
+                    ? await getStudents(fingerprint)
+                    : type === "Teachers"
+                    ? await getTeachers(fingerprint)
+                    : type === "Groups"
+                    ? user.groups
+                    : []
+            return entities.map((e) => ({
+                key: e.id,
+                value: e.id,
+                text: e.name,
+            }))
         } catch (error) {
-            if (error.response.status === 401 || error.response.status === 403) {
+            if (
+                error.response.status === 401 ||
+                error.response.status === 403
+            ) {
                 cogoToast.error("Ошибка.", { position: "top-right" })
                 logout()
             }
@@ -79,14 +88,22 @@ const Mailing = () => {
     const handleType = (_, data) => setType(data.value)
 
     const handleSend = () => {
-        const { hide } = cogoToast.loading("Загрузка...", { hideAfter: 0, position: "top-right" })
+        const { hide } = cogoToast.loading("Загрузка...", {
+            hideAfter: 0,
+            position: "top-right",
+        })
         mailing(fingerprint, type, selectedEntities, message)
             .then(() => {
-                cogoToast.success("Успешно отправлено.", { position: "top-right" })
+                cogoToast.success("Успешно отправлено.", {
+                    position: "top-right",
+                })
             })
             .catch(() => {
                 cogoToast.error("Ошибка.", { position: "top-right" })
-                if (error.response.status === 401 || error.response.status === 403) {
+                if (
+                    error.response.status === 401 ||
+                    error.response.status === 403
+                ) {
                     logout()
                 }
             })
@@ -105,44 +122,60 @@ const Mailing = () => {
             <div className="mailing">
                 <div className="type">
                     <h3>Выберите тип получателя</h3>
-                    <Dropdown options={ TYPE_OPTIONS } placeholder="Выберите тип" onChange={ handleType } />
+                    <Dropdown
+                        options={TYPE_OPTIONS}
+                        placeholder="Выберите тип"
+                        onChange={handleType}
+                    />
                 </div>
                 <CSSTransition
-                    in={ Boolean(type && type !== "All") }
-                    timeout={ 500 }
+                    in={Boolean(type && type !== "All")}
+                    timeout={500}
                     classNames="fade"
                     unmountOnExit
                 >
                     <div className="recipients">
                         <h3>Выберите получателей</h3>
                         <div className="input-wrapper">
-                            <Dropdown options={ entities } placeholder={ recipientsPlaceholder }
-                                      multiple search onChange={ handleEntities } disabled={ allSelected } />
-                            <Checkbox onClick={ handleAll } />
+                            <Dropdown
+                                options={entities}
+                                placeholder={recipientsPlaceholder}
+                                multiple
+                                search
+                                onChange={handleEntities}
+                                disabled={allSelected}
+                            />
+                            <Checkbox onClick={handleAll} />
                         </div>
                     </div>
                 </CSSTransition>
                 <CSSTransition
-                    in={ Boolean(selectedEntities.length || type === "All") }
-                    timeout={ 500 }
+                    in={Boolean(selectedEntities.length || type === "All")}
+                    timeout={500}
                     classNames="fade"
                     unmountOnExit
                 >
                     <div className="textarea">
                         <h3>Введите текст</h3>
-                        <textarea cols="" rows="10" placeholder="Введите текст рассылки" onChange={ handleMessage } />
+                        <textarea
+                            cols=""
+                            rows="10"
+                            placeholder="Введите текст рассылки"
+                            onChange={handleMessage}
+                        />
                     </div>
                 </CSSTransition>
                 <CSSTransition
-                    in={ Boolean(message) }
-                    timeout={ 500 }
+                    in={Boolean(message)}
+                    timeout={500}
                     classNames="fade"
                     unmountOnExit
                 >
                     <button
-                        ref={ submitBtn }
+                        ref={submitBtn}
                         className="send-btn"
-                        onClick={ handleSend }>
+                        onClick={handleSend}
+                    >
                         Отправить
                     </button>
                 </CSSTransition>
