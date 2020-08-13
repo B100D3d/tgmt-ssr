@@ -9,7 +9,7 @@ body
     background-color: #201E1E
     font-family: 'Noto Sans', sans-serif
 
-*
+*, *::before, *::after
     font-family: 'Noto Sans', sans-serif
     scrollbar-width: thin
     scrollbar-color: #29B6F630 transparent
@@ -17,6 +17,7 @@ body
     box-sizing: border-box
     -webkit-tap-highlight-color: transparent
 
+*
     &::-webkit-scrollbar
         height: 5px
         width: 5px
@@ -43,3 +44,17 @@ a
 
 #root
     min-height: 100vh
+
+.fade-enter
+    opacity: 0
+
+.fade-enter-active
+    opacity: 1
+    transition: opacity 500ms ease
+
+.fade-exit
+    opacity: 1
+
+.fade-exit-active
+    opacity: 0
+    transition: opacity 500ms ease
