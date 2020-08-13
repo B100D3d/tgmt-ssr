@@ -12,11 +12,14 @@ const RocketAnimation = loadable(() =>
 import "./about-app.sass"
 import close from "static/cross.svg"
 
+const noScroll = () => window.scrollTo(0, 0)
+
 const AboutApp = () => {
     const [cookie, setCookie] = useCookie("showAboutModal")
-    const showAboutApp = useMemo(() => cookie !== "true" && cookie !== null, [
-        cookie,
-    ])
+    const showAboutApp = useMemo(
+        () => cookie?.showAboutModal !== "true" && cookie !== null,
+        [cookie]
+    )
 
     const handleModal = useCallback(
         (show) => setCookie("showAboutModal", show),
@@ -24,7 +27,8 @@ const AboutApp = () => {
     )
 
     useEffect(() => {
-        document.body.style.overflow = showAboutApp ? "hidden" : "auto"
+        if (showAboutApp) window.addEventListener("scroll", noScroll)
+        else window.removeEventListener("scroll", noScroll)
     }, [showAboutApp])
 
     return (
