@@ -9,16 +9,16 @@
     &:hover
         transform: rotate(90deg) scale(1.1)
 
-.slide-enter
-    transform: rotate(90deg) translateX(100px)
+    &.slide-enter
+        transform: rotate(90deg) translateX(100px)
 
-.slide-enter-active
-    transform: rotate(90deg) translateX(0)
-    transition: transform 500ms ease
+    &.slide-enter-active
+        transform: rotate(90deg) translateX(0)
+        transition: transform 500ms ease
 
-.slide-exit
-    transform: rotate(90deg) translateX(0)
+    &.slide-exit
+        transform: rotate(90deg) translateX(0)
 
-.slide-exit-active
-    transform: rotate(90deg) translateX(100px)
-    transition: transform 500ms ease
+    &.slide-exit-active
+        transform: rotate(90deg) translateX(100px)
+        transition: transform 500ms ease
