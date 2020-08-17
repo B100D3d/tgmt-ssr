@@ -12,6 +12,7 @@ const origin = isProduction ? [
 
 app
     .disable('x-powered-by')
+    .set("trust proxy", "loopback")
     .use(cors({
         origin,
         optionsSuccessStatus: 200,
